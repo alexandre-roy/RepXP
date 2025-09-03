@@ -64,7 +64,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'repxp.wsgi.application'
+WSGI_APPLICATION = "repxp.wsgi.application"
+ASGI_APPLICATION = "repxp.asgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
