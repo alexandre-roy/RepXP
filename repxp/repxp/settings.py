@@ -47,7 +47,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'repxp.urls'
+ROOT_URLCONF = 'repxp.repxp.urls'
 
 TEMPLATES = [
     {
