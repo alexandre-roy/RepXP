@@ -1,1 +1,1 @@
-web: gunicorn repxp/repxp.wsgi
+web: gunicorn repxp.wsgi    
