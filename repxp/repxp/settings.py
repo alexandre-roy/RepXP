@@ -24,7 +24,7 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-wuzq0$ivqo!l)g
 DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
 
 # Hosts/domain names that are valid for this site
-ALLOWED_HOSTS = ['rexpxp-3ed7983af3c4.herokuapp.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['rexpxp-3ed7983af3c4.herokuapp.com', 'localhost', '127.0.0.1', 'repxp.ca']
 
 # Application definition
 INSTALLED_APPS = [
