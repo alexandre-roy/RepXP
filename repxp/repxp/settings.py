@@ -35,7 +35,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'mysite',
-    'debug_toolbar'
 ]
 
 MIDDLEWARE = [
@@ -47,13 +46,14 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
 
 if DEBUG:
     ROOT_URLCONF = 'repxp.urls'
+    INSTALLED_APPS += ['debug_toolbar']
+    MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware']
 else:
     ROOT_URLCONF = 'repxp.repxp.urls'
 
