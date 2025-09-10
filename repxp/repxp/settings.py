@@ -49,12 +49,13 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-if DEBUG:
-    ROOT_URLCONF = 'repxp.urls'
-    INSTALLED_APPS += ['debug_toolbar']
-    MIDDLEWARE = ['debug_toolbar.middleware.DebugToolbarMiddleware'] + MIDDLEWARE
+DJANGO_ENV = os.environ.get("DJANGO_ENV", "development")
+
+if DJANGO_ENV == "production":
+    ROOT_URLCONF = "repxp.repxp.urls"
 else:
-    ROOT_URLCONF = 'repxp.repxp.urls'
+    ROOT_URLCONF = "repxp.urls"
+
 
 
 TEMPLATES = [
