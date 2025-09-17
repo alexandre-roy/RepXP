@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <link rel="icon" href="" />
+    <link href="{% static 'site_web/css/styles.css' %}" rel="stylesheet" />
+
+    {% block title %} {% endblock %}
+  </head>
+
+  <body>
+    <nav class="navbar navbar-expand-md navbar-light bg-light fixed-top">
+      <div class="collapse navbar-collapse mx-3" id="navbarsExampleDefault">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="{% url 'index' %}"
+              >RepXP<span class="sr-only"></span
+            ></a>
+          </li>
+        </ul>
+        <div class="text-end">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item active ml-auto">
+              <a class="nav-link" href="#"
+                >Se connecter<span class="sr-only"></span
+              ></a>
+            </li>
+            <li class="nav-item active ml-auto">
+              <a class="nav-link" href="#"
+                >S'inscrire<span class="sr-only"></span
+              ></a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main role="main" class="container mt-5">
+      {% block main %} {% endblock %}
+    </main>
+  </body>
+  <footer class="text-center mt-5">
+    <p>&copy; 2025 RepXP | Tous droits réservés.</p>
+  </footer>
+</html>
