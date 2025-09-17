@@ -13,6 +13,7 @@ import os
 from pathlib import Path
 import dj_database_url
 import django_heroku
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,8 +24,15 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-wuzq0$ivqo!l)gw=a%hh)x_3ns!h*3*_qxgdh=1g@gai*4mrqp')
 
+load_dotenv()
+DEBUG = os.getenv("DJANGO_DEBUG")
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
+
+
+if DEBUG == "developpment":
+    ROOT_URLCONF = 'repxp.urls'
+else:
+    ROOT_URLCONF = 'repxp.repxp.urls'
 
 # Hosts/domain names that are valid for this site
 ALLOWED_HOSTS = ['rexpxp-3ed7983af3c4.herokuapp.com', 'localhost', '127.0.0.1', 'repxp.ca']
@@ -36,8 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'site_web'
+    'django.contrib.staticfiles'
 ]
 
 MIDDLEWARE = [
@@ -51,7 +58,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'repxp.repxp.urls'
 
 TEMPLATES = [
     {
