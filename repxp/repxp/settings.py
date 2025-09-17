@@ -31,10 +31,8 @@ DEBUG = os.getenv("DJANGO_DEBUG")
 
 if DEBUG == "developpment":
     ROOT_URLCONF = 'repxp.urls'
-    APPLICATION = 'site_web'
 else:
     ROOT_URLCONF = 'repxp.repxp.urls'
-    APPLICATION = 'repxp.site_web'
 
 
 # Hosts/domain names that are valid for this site
@@ -48,7 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    APPLICATION
+    'site_web',
 ]
 
 MIDDLEWARE = [
