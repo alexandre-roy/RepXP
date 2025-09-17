@@ -31,8 +31,11 @@ DEBUG = os.getenv("DJANGO_DEBUG")
 
 if DEBUG == "developpment":
     ROOT_URLCONF = 'repxp.urls'
+    APPLICATION = 'site_web'
 else:
     ROOT_URLCONF = 'repxp.repxp.urls'
+    APPLICATION = 'repxp.site_web'
+
 
 # Hosts/domain names that are valid for this site
 ALLOWED_HOSTS = ['rexpxp-3ed7983af3c4.herokuapp.com', 'localhost', '127.0.0.1', 'repxp.ca']
@@ -44,7 +47,8 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles'
+    'django.contrib.staticfiles',
+    APPLICATION
 ]
 
 MIDDLEWARE = [
