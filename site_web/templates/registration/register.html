@@ -1,0 +1,64 @@
+{% extends "site_web/base.html" %} 
+{% block title %}
+    <title>RepXP | Accueil</title>
+{% endblock %}
+{% block navigation %}
+    <a href="#" >CONNEXION</a>
+    <a href="#" class="active-link">INSCRIPTION</a>
+{% endblock %}
+{% block main %}
+<form class="form-group background-form" method="post" novalidate>
+    {% csrf_token %}
+
+    {% include "partials/form_errors.html" %}
+    <div class="mb-3 p-4">
+        <h2 class="text-center">INSCRIPTION</h2>
+        <div class="d-flex justify-content-center mt-4">
+            <div class="w-50">
+                <label for="{{ form.avatar.id_for_label }}" class="form-label mt-3 fw-semibold">
+                    {{ form.avatar.label }}
+                </label>
+                {{ form.avatar }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <label for="{{ form.title.id_for_label }}" class="form-label mt-3 fw-semibold">{{ form.username.label }}</label>
+                {{ form.username }}
+                <label for="{{ form.first_name.id_for_label }}" class="form-label mt-3 fw-semibold">{{ form.first_name.label }}</label>
+                {{ form.first_name }}
+                <label for="{{ form.last_name.id_for_label }}" class="form-label mt-3 fw-semibold">{{ form.last_name.label }}</label>
+                {{ form.last_name }}
+                <label for="{{ form.email.id_for_label }}" class="form-label mt-3 fw-semibold">{{ form.email.label }}</label>
+                {{ form.email }}
+                <label for="{{ form.title.id_for_label }}" class="form-label mt-3 fw-semibold">{{ form.date_naissance.label }}</label>
+                {{ form.date_naissance }}
+            </div>
+            <div class="col-md-6">
+                <label for="{{ form.sexe.id_for_label }}" class="form-label mt-3 fw-semibold">{{ form.sexe.label }}</label>
+                {{ form.sexe }}
+                <label for="{{ form.poids.id_for_label }}" class="form-label mt-3 fw-semibold">{{ form.poids.label }}</label>
+                {{ form.poids }}
+                <label for="{{ form.taille.id_for_label }}" class="form-label mt-3 fw-semibold">{{ form.taille.label }}</label>
+                {{ form.taille }}
+                <label for="{{ form.password1.id_for_label }}" class="form-label mt-3 fw-semibold">{{ form.password1.label }}</label>
+                {{ form.password1 }}
+                <label for="{{ form.password2.id_for_label }}" class="form-label mt-3 fw-semibold">{{ form.password2.label }}</label>
+                {{ form.password2 }}
+                {% if form.title.password2 %}
+                    <div class="text-danger">
+                        {% for error in form.password2.errors %}
+                            <small>{{ error }}</small><br>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="d-flex justify-content-center mt-3">
+                <input type="submit" class="form-control mt-3 style-button w-50" value="CRÉER">
+        </div> 
+    </div>
+
+</form>
+    
+{% endblock %}
