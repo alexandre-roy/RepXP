@@ -1,3 +1,5 @@
+"""Modèles pour la base de données"""
+
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinLengthValidator
@@ -17,18 +19,22 @@ class User(AbstractUser):
 
     avatar = models.ImageField(
         upload_to="avatars/",
-        blank=True
+        null=True,
+        blank=True,
     )
 
     date_naissance = models.DateField(
         verbose_name="Date de naissance",
-        blank=False
+        null=True,
+        blank=True,
     )
 
     sexe = models.CharField(
         max_length=1,
         choices=Sexe.choices,
-        default=Sexe.MASCULIN
+        default=Sexe.MASCULIN,
+        null=True,
+        blank=True,
     )
 
     taille = models.DecimalField(
@@ -41,7 +47,8 @@ class User(AbstractUser):
     poids = models.DecimalField(
         max_digits=4,
         decimal_places=1,
-        blank=False,
+        null=True,
+        blank=True,
         verbose_name="Poids de l'utilisateur"
     )
 
@@ -106,12 +113,12 @@ class Exercice(models.Model):
         null=True,
     )
 
-    series = models.IntegerField(
+    series_sugg = models.IntegerField(
         blank=False,
         verbose_name="Séries recommandées"
     )
 
-    reps = models.IntegerField(
+    reps_sugg = models.IntegerField(
         blank=False,
         verbose_name="Répétitions recommandées"
     )
@@ -138,18 +145,68 @@ class Exercice(models.Model):
         return f"{self.nom}"
 
 
-# class Entrainement(models.Model):
-#     """Modèle des entrainements"""
-#
-#     nom = models.CharField(
-#         max_length=50,
-#         blank=False,
-#         verbose_name="Nom de l'entrainement",
-#     )
-#
-#     exercice_1 = models.ForeignKey(
-#         Exercice,
-#         on_delete=models.SET_NULL,
-#         null=True,
-#         verbose_name="Exercice principal"
-#     )
+class Entrainement(models.Model):
+    """Modèle des entrainements"""
+
+    nom = models.CharField(
+        max_length=50,
+        blank=False,
+        verbose_name="Nom de l'entrainement",
+    )
+
+    date_creation = models.DateTimeField(
+        default=timezone.now,
+        verbose_name="Date de création"
+    )
+
+
+    exercices = models.ManyToManyField(
+        Exercice,
+        through="ExerciceEntrainement",
+        verbose_name="Exercices",
+        blank=True,
+    )
+
+    class Meta:
+        """Classe meta des entrainements"""
+        verbose_name = "Entrainement"
+        verbose_name_plural = "Entrainements"
+        ordering = ["nom"]
+
+    def __str__(self):
+        return f"{self.nom}"
+
+
+class ExerciceEntrainement(models.Model):
+    """Modèle des exercices et entrainements"""
+    entrainement = models.ForeignKey(
+        Entrainement,
+        on_delete=models.CASCADE
+    )
+
+    exercice = models.ForeignKey(
+        Exercice,
+        on_delete=models.CASCADE
+    )
+
+    sets = models.PositiveIntegerField(
+        blank=True,
+        null=True,
+        verbose_name="Sets personnalisés"
+    )
+
+    reps = models.PositiveIntegerField(
+        blank=True,
+        null=True,
+        verbose_name="Répétitions personnalisées"
+    )
+
+    class Meta:
+        """Classe meta des exercices et entrainements"""
+        verbose_name = "Exercice dans l'entraînement"
+        verbose_name_plural = "Exercices dans les entraînements"
+        ordering = ['entrainement', 'exercice']
+        unique_together = ('entrainement', 'exercice')
+
+    def __str__(self):
+        return f"{self.exercice} dans {self.entrainement}"
