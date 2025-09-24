@@ -1,0 +1,22 @@
+<div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content text-center logout-popover">
+      <div class="modal-header border-0">
+        <h3 class="modal-title w-100 fw-bold" id="logoutModalLabel">Confirmer la déconnexion</h3>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body">
+            <div class="mb-4">
+                <h4>Voulez-vous vraiment <br> vous déconnecter ?</h4>
+            </div>
+        <div class="d-flex justify-content-center">
+            <button type="button" class="style-button-danger" data-bs-dismiss="modal">Annuler</button>
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="style-button">Continuer</button>
+            </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
