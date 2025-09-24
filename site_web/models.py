@@ -4,7 +4,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinLengthValidator
 from django.utils import timezone
-
+from django.core.exceptions import ValidationError
+from dateutil.relativedelta import relativedelta
 
 # Create your models here.
 class Sexe(models.TextChoices):
@@ -37,10 +38,9 @@ class User(AbstractUser):
     )
 
     taille = models.DecimalField(
-        max_digits=2,
-        decimal_places=1,
-        null=True,
-        blank=True,
+        max_digits=3,
+        decimal_places=2,
+        blank=False,
         verbose_name="Taille de l'utilisateur"
     )
 
@@ -60,7 +60,20 @@ class User(AbstractUser):
 
     def __str__(self):
         return f"{self.username}"
+    
+    def clean(self):
+        if self.date_naissance:
+            today = timezone.now().date()
+            min_birthdate = today - relativedelta(years=15)
 
+            if self.date_naissance > min_birthdate:
+                raise ValidationError({
+                    'date_naissance': 'Vous devez avoir au moins 15 ans pour vous inscrire.'
+                })
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
 
 class GroupeMusculaire(models.Model):
     """Modèle des groupes musculaires"""
