@@ -40,7 +40,7 @@ class User(AbstractUser):
     taille = models.DecimalField(
         max_digits=3,
         decimal_places=2,
-        blank=False,
+        blank=True,
         verbose_name="Taille de l'utilisateur"
     )
 
@@ -134,6 +134,8 @@ class Exercice(models.Model):
         upload_to="images_exercices/",
         blank=True
     )
+
+    est_approuve = models.BooleanField(default=False)
 
     class Meta:
         """Classe meta des exercices"""
