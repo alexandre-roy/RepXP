@@ -19,11 +19,22 @@
   margin: 0 5px
   transition: 0.3 #7bff2e
 
+.style-button-danger
+  background-color: #de1515
+  color: #033050
+  font-size: 1.4rem
+  font-weight: bold
+  padding: 8px 20px
+  border-radius: 10px
+  text-decoration: none
+  margin: 0 5px
+
 .navigation
   background-color: #033050
   height: 100px
   width: 100%
-  padding-top: 35px
+  padding-top: 30px
+  margin-top: 120px
   a
     color: #ffffff9d
     text-decoration: none
@@ -33,3 +44,28 @@
 
 .active-link
   color: #fff !important
+
+.logout-popover
+  background-color: #033050
+  color: #fff
+
+.nav-link
+  color: #033050
+  font-weight: 500
+  position: relative
+  font-size: 1.6rem
+
+  &::before
+    content: ""
+    position: absolute
+    bottom: 0
+    left: 50%
+    transform: translateX(-50%)
+    width: 0
+    height: 4px
+    background-color: #6EE22A
+    transition: 0.4s ease-in-out
+  
+  &:hover::before, &:active::before
+    width: 100%
+    visibility: visible
