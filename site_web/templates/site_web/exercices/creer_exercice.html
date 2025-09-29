@@ -5,23 +5,66 @@
 {% endblock %}
 
 {% block main %}
-    <div class="container mt-4">
-        <h2>Créer un exercice</h2>
+<div class="d-flex justify-content-center align-items-center mt-5">
+    <div class="card shadow-lg" style="width: 40rem; border-radius: 1rem; background-color:#0b3359; color:#e0e0e0;">
+        <div class="card-body p-4">
+            <h2 class="card-title text-center mb-4">Créer un exercice</h2>
 
-        {% if messages %}
-            <div>
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
+            {% if messages %}
+                <div class="mb-3">
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} text-center" style="border-radius:0.5rem;">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
 
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form.as_bootstrap }}
-            <button type="submit" class="btn btn-primary">Créer</button>
-        </form>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label for="{{ form.nom.id_for_label }}" class="form-label">Nom</label>
+                    {{ form.nom }}
+                </div>
+
+                <div class="mb-3">
+                    <label for="{{ form.groupe_musculaire.id_for_label }}" class="form-label">Groupe musculaire</label>
+                    {{ form.groupe_musculaire }}
+                </div>
+
+                <div class="mb-3">
+                    <label for="{{ form.series_sugg.id_for_label }}" class="form-label">Séries suggérées</label>
+                    {{ form.series_sugg }}
+                </div>
+
+                <div class="mb-3">
+                    <label for="{{ form.reps_sugg.id_for_label }}" class="form-label">Répétitions suggérées</label>
+                    {{ form.reps_sugg }}
+                </div>
+
+                <div class="mb-3">
+                    <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+                    {{ form.description }}
+                </div>
+
+                <div class="mb-3">
+                    <label for="{{ form.image.id_for_label }}" class="form-label">Image</label>
+                    {{ form.image }}
+                </div>
+
+                <div class="text-center d-flex justify-content-around">
+                    <button type="reset" class="btn btn-lg" style="background-color:#dc3545; color:white; font-weight:bold; border-radius:0.5rem;">
+                        Effacer
+                    </button>
+
+                    <button type="submit" class="btn btn-lg" style="background-color:#39e639; color:#0b3359; font-weight:bold; border-radius:0.5rem;">
+                        Créer
+                    </button>
+                </div>
+            </form>
+
+        </div>
     </div>
+</div>
 {% endblock %}

@@ -1,9 +1,19 @@
 {% extends "site_web/base.html" %}
 {% block title %} RepXP | Exercices {% endblock %}
 
-{% block contenu %}
+{% block main %}
     <div class="container mt-4">
         <h2>Liste des exercices</h2>
+
+        {% if messages %}
+            <div>
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
 
         {% if exercices %}
             <ul class="list-group">
