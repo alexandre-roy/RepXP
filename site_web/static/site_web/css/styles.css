@@ -12313,7 +12313,7 @@ textarea.form-control-lg {
   height: 100px;
   width: 100%;
   padding-top: 30px;
-  margin-top: 130px;
+  margin-top: 120px;
 }
 .navigation a {
   color: #F5F6F7;
@@ -12360,3 +12360,8 @@ textarea.form-control-lg {
   width: 100%;
   visibility: visible;
 }
+
+.exercice-image {
+  max-width: 60px;
+  margin-right: 10px;
+}/*# sourceMappingURL=styles.css.map */
