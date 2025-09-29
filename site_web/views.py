@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth import login
 from django.contrib import messages
 from .forms import ExerciceForm, RegisterForm, ConnexionForm
-from .models import Exercice, Entrainement, ExerciceEntrainement
+from .models import Exercice 
 
 # Create your views here.
 def est_admin(user):
@@ -40,9 +40,30 @@ def connexion(request):
 @login_required
 @user_passes_test(est_admin)
 def review(request):
-    exercices = Exercice.objects.filter(est_approuve = False)
+    to_review = Exercice.objects.filter(est_approuve = False).count()
+    exercice = Exercice.objects.filter(est_approuve = False).first()
+    action = request.POST.get("action")
+
+    if request.method == "POST":
+        action = request.POST.get("action")
+
+        if action == "ACCEPTER":
+            form = ExerciceForm(request.POST, request.FILES, instance=exercice)
+            if form.is_valid():
+                approved_exercice = form.save(commit=False)
+                approved_exercice.est_approuve = True
+                approved_exercice.save()
+                messages.add_message(request, messages.INFO, "Exercice accepté !")
+        elif action == "REFUSER":
+            exercice.delete()
+            messages.add_message(request, messages.INFO, "Exercice refusé!")
+        return redirect("review")
+
+    else:
+        form = ExerciceForm(instance=exercice)
+
     return render(request, 'site_web/exercices/review.html',
-                  {'exercices': exercices, "est_admin": est_admin(request.user)})
+                  {'exercices': exercice, "est_admin": est_admin(request.user), "form": form, "to_review": to_review})
 
 @login_required
 def bank(request):
