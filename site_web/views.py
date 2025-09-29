@@ -83,7 +83,7 @@ def bank(request):
 def creer_exercice(request):
     """Vue pour créer un exercice par un admin"""
     if not est_admin(request.user):
-        messages.error(request, "Vous n'avez pas la permission d'accéder à cette page.")
+        messages.add_message(request, messages.ERROR, "Vous n'avez pas la permission d'accéder à cette page.")
         return redirect("index")
 
     if request.method == "POST":
