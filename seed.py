@@ -247,10 +247,10 @@ def run():
     ]
     Exercice.objects.all().delete()
     for data in exercices_data:
-        groupe = GroupeMusculaire.objects.get_or_create(nom=data["groupe_musculaire"])
+        groupe = GroupeMusculaire.objects.get(nom=data["groupe_musculaire"])
         exercice = Exercice.objects.get_or_create(
             nom=data["nom"],
-            groupe_musculaire=groupe,
+            groupe_musculaire_id=groupe.id,
             series_sugg=data["series_sugg"],
             reps_sugg=data["reps_sugg"],
             description=data["description"],
