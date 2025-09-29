@@ -2,8 +2,14 @@
 
 $primary: #033050
 $secondary: #6EE22A
+$warning: #f0ed2c
 $light: #F5F6F7
+$danger: #f63636
+$inactive: #ADAEAF
 
+.text-blue
+  color: $primary
+  
 .background-form
   background-color: $primary
   border-radius: 12px
@@ -17,50 +23,67 @@ $light: #F5F6F7
   color: $primary
   font-size: 1.4rem
   font-weight: bold
-  padding: 8px 20px
+  padding: 4px 10px
   border-radius: 10px
   text-decoration: none
   margin: 0 5px
   transition: 0.3 $secondary
 
-.style-button-danger
-  background-color: #de1515
-  color: #033050
+.style-button-warning
+  background-color: $warning
+  color: $primary
   font-size: 1.4rem
   font-weight: bold
-  padding: 8px 20px
+  padding: 4px 10px
+  border-radius: 10px
+  text-decoration: none
+  margin: 0 5px
+  transition: 0.3 $warning
+
+
+.style-button-danger
+  background-color: $danger
+  color: $primary
+  font-size: 1.4rem
+  font-weight: bold
+  padding: 4px 10px
   border-radius: 10px
   text-decoration: none
   margin: 0 5px
 
 .navigation
   background-color: $primary
-  height: 100px
+  height: 80px
   width: 100%
-  padding-top: 30px
-  margin-top: 120px
+  margin-top: 140px
+  display: flex
+  align-items: center
+  justify-content: center
   a
-    color: $light
     text-decoration: none
     margin: 0 40px
     font-size: 1.8rem
     font-weight: bold
 
+
+.inactive-link
+  color: $inactive
+
 .active-link
-  color: $light !important
+  color: $light
 
 .bg-blue
   background-color: $primary
   color: $light
   height: 100px
-  color: #fff !important
+  color: $light !important
 
 .logout-popover
-  background-color: #033050
-  color: #fff
+  background-color: $primary
+  color: $light
 
 .nav-link
-  color: #033050
+  color: $primary
   font-weight: 500
   position: relative
   font-size: 1.6rem
@@ -73,9 +96,13 @@ $light: #F5F6F7
     transform: translateX(-50%)
     width: 0
     height: 4px
-    background-color: #6EE22A
+    background-color: $secondary
     transition: 0.4s ease-in-out
-  
+
   &:hover::before, &:active::before
     width: 100%
     visibility: visible
+
+
+.bottom
+  border-bottom: 5px solid $secondary

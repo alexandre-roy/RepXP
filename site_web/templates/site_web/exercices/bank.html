@@ -1,0 +1,43 @@
+{% extends "site_web/base.html" %} {% block title %}
+
+<title>RepXP | Mes entraînements</title>
+
+{% endblock %} {% block navigation %}
+
+<a href="{% url 'bank' %}" class="active-link">BANQUE D'EXERCICES</a>
+<a href="#" class="inactive-link">PROPOSER UN EXERCICE</a>
+
+{% endblock %} {% block main %}
+
+<form method="get" class="mb-3 text-center d-flex justify-content-center">
+    <input type="text" name="recherche" class="form-control w-25 me-3" placeholder="Rechercher un exercice...">
+    <button class="style-button" type="submit">RECHERCHER</button>
+  </form>
+
+{% if exercices %}
+    <div class="row">
+    {% for exercice in exercices %}
+      <div class="col-md-4 mb-4">
+        <div class="card h-100">
+
+          {% if exercice.image %}
+            <img src="{{ exercice.image.url }}" class="card-img-top" alt="image de l'exercice">
+          {% endif %}
+          <div class="card-header">
+            <h2 class="card-title fs-3 mb-0 text-blue">{{ exercice.nom }}</h2>
+          </div>
+          <div class="card-body">
+            <p class="card-text text-blue"><strong>Groupe musculaire :</strong> {{ exercice.groupe_musculaire.nom }}</p>
+            <p class="card-text text-blue"><strong>Séries suggérées :</strong> {{ exercice.series_sugg }}</p>
+            <p class="card-text text-blue"><strong>Répétitions suggérées :</strong> {{ exercice.reps_sugg }}</p>
+            <p class="card-text text-blue">{{ exercice.description }}</p>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+<p class="text-center">Il n'y a pas d'exercices dans la banque d'exercices !</p>
+{% endif %}
+
+{% endblock %}

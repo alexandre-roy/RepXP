@@ -4,9 +4,8 @@
 
 {% endblock %} {% block navigation %}
 
-<a href="#" >BANQUE D'EXERCICES</a>
-<a href="#" >CRÉATION D'EXERCICES</a>
-<a href="#" class="active-link">VÉRIFICATION D'EXERCICES</a>
+<a href="{% url 'creer_exercice' %}" class="inactive-link">CRÉATION D'EXERCICES</a>
+<a href="{% url 'review' %}" class="active-link">VÉRIFICATION D'EXERCICES</a>
 
 {% endblock %} {% block main %}
 
