@@ -142,7 +142,7 @@ class Exercice(models.Model):
         """Classe meta des exercices"""
         verbose_name = "Exercice"
         verbose_name_plural = "Exercices"
-        ordering = ["groupe_musculaire", "nom"]
+        ordering = ["nom", "groupe_musculaire"]
 
     def __str__(self):
         return f"{self.nom}"

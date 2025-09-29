@@ -4,21 +4,21 @@
 
 {% endblock %} {% block navigation %}
 
+<a href="{% url 'bank' %}" class="inactive-link">BANQUE D'EXERCICES</a>
+
+{% if est_admin %}
+
 <a href="{% url 'creer_exercice' %}" class="inactive-link">CRÉATION D'EXERCICES</a>
 <a href="{% url 'review' %}" class="active-link">VÉRIFICATION D'EXERCICES</a>
+
+{% else %}
+<a href="#" class="inactive-link">PROPOSER UN EXERCICE</a>
+{% endif %}
+
 
 {% endblock %} {% block main %}
 
 {% if exercices %}
-    {% if messages %}
-        <div class="mb-3">
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }} text-center" style="border-radius:0.5rem;">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        </div>
-    {% endif %}
     <form class="form-group background-form" method="post" enctype="multipart/form-data" novalidate>
         {% csrf_token %}
         <div class="mb-3 p-4">

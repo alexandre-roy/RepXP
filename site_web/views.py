@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth import login
 from django.contrib import messages
 from .forms import ExerciceForm, RegisterForm, ConnexionForm
-from .models import Exercice 
+from .models import Exercice
 
 # Create your views here.
 def est_admin(user):
@@ -87,13 +87,8 @@ def creer_exercice(request):
         if form.is_valid():
             form.save()
             messages.success(request, "L'exercice a été créé avec succès ✅")
-            return redirect("liste_exercices")
+            return redirect("bank")
     else:
         form = ExerciceForm()
 
     return render(request, "site_web/exercices/creer_exercice.html", {"form": form, "est_admin": est_admin(request.user)})
-
-def liste_exercices(request):
-    """Vue pour afficher la liste des exercices"""
-    exercices = Exercice.objects.all()
-    return render(request, "site_web/exercices/liste_exercices.html", {"exercices": exercices, "est_admin": est_admin(request.user)})
