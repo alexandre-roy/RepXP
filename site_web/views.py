@@ -3,12 +3,15 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth import login
 from django.contrib import messages
 from .forms import ExerciceForm, RegisterForm, ConnexionForm
-from .models import Exercice
+from .models import Exercice, Entrainement, ExerciceEntrainement
 
 # Create your views here.
+def est_admin(user):
+    return user.is_authenticated and user.is_staff
+
 def index(request):
     """Page d'accueil de activities"""
-    return render(request, "site_web/index.html")
+    return render(request, "site_web/index.html", {"est_admin": est_admin(request.user)})
 
 def register(request):
     if request.method == 'POST':
@@ -16,15 +19,11 @@ def register(request):
         if form.is_valid():
             form.save()
             messages.add_message(request, messages.INFO, "Compte créé avec succès!")
-            return redirect('connexion')
+            return redirect('signin')
     else:
         form = RegisterForm()
 
-    return render(request, 'registration/register.html', {'form': form})
-
-def review(request):
-    exercices = Exercice.objects.filter(est_approuve = False)
-    return render(request, 'site_web/review.html', {'exercices': exercices})
+    return render(request, 'registration/register.html', {'form': form, "est_admin": est_admin(request.user)})
 
 def connexion(request):
     if request.method == 'POST':
@@ -36,13 +35,26 @@ def connexion(request):
     else:
         form = ConnexionForm(request)
 
-    return render(request, 'registration/login.html', {'form': form})
+    return render(request, 'registration/login.html', {'form': form, "est_admin": est_admin(request.user)})
 
+@login_required
+@user_passes_test(est_admin)
+def review(request):
+    exercices = Exercice.objects.filter(est_approuve = False)
+    return render(request, 'site_web/exercices/review.html',
+                  {'exercices': exercices, "est_admin": est_admin(request.user)})
 
+@login_required
+def bank(request):
+    recherche = request.GET.get("recherche")
+    exercices = Exercice.objects.filter(est_approuve=True)
 
-def est_admin(user):
-    return user.is_authenticated and user.is_staff
-
+    if recherche:
+        exercices = exercices.filter(nom__icontains=recherche)
+    return render(request, 'site_web/exercices/bank.html', {
+        'exercices': exercices,
+        'est_admin': est_admin(request.user)
+    })
 
 @login_required
 @user_passes_test(est_admin)
@@ -58,10 +70,9 @@ def creer_exercice(request):
     else:
         form = ExerciceForm()
 
-    return render(request, "site_web/exercices/creer_exercice.html", {"form": form})
-
+    return render(request, "site_web/exercices/creer_exercice.html", {"form": form, "est_admin": est_admin(request.user)})
 
 def liste_exercices(request):
     """Vue pour afficher la liste des exercices"""
     exercices = Exercice.objects.all()
-    return render(request, "site_web/exercices/liste_exercices.html", {"exercices": exercices})
+    return render(request, "site_web/exercices/liste_exercices.html", {"exercices": exercices, "est_admin": est_admin(request.user)})

@@ -12276,6 +12276,10 @@ textarea.form-control-lg {
   }
 }
 
+.text-blue {
+  color: #033050;
+}
+
 .background-form {
   background-color: #033050;
   border-radius: 12px;
@@ -12290,19 +12294,31 @@ textarea.form-control-lg {
   color: #033050;
   font-size: 1.4rem;
   font-weight: bold;
-  padding: 8px 20px;
+  padding: 4px 10px;
   border-radius: 10px;
   text-decoration: none;
   margin: 0 5px;
   transition: 0.3 #6EE22A;
 }
 
-.style-button-danger {
-  background-color: #de1515;
+.style-button-warning {
+  background-color: #f0ed2c;
   color: #033050;
   font-size: 1.4rem;
   font-weight: bold;
-  padding: 8px 20px;
+  padding: 4px 10px;
+  border-radius: 10px;
+  text-decoration: none;
+  margin: 0 5px;
+  transition: 0.3 #f0ed2c;
+}
+
+.style-button-danger {
+  background-color: #f63636;
+  color: #033050;
+  font-size: 1.4rem;
+  font-weight: bold;
+  padding: 4px 10px;
   border-radius: 10px;
   text-decoration: none;
   margin: 0 5px;
@@ -12310,33 +12326,38 @@ textarea.form-control-lg {
 
 .navigation {
   background-color: #033050;
-  height: 100px;
+  height: 80px;
   width: 100%;
-  padding-top: 30px;
-  margin-top: 120px;
+  margin-top: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .navigation a {
-  color: #F5F6F7;
   text-decoration: none;
   margin: 0 40px;
   font-size: 1.8rem;
   font-weight: bold;
 }
 
+.inactive-link {
+  color: #ADAEAF;
+}
+
 .active-link {
-  color: #F5F6F7 !important;
+  color: #F5F6F7;
 }
 
 .bg-blue {
   background-color: #033050;
   color: #F5F6F7;
   height: 100px;
-  color: #fff !important;
+  color: #F5F6F7 !important;
 }
 
 .logout-popover {
   background-color: #033050;
-  color: #fff;
+  color: #F5F6F7;
 }
 
 .nav-link {
@@ -12364,4 +12385,8 @@ textarea.form-control-lg {
 .exercice-image {
   max-width: 60px;
   margin-right: 10px;
+}
+
+.bottom {
+  border-bottom: 5px solid #6EE22A;
 }/*# sourceMappingURL=styles.css.map */
