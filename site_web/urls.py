@@ -8,5 +8,6 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('exercices/review', views.review, name='review'),
     path('signup/', views.register, name='signup'),
+    path('accounts/signin', views.connexion, name='signin'),
     path('accounts/', include('django.contrib.auth.urls')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from .models import User, Sexe
 from django.core.exceptions import ValidationError
 from django.utils import timezone
@@ -93,3 +93,18 @@ class RegisterForm(UserCreationForm):
         if self.date_naissance and self.date_naissance >= timezone.now().date():
             raise ValidationError('La date de début doit être dans le futur')
         return data
+    
+
+class ConnexionForm(AuthenticationForm):
+    username = forms.CharField(
+        max_length=150,
+        label="Nom d'utilisateur",
+        widget=forms.TextInput(attrs={
+            'class': 'form-control mt-3',
+        })
+    )
+
+    password = forms.CharField(
+        label="Mot de passe",
+        widget=forms.PasswordInput(attrs={'class': 'form-control mt-3'})
+    )
