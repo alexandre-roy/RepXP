@@ -22,6 +22,10 @@ def register(request):
 
     return render(request, 'registration/register.html', {'form': form})
 
+def review(request):
+    exercices = Exercice.objects.filter(est_approuve = False)
+    return render(request, 'site_web/review.html', {'exercices': exercices})
+
 def connexion(request):
     if request.method == 'POST':
         form = ConnexionForm(request, data=request.POST)
