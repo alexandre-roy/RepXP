@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
 from django.contrib import messages
+from .models import Exercice
 from .forms import RegisterForm, ConnexionForm
 
 # Create your views here.
@@ -19,6 +20,10 @@ def register(request):
         form = RegisterForm()
 
     return render(request, 'registration/register.html', {'form': form})
+
+def review(request):
+    exercices = Exercice.objects.filter(est_approuve = False)
+    return render(request, 'site_web/review.html', {'exercices': exercices})
 
 def connexion(request):
     if request.method == 'POST':

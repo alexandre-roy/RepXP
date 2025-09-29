@@ -1,23 +1,27 @@
 @use "bootstrap"
 
+$primary: #033050
+$secondary: #6EE22A
+$light: #F5F6F7
+
 .background-form
-  background-color: #033050
+  background-color: $primary
   border-radius: 12px
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1)
+  box-shadow: 0 4px 12px $primary
   margin: 50px auto
   width: 50%
-  color: #fff
+  color: $light
 
 .style-button
-  background-color: #6EE22A
-  color: #033050
+  background-color: $secondary
+  color: $primary
   font-size: 1.4rem
   font-weight: bold
   padding: 8px 20px
   border-radius: 10px
   text-decoration: none
   margin: 0 5px
-  transition: 0.3 #7bff2e
+  transition: 0.3 $secondary
 
 .style-button-danger
   background-color: #de1515
@@ -30,19 +34,25 @@
   margin: 0 5px
 
 .navigation
-  background-color: #033050
+  background-color: $primary
   height: 100px
   width: 100%
   padding-top: 30px
   margin-top: 120px
   a
-    color: #ffffff9d
+    color: $light
     text-decoration: none
     margin: 0 40px
     font-size: 1.8rem
     font-weight: bold
 
 .active-link
+  color: $light !important
+
+.bg-blue
+  background-color: $primary
+  color: $light
+  height: 100px
   color: #fff !important
 
 .logout-popover
