@@ -1,9 +1,9 @@
-{% extends "site_web/base.html" %} 
+{% extends "site_web/base.html" %}
 {% block title %}
-    <title>RepXP | Accueil</title>
+    <title>RepXP | Inscription</title>
 {% endblock %}
 {% block navigation %}
-    <a href="{% url 'signin' %}">CONNEXION</a>
+    <a href="{% url 'signin' %}" class="inactive-link">CONNEXION</a>
     <a href="{% url 'signup' %}" class="active-link">INSCRIPTION</a>
 {% endblock %}
 {% block main %}
@@ -67,5 +67,5 @@
         </div>
     </div>
 </form>
-    
+
 {% endblock %}

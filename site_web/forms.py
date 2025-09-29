@@ -1,8 +1,9 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .models import User, Sexe, Exercice
 from django.core.exceptions import ValidationError
 from django.utils import timezone
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.forms import inlineformset_factory
+from .models import User, Sexe, Exercice, Entrainement, ExerciceEntrainement
 
 
 class RegisterForm(UserCreationForm):
@@ -131,3 +132,4 @@ class ExerciceForm(forms.ModelForm):
             "description": forms.Textarea(attrs={"class": "form-control", "rows": 3, "placeholder": "Certaines spécifications à ajouter sur l'exercice ..."}),
             "image": forms.ClearableFileInput(attrs={"class": "form-control"}),
         }
+

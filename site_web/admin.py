@@ -49,9 +49,10 @@ class ExerciceAdmin(admin.ModelAdmin):
         "series_sugg",
         "reps_sugg",
         "description",
-        "image"
+        "image",
+        "est_approuve"
     )
-    list_filter = "groupe_musculaire", "series_sugg", "reps_sugg"
+    list_filter = "groupe_musculaire", "series_sugg", "reps_sugg", "est_approuve"
     search_field = "nom"
 
 @admin.register(Entrainement)
@@ -62,9 +63,10 @@ class EntrainementAdmin(admin.ModelAdmin):
         "id",
         "nom",
         "date_creation",
+        "createur"
     )
-    list_filter = "date_creation", "exercices"
-    search_fields = "nom", "exercices"
+    list_filter = "date_creation", "exercices", "createur"
+    search_fields = "nom", "exercices", "createur"
 
 @admin.register(ExerciceEntrainement)
 class ExerciceEntrainementAdmin(admin.ModelAdmin):

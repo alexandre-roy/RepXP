@@ -1,8 +1,12 @@
 {% extends "site_web/base.html" %}
 {% block title %}
     <title>RepXP | Exercices</title>
-{% endblock %}
-{% block main %}
+{% endblock %} {% block navigation %}
+
+<a href="{% url 'creer_exercice' %}" class="active-link">CRÉATION D'EXERCICES</a>
+<a href="{% url 'review' %}" class="inactive-link">VÉRIFICATION D'EXERCICES</a>
+
+{% endblock %} {% block main %}
     {% if messages %}
         <div class="mb-3">
             {% for message in messages %}

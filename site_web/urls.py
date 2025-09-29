@@ -1,14 +1,14 @@
 from django.urls import path, include
-from . import views
-
 from django.conf import settings
 from django.conf.urls.static import static
+from . import views
 
 urlpatterns = [
     path('', views.index, name='index'),
     path('exercices/creer/', views.creer_exercice, name='creer_exercice'),
     path('exercices/', views.liste_exercices, name='liste_exercices'),
     path('exercices/review', views.review, name='review'),
+    path('exercices/bank', views.bank, name='bank'),
     path('signup/', views.register, name='signup'),
     path('accounts/signin', views.connexion, name='signin'),
     path('accounts/', include('django.contrib.auth.urls')),

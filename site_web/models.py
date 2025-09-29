@@ -170,6 +170,16 @@ class Entrainement(models.Model):
         blank=True,
     )
 
+    createur = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="proposed_exercices",
+        verbose_name="Créateur",
+        blank=True,
+        default="",
+        null=False
+    )
+
     class Meta:
         """Classe meta des entrainements"""
         verbose_name = "Entrainement"
