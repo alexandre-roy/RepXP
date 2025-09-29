@@ -38,8 +38,10 @@ def connexion(request):
     return render(request, 'registration/login.html', {'form': form, "est_admin": est_admin(request.user)})
 
 @login_required
-@user_passes_test(est_admin)
 def review(request):
+    if not est_admin(request.user):
+        messages.add_message(request, messages.ERROR, "Vous n'avez pas la permission d'accéder à cette page.")
+        return redirect("index")
     to_review = Exercice.objects.filter(est_approuve = False).count()
     exercice = Exercice.objects.filter(est_approuve = False).first()
     action = request.POST.get("action")
@@ -78,9 +80,11 @@ def bank(request):
     })
 
 @login_required
-@user_passes_test(est_admin)
 def creer_exercice(request):
     """Vue pour créer un exercice par un admin"""
+    if not est_admin(request.user):
+        messages.add_message(request, messages.ERROR, "Vous n'avez pas la permission d'accéder à cette page.")
+        return redirect("index")
 
     if request.method == "POST":
         form = ExerciceForm(request.POST, request.FILES)
