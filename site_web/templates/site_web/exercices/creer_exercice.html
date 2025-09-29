@@ -1,0 +1,27 @@
+{% extends "site_web/base.html" %} {% block title %}
+
+<title>RepXP | Exercices</title>
+
+{% endblock %}
+
+{% block main %}
+    <div class="container mt-4">
+        <h2>Créer un exercice</h2>
+
+        {% if messages %}
+            <div>
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_bootstrap }}
+            <button type="submit" class="btn btn-primary">Créer</button>
+        </form>
+    </div>
+{% endblock %}
