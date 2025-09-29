@@ -14,19 +14,21 @@
                 {% endfor %}
             </div>
         {% endif %}
-
         {% if exercices %}
             <ul class="list-group">
-                {% for exo in exercices %}
-                    <li class="list-group-item">
-                        <strong>{{ exo.nom }}</strong> – {{ exo.groupe_musculaire }}
-                        <br>
+            {% for exo in exercices %}
+                <li class="list-group-item d-flex align-items-center">
+                    <img src="{{ exo.image.url }}" alt="{{ exo.nom }}" class="exercice-image">
+                    <div>
+                        <strong>{{ exo.nom }}</strong> 
+                        <small class="text-muted">({{ exo.groupe_musculaire }})</small><br>
                         Séries : {{ exo.series_sugg }} | Répétitions : {{ exo.reps_sugg }}
-                    </li>
-                {% endfor %}
+                    </div>
+                </li>
+            {% endfor %}
             </ul>
         {% else %}
-            <p>Aucun exercice enregistré pour l’instant.</p>
+            <p>Aucun exercice enregistré pour l'instant.</p>
         {% endif %}
     </div>
 {% endblock %}

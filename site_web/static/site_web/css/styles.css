@@ -12382,6 +12382,11 @@ textarea.form-control-lg {
   visibility: visible;
 }
 
+.exercice-image {
+  max-width: 60px;
+  margin-right: 10px;
+}
+
 .bottom {
   border-bottom: 5px solid #6EE22A;
 }/*# sourceMappingURL=styles.css.map */
