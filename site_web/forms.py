@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .models import User, Sexe
+from .models import User, Sexe, Exercice
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 
@@ -38,10 +38,10 @@ class RegisterForm(UserCreationForm):
         widget=forms.DateInput(attrs={
             'type': 'date',
             'class': 'form-control'
-        },  
+        },
         format="%Y-%m-%d"
         )
-    )       
+    )
     sexe = forms.ChoiceField(
         label="Sexe",
         choices=[('', 'Choisir sexe')] + list(Sexe.choices),
@@ -93,7 +93,7 @@ class RegisterForm(UserCreationForm):
         if self.date_naissance and self.date_naissance >= timezone.now().date():
             raise ValidationError('La date de début doit être dans le futur')
         return data
-    
+
 
 class ConnexionForm(AuthenticationForm):
     username = forms.CharField(
@@ -108,3 +108,26 @@ class ConnexionForm(AuthenticationForm):
         label="Mot de passe",
         widget=forms.PasswordInput(attrs={'class': 'form-control mt-3'})
     )
+
+
+class ExerciceForm(forms.ModelForm):
+    """Formulaire pour créer un exercice"""
+
+    class Meta:
+        model = Exercice
+        fields = [
+            "nom",
+            "groupe_musculaire",
+            "series_sugg",
+            "reps_sugg",
+            "description",
+            "image",
+        ]
+        widgets = {
+            "nom": forms.TextInput(attrs={"class": "form-control", "placeholder": "Nom de l'exercice"}),
+            "groupe_musculaire": forms.Select(attrs={"class": "form-select"}),
+            "series_sugg": forms.NumberInput(attrs={"class": "form-control", "min": 1}),
+            "reps_sugg": forms.NumberInput(attrs={"class": "form-control", "min": 1}),
+            "description": forms.Textarea(attrs={"class": "form-control", "rows": 3, "placeholder": "Certaines spécifications à ajouter sur l'exercice ..."}),
+            "image": forms.ClearableFileInput(attrs={"class": "form-control"}),
+        }

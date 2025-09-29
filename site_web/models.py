@@ -40,6 +40,7 @@ class User(AbstractUser):
     taille = models.DecimalField(
         max_digits=3,
         decimal_places=2,
+        null=True,
         blank=True,
         verbose_name="Taille de l'utilisateur"
     )
@@ -60,7 +61,7 @@ class User(AbstractUser):
 
     def __str__(self):
         return f"{self.username}"
-    
+
     def clean(self):
         if self.date_naissance:
             today = timezone.now().date()

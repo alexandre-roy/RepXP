@@ -1,0 +1,32 @@
+{% extends "site_web/base.html" %}
+{% block title %} RepXP | Exercices {% endblock %}
+
+{% block main %}
+    <div class="container mt-4">
+        <h2>Liste des exercices</h2>
+
+        {% if messages %}
+            <div>
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if exercices %}
+            <ul class="list-group">
+                {% for exo in exercices %}
+                    <li class="list-group-item">
+                        <strong>{{ exo.nom }}</strong> – {{ exo.groupe_musculaire }}
+                        <br>
+                        Séries : {{ exo.series_sugg }} | Répétitions : {{ exo.reps_sugg }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Aucun exercice enregistré pour l’instant.</p>
+        {% endif %}
+    </div>
+{% endblock %}
