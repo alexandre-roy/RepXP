@@ -77,9 +77,11 @@
           {% else %}
           <ul class="navbar-nav ms-auto">
             <li class="nav-item active ml-auto">
-              <button class="style-button" href="{% url 'signin' %}"
-                >CONNEXION<span class="sr-only"></span
-              ></button>
+              <form action="{% url 'signin' %}" method="get">
+                <button type="submit" class="style-button">
+                    CONNEXION
+                </button>
+              </form>
             </li>
             {% endif %}
           </ul>
