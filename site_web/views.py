@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import RegisterForm
+from .models import Exercice
 
 # Create your views here.
 def index(request):
@@ -18,3 +19,9 @@ def register(request):
         form = RegisterForm()
 
     return render(request, 'registration/register.html', {'form': form})
+
+def review(request):
+    exercices = Exercice.objects.filter(est_approuve = False)
+    return render(request, 'site_web/review.html', {'exercices': exercices})
+
+
