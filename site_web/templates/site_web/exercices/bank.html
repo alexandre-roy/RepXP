@@ -5,39 +5,39 @@
 {% endblock %} {% block navigation %}
 
 <a href="{% url 'bank' %}" class="active-link">BANQUE D'EXERCICES</a>
+
+{% if est_admin %}
+
+<a href="{% url 'creer_exercice' %}" class="inactive-link">CRÉATION D'EXERCICES</a>
+<a href="{% url 'review' %}" class="inactive-link">VÉRIFICATION D'EXERCICES</a>
+
+{% else %}
 <a href="#" class="inactive-link">PROPOSER UN EXERCICE</a>
+{% endif %}
 
 {% endblock %} {% block main %}
 
-<form method="get" class="mb-3 text-center d-flex justify-content-center">
+<form method="get" class="my-3 pb-2 text-center d-flex justify-content-center">
     <input type="text" name="recherche" class="form-control w-25 me-3" placeholder="Rechercher un exercice...">
     <button class="style-button" type="submit">RECHERCHER</button>
-  </form>
+</form>
 
 {% if exercices %}
-    <div class="row">
-    {% for exercice in exercices %}
-      <div class="col-md-4 mb-4">
-        <div class="card h-100">
-
-          {% if exercice.image %}
-            <img src="{{ exercice.image.url }}" class="card-img-top" alt="image de l'exercice">
-          {% endif %}
-          <div class="card-header">
-            <h2 class="card-title fs-3 mb-0 text-blue">{{ exercice.nom }}</h2>
-          </div>
-          <div class="card-body">
-            <p class="card-text text-blue"><strong>Groupe musculaire :</strong> {{ exercice.groupe_musculaire.nom }}</p>
-            <p class="card-text text-blue"><strong>Séries suggérées :</strong> {{ exercice.series_sugg }}</p>
-            <p class="card-text text-blue"><strong>Répétitions suggérées :</strong> {{ exercice.reps_sugg }}</p>
-            <p class="card-text text-blue">{{ exercice.description }}</p>
-          </div>
-        </div>
-      </div>
+    <ul class="list-group">
+    {% for exo in exercices %}
+        <li class="list-group-item d-flex align-items-center">
+            <img src="{{ exo.image.url }}" alt="{{ exo.nom }}" class="exercice-image">
+            <div>
+                <a href="#" class="text-blue text-decoration-none"><strong>{{ exo.nom }}</strong></a>
+                <small class="text-muted">({{ exo.groupe_musculaire }})</small><br>
+                <p class="mb-0">Séries : {{ exo.series_sugg }} | Répétitions : {{ exo.reps_sugg }}</p>
+                <p class="mb-0">{{ exo.description }}</p>
+            </div>
+        </li>
     {% endfor %}
-  </div>
+    </ul>
 {% else %}
-<p class="text-center">Il n'y a pas d'exercices dans la banque d'exercices !</p>
+    <p>Aucun exercice enregistré pour l'instant.</p>
 {% endif %}
 
 {% endblock %}

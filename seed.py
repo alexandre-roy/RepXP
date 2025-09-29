@@ -21,7 +21,7 @@ def run():
             "reps_sugg": 10,
             "description": "Assis devant la machine à poulie haute, saisissez la barre en pronation, les mains un peu plus larges que les épaules. Tirez la barre vers le haut de la poitrine en contractant le dos, puis revenez lentement à la position de départ en contrôlant la charge.",
             "image": "images_exercices/lat_pulldown.png",
-            "est_approuve": True,
+            "est_approuve": False,
         },
                     {
             "nom": "Tirage vertical à la barre",
@@ -48,7 +48,7 @@ def run():
             "reps_sugg": 12,
             "description": "Penchez-vous légèrement vers l'avant et tirez la barre vers votre abdomen tout en contractant les omoplates.",
             "image": "images_exercices/bar_row.png",
-            "est_approuve": True,
+            "est_approuve": False,
         },
         {
             "nom": "Tirage horizontal à la poulie",
@@ -57,7 +57,7 @@ def run():
             "reps_sugg": 15,
             "description": "Asseyez-vous face à la poulie, tirez la poignée vers votre ventre en gardant le dos droit.",
             "image": "images_exercices/cable_row.png",
-            "est_approuve": True,
+            "est_approuve": False,
         },
 
         # PECTORAUX
