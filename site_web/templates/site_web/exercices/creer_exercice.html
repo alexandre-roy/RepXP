@@ -1,70 +1,45 @@
-{% extends "site_web/base.html" %} {% block title %}
-
-<title>RepXP | Exercices</title>
-
+{% extends "site_web/base.html" %}
+{% block title %}
+    <title>RepXP | Exercices</title>
 {% endblock %}
-
 {% block main %}
-<div class="d-flex justify-content-center align-items-center mt-5">
-    <div class="card shadow-lg" style="width: 40rem; border-radius: 1rem; background-color:#0b3359; color:#e0e0e0;">
-        <div class="card-body p-4">
-            <h2 class="card-title text-center mb-4">Créer un exercice</h2>
-
-            {% if messages %}
-                <div class="mb-3">
-                    {% for message in messages %}
-                        <div class="alert alert-{{ message.tags }} text-center" style="border-radius:0.5rem;">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
+    {% if messages %}
+        <div class="mb-3">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} text-center" style="border-radius:0.5rem;">
+                    {{ message }}
                 </div>
-            {% endif %}
-
-            <form method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-
-                <div class="mb-3">
-                    <label for="{{ form.nom.id_for_label }}" class="form-label">Nom</label>
-                    {{ form.nom }}
-                </div>
-
-                <div class="mb-3">
-                    <label for="{{ form.groupe_musculaire.id_for_label }}" class="form-label">Groupe musculaire</label>
-                    {{ form.groupe_musculaire }}
-                </div>
-
-                <div class="mb-3">
-                    <label for="{{ form.series_sugg.id_for_label }}" class="form-label">Séries suggérées</label>
-                    {{ form.series_sugg }}
-                </div>
-
-                <div class="mb-3">
-                    <label for="{{ form.reps_sugg.id_for_label }}" class="form-label">Répétitions suggérées</label>
-                    {{ form.reps_sugg }}
-                </div>
-
-                <div class="mb-3">
-                    <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
-                    {{ form.description }}
-                </div>
-
-                <div class="mb-3">
-                    <label for="{{ form.image.id_for_label }}" class="form-label">Image</label>
-                    {{ form.image }}
-                </div>
-
-                <div class="text-center d-flex justify-content-around">
-                    <button type="reset" class="btn btn-lg" style="background-color:#dc3545; color:white; font-weight:bold; border-radius:0.5rem;">
-                        Effacer
-                    </button>
-
-                    <button type="submit" class="btn btn-lg" style="background-color:#39e639; color:#0b3359; font-weight:bold; border-radius:0.5rem;">
-                        Créer
-                    </button>
-                </div>
-            </form>
-
+            {% endfor %}
         </div>
-    </div>
-</div>
+    {% endif %}
+    <form class="form-group background-form" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3 p-4">
+            <h2 class="text-center">INSCRIPTION</h2>
+
+            <label for="{{ form.nom.id_for_label }}" class="form-label mt-3 fw-semibold">Nom</label>
+            {{ form.nom }}
+
+            <label for="{{ form.groupe_musculaire.id_for_label }}" class="form-label mt-3 fw-semibold">Groupe musculaire</label>
+            {{ form.groupe_musculaire }}
+
+            <label for="{{ form.series_sugg.id_for_label }}" class="form-label mt-3 fw-semibold">Séries suggérées</label>
+            {{ form.series_sugg }}
+
+            <label for="{{ form.reps_sugg.id_for_label }}" class="form-label mt-3 fw-semibold">Répétitions suggérées</label>
+            {{ form.reps_sugg }}
+
+            <label for="{{ form.description.id_for_label }}" class="form-label mt-3 fw-semibold">Description</label>
+            {{ form.description }}
+
+            <label for="{{ form.image.id_for_label }}" class="form-label mt-3 fw-semibold">Image</label>
+            {{ form.image }}
+
+            <div class="d-flex justify-content-center mt-3">
+                <input type="reset" class="form-control mt-3 style-button-danger w-50" value="RÉINITIALISER">
+                <input type="submit" class="form-control mt-3 style-button w-50" value="CRÉER">
+            </div>
+        </div>
+    </form>
+
 {% endblock %}
