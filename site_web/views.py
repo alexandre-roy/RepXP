@@ -96,3 +96,26 @@ def creer_exercice(request):
         form = ExerciceForm()
 
     return render(request, "site_web/exercices/creer_exercice.html", {"form": form, "est_admin": est_admin(request.user)})
+
+
+@login_required
+def proposer_exercice(request):
+    """Vue pour proposer un exercice par un utilisateur"""
+
+    if est_admin(request.user):
+        return redirect("creer_exercice")
+
+    if request.method == "POST":
+        form = ExerciceForm(request.POST, request.FILES)
+        print("=== DEBUG form errors ===")
+        print(form.errors)
+        if form.is_valid():
+            exercice = form.save(commit=False)
+            exercice.est_approuve = False
+            exercice.save()
+            messages.success(request, "Votre exercice a été proposé et est en attente de validation par un administrateur.")
+            return redirect("bank")
+    else:
+        form = ExerciceForm()
+
+    return render(request, "site_web/exercices/proposer_exercice.html", {"form": form, "est_admin": est_admin(request.user)})

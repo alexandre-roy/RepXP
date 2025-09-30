@@ -11,7 +11,7 @@
 <a href="{% url 'review' %}" class="inactive-link">VÉRIFICATION D'EXERCICES</a>
 
 {% else %}
-<a href="#" class="inactive-link">PROPOSER UN EXERCICE</a>
+<a href="{% url 'proposer_exercice' %}" class="inactive-link">PROPOSER UN EXERCICE</a>
 {% endif %}
 
 {% endblock %} {% block main %}
@@ -27,10 +27,17 @@
     <form class="form-group background-form" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="mb-3 p-4">
-            <h2 class="text-center">INSCRIPTION</h2>
+            <h2 class="text-center">CRÉER EXERCICE</h2>
 
-            <label for="{{ form.nom.id_for_label }}" class="form-label mt-3 fw-semibold">Nom</label>
-            {{ form.nom }}
+            <div class="mb-3">
+                <label for="{{ form.nom.id_for_label }}" class="form-label">Nom</label>
+                {{ form.nom }}
+                {% if form.nom.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.nom.errors.0 }}
+                    </div>
+                {% endif %}
+            </div>
 
             <label for="{{ form.groupe_musculaire.id_for_label }}" class="form-label mt-3 fw-semibold">Groupe musculaire</label>
             {{ form.groupe_musculaire }}

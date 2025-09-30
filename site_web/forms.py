@@ -133,3 +133,10 @@ class ExerciceForm(forms.ModelForm):
             "image": forms.ClearableFileInput(attrs={"class": "form-control"}),
         }
 
+
+    def clean_nom(self):
+        nom = self.cleaned_data.get("nom")
+        if Exercice.objects.filter(nom__iexact=nom).exists():
+            raise forms.ValidationError("Un exercice avec ce nom existe déjà.")
+        return nom
+
