@@ -1,15 +1,20 @@
 {% extends "site_web/base.html" %}
 {% block title %}
     <title>RepXP | Exercices</title>
-{% endblock %}
+{% endblock %} {% block navigation %}
 
-{% block navigation %}
-    <a href="{% url 'liste_exercices' %}" class="inactive-link">BANQUE D'EXERCICES</a>
-    <a href="{% url 'creer_exercice' %}" class="active-link">CRÉATION D'EXERCICES</a>
-    <a href="{% url 'review' %}" class="inactive-link">VÉRIFICATION D'EXERCICES</a>
-{% endblock %}
+<a href="{% url 'bank' %}" class="inactive-link">BANQUE D'EXERCICES</a>
 
-{% block main %}
+{% if est_admin %}
+
+<a href="{% url 'creer_exercice' %}" class="active-link">CRÉATION D'EXERCICES</a>
+<a href="{% url 'review' %}" class="inactive-link">VÉRIFICATION D'EXERCICES</a>
+
+{% else %}
+<a href="#" class="inactive-link">PROPOSER UN EXERCICE</a>
+{% endif %}
+
+{% endblock %} {% block main %}
     {% if messages %}
         <div class="mb-3">
             {% for message in messages %}

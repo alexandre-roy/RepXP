@@ -1,0 +1,45 @@
+{% extends "site_web/base.html" %} {% block title %}
+
+<title>RepXP | Mes entraînements</title>
+
+{% endblock %} {% block navigation %}
+
+<a href="{% url 'bank' %}" class="active-link">BANQUE D'EXERCICES</a>
+
+{% if est_admin %}
+
+<a href="{% url 'creer_exercice' %}" class="inactive-link">CRÉATION D'EXERCICES</a>
+<a href="{% url 'review' %}" class="inactive-link">VÉRIFICATION D'EXERCICES</a>
+
+{% else %}
+<a href="#" class="inactive-link">PROPOSER UN EXERCICE</a>
+{% endif %}
+
+{% endblock %} {% block main %}
+
+<form method="get" class="my-3 pb-2 text-center d-flex justify-content-center">
+    <input type="text" name="recherche" class="form-control w-25 me-3" placeholder="Rechercher un exercice...">
+    <button class="style-button" type="submit">RECHERCHER</button>
+</form>
+
+
+{% if exercices %}
+    <p class="text-blue text-center mb-4">Les séries et répétitions affichées sont des recommandations suggérés par les utilisateurs. Vous pouvez les ajuster dans vos entraînements personnalisés.</p>
+    <ul class="list-group">
+    {% for exo in exercices %}
+        <li class="list-group-item d-flex align-items-center">
+            <img src="{{ exo.image.url }}" alt="{{ exo.nom }}" class="exercice-image">
+            <div>
+                <a href="#" class="text-blue text-decoration-none"><strong>{{ exo.nom }}</strong></a>
+                <small class="text-muted">({{ exo.groupe_musculaire }})</small><br>
+                <p class="mb-0">Séries : {{ exo.series_sugg }} | Répétitions : {{ exo.reps_sugg }}</p>
+                <p class="mb-0">{{ exo.description }}</p>
+            </div>
+        </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>Aucun exercice enregistré pour l'instant.</p>
+{% endif %}
+
+{% endblock %}

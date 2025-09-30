@@ -142,7 +142,7 @@ class Exercice(models.Model):
         """Classe meta des exercices"""
         verbose_name = "Exercice"
         verbose_name_plural = "Exercices"
-        ordering = ["groupe_musculaire", "nom"]
+        ordering = ["nom", "groupe_musculaire"]
 
     def __str__(self):
         return f"{self.nom}"
@@ -168,6 +168,16 @@ class Entrainement(models.Model):
         through="ExerciceEntrainement",
         verbose_name="Exercices",
         blank=True,
+    )
+
+    createur = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="proposed_exercices",
+        verbose_name="Créateur",
+        blank=True,
+        default="",
+        null=False
     )
 
     class Meta:
