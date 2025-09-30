@@ -89,8 +89,10 @@ def creer_exercice(request):
     if request.method == "POST":
         form = ExerciceForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
-            messages.success(request, "L'exercice a été créé avec succès ✅")
+            approved_exercice = form.save(commit=False)
+            approved_exercice.est_approuve = True
+            approved_exercice.save()
+            messages.success(request, "L'exercice a été créé avec succès")
             return redirect("bank")
     else:
         form = ExerciceForm()

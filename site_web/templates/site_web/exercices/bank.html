@@ -24,11 +24,15 @@
 
 
 {% if exercices %}
-    <p class="text-blue text-center mb-4">Les séries et répétitions affichées sont des recommandations suggérés par les utilisateurs. Vous pouvez les ajuster dans vos entraînements personnalisés.</p>
+    <p class="text-blue text-center mb-4">*Les séries et répétitions affichées sont des recommandations suggérés par les utilisateurs. Vous pouvez les ajuster dans vos entraînements personnalisés.</p>
     <ul class="list-group">
     {% for exo in exercices %}
         <li class="list-group-item d-flex align-items-center">
-            <img src="{{ exo.image.url }}" alt="{{ exo.nom }}" class="exercice-image">
+            {% if exo.image %}
+                <img src="{{ exo.image.url }}" alt="{{ exo.nom }}" class="exercice-image">
+            {% else %}
+                <img src="../../../static/images/dumbbells.png" alt="default" class="exercice-image">
+            {% endif %}
             <div>
                 <a href="#" class="text-blue text-decoration-none"><strong>{{ exo.nom }}</strong></a>
                 <small class="text-muted">({{ exo.groupe_musculaire }})</small><br>
