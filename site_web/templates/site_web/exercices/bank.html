@@ -22,7 +22,9 @@
     <button class="style-button" type="submit">RECHERCHER</button>
 </form>
 
+
 {% if exercices %}
+    <p class="text-blue text-center mb-4">Les séries et répétitions affichées sont des recommandations suggérés par les utilisateurs. Vous pouvez les ajuster dans vos entraînements personnalisés.</p>
     <ul class="list-group">
     {% for exo in exercices %}
         <li class="list-group-item d-flex align-items-center">

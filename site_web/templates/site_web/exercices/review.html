@@ -8,48 +8,85 @@
 
 {% if est_admin %}
 
-<a href="{% url 'creer_exercice' %}" class="inactive-link">CRÉATION D'EXERCICES</a>
+<a href="{% url 'creer_exercice' %}" class="inactive-link"
+  >CRÉATION D'EXERCICES</a
+>
 <a href="{% url 'review' %}" class="active-link">VÉRIFICATION D'EXERCICES</a>
 
 {% else %}
 <a href="#" class="inactive-link">PROPOSER UN EXERCICE</a>
-{% endif %}
+{% endif %} {% endblock %} {% block main %} {% if exercices %}
+<form
+  class="form-group background-form"
+  method="post"
+  enctype="multipart/form-data"
+  novalidate
+>
+  {% csrf_token %}
+  <div class="mb-3 p-4">
+    <div class="d-flex justify-content-center">
+      <h2 class="text-center mx-3">RÉVISION D'EXERCICES</h2>
+      <p class="notif">{{ to_review }}</p>
+    </div>
 
+    <label for="{{ form.nom.id_for_label }}" class="form-label mt-3 fw-semibold"
+      >Nom</label
+    >
+    {{ form.nom }}
 
-{% endblock %} {% block main %}
+    <label
+      for="{{ form.groupe_musculaire.id_for_label }}"
+      class="form-label mt-3 fw-semibold"
+      >Groupe musculaire</label
+    >
+    {{ form.groupe_musculaire }}
 
-{% if exercices %}
-    <form class="form-group background-form" method="post" enctype="multipart/form-data" novalidate>
-        {% csrf_token %}
-        <div class="mb-3 p-4">
-            <h2 class="text-center">RÉVISION D'EXERCICES ({{ to_review }})</h2>
+    <label
+      for="{{ form.series_sugg.id_for_label }}"
+      class="form-label mt-3 fw-semibold"
+      >Séries suggérées</label
+    >
+    {{ form.series_sugg }}
 
-            <label for="{{ form.nom.id_for_label }}" class="form-label mt-3 fw-semibold">Nom</label>
-            {{ form.nom }}
+    <label
+      for="{{ form.reps_sugg.id_for_label }}"
+      class="form-label mt-3 fw-semibold"
+      >Répétitions suggérées</label
+    >
+    {{ form.reps_sugg }}
 
-            <label for="{{ form.groupe_musculaire.id_for_label }}" class="form-label mt-3 fw-semibold">Groupe musculaire</label>
-            {{ form.groupe_musculaire }}
+    <label
+      for="{{ form.description.id_for_label }}"
+      class="form-label mt-3 fw-semibold"
+      >Description</label
+    >
+    {{ form.description }}
 
-            <label for="{{ form.series_sugg.id_for_label }}" class="form-label mt-3 fw-semibold">Séries suggérées</label>
-            {{ form.series_sugg }}
+    <label
+      for="{{ form.image.id_for_label }}"
+      class="form-label mt-3 fw-semibold"
+      >Image</label
+    >
+    {{ form.image }}
 
-            <label for="{{ form.reps_sugg.id_for_label }}" class="form-label mt-3 fw-semibold">Répétitions suggérées</label>
-            {{ form.reps_sugg }}
-
-            <label for="{{ form.description.id_for_label }}" class="form-label mt-3 fw-semibold">Description</label>
-            {{ form.description }}
-
-            <label for="{{ form.image.id_for_label }}" class="form-label mt-3 fw-semibold">Image</label>
-            {{ form.image }}
-
-            <div class="d-flex justify-content-center mt-3">
-                <input name="action" type="submit" class="form-control mt-3 style-button-danger w-50" value="REFUSER">
-                <input name="action" type="submit" class="form-control mt-3 style-button w-50" value="ACCEPTER">
-            </div>
-        </div>
-    </form>
+    <div class="d-flex justify-content-center mt-3">
+      <input
+        name="action"
+        type="submit"
+        class="form-control mt-3 style-button-danger w-50"
+        value="REFUSER"
+      />
+      <input
+        name="action"
+        type="submit"
+        class="form-control mt-3 style-button w-50"
+        value="ACCEPTER"
+      />
+    </div>
+  </div>
+</form>
 {% else %}
-<p class="text-center text-blue">Aucun exercice est en attente d'être approuvé !</p>
-{% endif %}
-
-{% endblock %}
+<p class="text-center text-blue">
+  Aucun exercice est en attente d'être approuvé !
+</p>
+{% endif %} {% endblock %}
