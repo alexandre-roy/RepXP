@@ -64,4 +64,4 @@ def creer_exercice(request):
 def liste_exercices(request):
     """Vue pour afficher la liste des exercices"""
     exercices = Exercice.objects.all()
-    return render(request, "site_web/exercices/creer_exercice.html", {"exercices": exercices})
+    return render(request, "site_web/exercices/liste_exercices.html", {"exercices": exercices})
