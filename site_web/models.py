@@ -2,7 +2,7 @@
 
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.core.validators import MinLengthValidator
+from django.core.validators import MinLengthValidator, MaxLengthValidator
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from dateutil.relativedelta import relativedelta
@@ -128,7 +128,7 @@ class Exercice(models.Model):
         max_length=400,
         blank=False,
         verbose_name="Description",
-        validators=[MinLengthValidator(20)],
+        validators=[MinLengthValidator(20), MaxLengthValidator(400)]
     )
 
     image = models.ImageField(
