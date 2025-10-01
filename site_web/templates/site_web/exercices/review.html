@@ -29,45 +29,17 @@
       <p class="notif">{{ to_review }}</p>
     </div>
 
-    <label for="{{ form.nom.id_for_label }}" class="form-label mt-3 fw-semibold"
-      >Nom</label
+    {% for field in form %}
+    <label for="{{ field.id_for_label }}" class="form-label mt-3 fw-semibold"
+      >{{ field.label }}</label
     >
-    {{ form.nom }}
-
-    <label
-      for="{{ form.groupe_musculaire.id_for_label }}"
-      class="form-label mt-3 fw-semibold"
-      >Groupe musculaire</label
-    >
-    {{ form.groupe_musculaire }}
-
-    <label
-      for="{{ form.series_sugg.id_for_label }}"
-      class="form-label mt-3 fw-semibold"
-      >Séries suggérées</label
-    >
-    {{ form.series_sugg }}
-
-    <label
-      for="{{ form.reps_sugg.id_for_label }}"
-      class="form-label mt-3 fw-semibold"
-      >Répétitions suggérées</label
-    >
-    {{ form.reps_sugg }}
-
-    <label
-      for="{{ form.description.id_for_label }}"
-      class="form-label mt-3 fw-semibold"
-      >Description</label
-    >
-    {{ form.description }}
-
-    <label
-      for="{{ form.image.id_for_label }}"
-      class="form-label mt-3 fw-semibold"
-      >Image</label
-    >
-    {{ form.image }}
+    {{ field }} {% if field.errors %}
+    <div class="text-danger">
+      {% for error in field.errors %}
+      <small>{{ error }}</small>
+      {% endfor %}
+    </div>
+    {% endif %} {% endfor %}
 
     <div class="d-flex justify-content-center mt-3">
       <input
