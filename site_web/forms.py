@@ -129,6 +129,6 @@ class ExerciceForm(forms.ModelForm):
             "groupe_musculaire": forms.Select(attrs={"class": "form-select"}),
             "series_sugg": forms.NumberInput(attrs={"class": "form-control", "min": 1}),
             "reps_sugg": forms.NumberInput(attrs={"class": "form-control", "min": 1}),
-            "description": forms.Textarea(attrs={"class": "form-control", "rows": 3, "placeholder": "Certaines spécifications à ajouter sur l'exercice ..."}),
+            "description": forms.Textarea(attrs={"class": "form-control", "rows": 3, "placeholder": "Ajouter certaines détails sur l'exercice (mouvements, posture, etc.) 20 caractères minimum. 200 caractères maximum."}),
             "image": forms.ClearableFileInput(attrs={"class": "form-control"}),
         }
