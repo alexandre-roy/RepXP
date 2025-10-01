@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django.contrib import messages
 from .forms import ExerciceForm, RegisterForm, ConnexionForm
@@ -42,9 +42,9 @@ def review(request):
     if not est_admin(request.user):
         messages.add_message(request, messages.ERROR, "Vous n'avez pas la permission d'accéder à cette page.")
         return redirect("index")
-    to_review = Exercice.objects.filter(est_approuve = False).count()
-    exercice = Exercice.objects.filter(est_approuve = False).first()
-    action = request.POST.get("action")
+
+    to_review = Exercice.objects.filter(est_approuve=False).count()
+    exercice = Exercice.objects.filter(est_approuve=False).first()
 
     if request.method == "POST":
         action = request.POST.get("action")
@@ -56,16 +56,20 @@ def review(request):
                 approved_exercice.est_approuve = True
                 approved_exercice.save()
                 messages.add_message(request, messages.INFO, "Exercice accepté !")
+                return redirect("review")
         elif action == "REFUSER":
             exercice.delete()
             messages.add_message(request, messages.INFO, "Exercice refusé!")
-        return redirect("review")
-
+            return redirect("review")
     else:
         form = ExerciceForm(instance=exercice)
 
-    return render(request, 'site_web/exercices/review.html',
-                  {'exercices': exercice, "est_admin": est_admin(request.user), "form": form, "to_review": to_review})
+    return render(request, "site_web/exercices/review.html", {
+        "form": form,
+        "exercices": exercice,
+        "to_review": to_review,
+        "est_admin": est_admin(request.user)
+    })
 
 @login_required
 def bank(request):
@@ -109,8 +113,6 @@ def proposer_exercice(request):
 
     if request.method == "POST":
         form = ExerciceForm(request.POST, request.FILES)
-        print("=== DEBUG form errors ===")
-        print(form.errors)
         if form.is_valid():
             exercice = form.save(commit=False)
             exercice.est_approuve = False
