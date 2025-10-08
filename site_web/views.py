@@ -123,3 +123,13 @@ def proposer_exercice(request):
         form = ExerciceForm()
 
     return render(request, "site_web/exercices/proposer_exercice.html", {"form": form, "est_admin": est_admin(request.user)})
+
+@login_required
+def new_workout(request):
+    """Vue pour créer un nouvel entraînement"""
+    return render(request, "site_web/workouts/new_workout.html", {"est_admin": est_admin(request.user)})
+
+@login_required
+def my_workouts(request):
+    """Vue pour voir mes entraînements"""
+    return render(request, "site_web/workouts/my_workouts.html", {"est_admin": est_admin(request.user)})

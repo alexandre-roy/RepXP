@@ -1,0 +1,11 @@
+{% extends "site_web/base.html" %}
+{% block title %}
+    <title>RepXP | Mes entraînements</title>
+{% endblock %} {% block navigation %}
+
+<a href="{% url 'my_workouts' %}" class="active-link">MES ENTRAÎNEMENTS</a>
+<a href="{% url 'new_workout' %}" class="inactive-link">CRÉATION D'ENTRAÎNEMENTS</a>
+
+{% endblock %} {% block main %}
+
+{% endblock %}
