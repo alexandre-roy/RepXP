@@ -60,7 +60,7 @@
           </li>
           {% endif %}
           <li class="nav-item">
-            <a class="nav-link mx-lg-2 disabled" href="#">{{user.username}}</a>
+            <a class="nav-link mx-lg-2" href="{% url 'profile' %}">{{user.username}}</a>
           </li>
           {% endif %}
         </ul>

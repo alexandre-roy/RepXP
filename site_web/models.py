@@ -21,6 +21,7 @@ class User(AbstractUser):
         upload_to="avatars/",
         null=True,
         blank=True,
+        default='avatars/default_avatar.png'
     )
 
     date_naissance = models.DateField(

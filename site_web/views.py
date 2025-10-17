@@ -133,3 +133,11 @@ def new_workout(request):
 def my_workouts(request):
     """Vue pour voir mes entraînements"""
     return render(request, "site_web/workouts/my_workouts.html", {"est_admin": est_admin(request.user)})
+
+@login_required
+def profile(request):
+    return render(
+        request,
+        "site_web/profil/profil.html",
+        {"user": request.user}
+    )

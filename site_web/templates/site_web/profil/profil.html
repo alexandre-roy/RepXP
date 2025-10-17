@@ -1,0 +1,42 @@
+{% extends "site_web/base.html" %}
+{% block title %}
+    <title>RepXP | Profil</title>
+{% endblock %}
+{% block navigation %}
+    <a href="{% url 'profile' %}" class="active-link">INFORMATIONS</a>
+{% endblock %}
+{% block main %}
+    <div class="profile-container">
+        <div class="profile-card">
+            <div class="avatar-section">
+                <img src="{{ user.avatar.url }}" class="rounded-circle" width="150" height="150">
+                <h2 class="username">{{ user.username }}</h2>
+            </div>
+
+            <div class="info-section">
+                <h3>Informations personnelles</h3>
+                <div class="info-grid">
+                    <div><strong>Nom complet :</strong> {{ user.first_name }} {{ user.last_name }}</div>
+                    <div><strong>Sexe :</strong> 
+                        {% if user.sexe == "M" %} Masculin 
+                        {% elif user.sexe == "F" %} Féminin 
+                        {% else %} Non spécifié {% endif %}
+                    </div>
+                    <div><strong>Date de naissance :</strong> {{ user.date_naissance|date:"d/m/Y" }}</div>
+                    <div><strong>Taille :</strong>
+                        {% if user.taille %} {{ user.taille }} m 
+                        {% else %} Non spécifié {% endif %}
+                    </div>
+                    <div><strong>Poids :</strong>
+                        {% if user.poids %} {{ user.poids }} kg
+                        {% else %} Non spécifié {% endif %}
+                    </div>
+                    <div><strong>Adresse courriel :</strong>
+                        {% if user.email %} {{ user.email }}
+                        {% else %} Non spécifié {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
