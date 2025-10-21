@@ -31,29 +31,35 @@
                 {% endif %}
             </div>
 
-            <label for="{{ form.exercice.id_for_label }}" class="form-label mt-3 fw-semibold">Exercice</label>
-            {{ form.exercice }}
-            {% if form.exercice.errors %}
-                <div class="invalid-feedback d-block">
-                    {{ form.exercice.errors.0 }}
+            <div class="row g-2">
+                <div class="col-6">
+                    <label for="{{ form.exercice.id_for_label }}" class="form-label fw-semibold">Exercice</label>
+                    {{ form.exercice }}
+                    {% if form.exercice.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.exercice.errors.0 }}
+                        </div>
+                    {% endif %}
                 </div>
-            {% endif %}
-
-            <label for="{{ form.sets.id_for_label }}" class="form-label mt-3 fw-semibold">Séries</label>
-            {{ form.sets }}
-            {% if form.sets.errors %}
-                <div class="invalid-feedback d-block">
-                    {{ form.sets.errors.0 }}
+                <div class="col-3">
+                    <label for="{{ form.sets.id_for_label }}" class="form-label fw-semibold">Séries</label>
+                    {{ form.sets }}
+                    {% if form.sets.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.sets.errors.0 }}
+                        </div>
+                    {% endif %}
                 </div>
-            {% endif %}
-
-            <label for="{{ form.reps.id_for_label }}" class="form-label mt-3 fw-semibold">Répétitions</label>
-            {{ form.reps }}
-            {% if form.reps.errors %}
-                <div class="invalid-feedback d-block">
-                    {{ form.reps.errors.0 }}
+                <div class="col-3">
+                    <label for="{{ form.reps.id_for_label }}" class="form-label fw-semibold">Répétitions</label>
+                    {{ form.reps }}
+                    {% if form.reps.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.reps.errors.0 }}
+                        </div>
+                    {% endif %}
                 </div>
-            {% endif %}
+            </div>
 
             <div class="d-flex justify-content-center mt-3">
                 <input type="reset" class="form-control mt-3 style-button-danger w-50" value="RÉINITIALISER">
