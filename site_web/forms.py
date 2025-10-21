@@ -132,3 +132,32 @@ class ExerciceForm(forms.ModelForm):
             "description": forms.Textarea(attrs={"class": "form-control", "rows": 3, "placeholder": "Ajouter certaines détails sur l'exercice (mouvements, posture, etc.) 20 caractères minimum. 200 caractères maximum."}),
             "image": forms.ClearableFileInput(attrs={"class": "form-control"}),
         }
+
+class EntrainementForm(forms.ModelForm):
+    """Formulaire pour créer un entraînement"""
+
+    class Meta:
+        model = Entrainement
+        fields = [
+            "nom",
+        ]
+        widgets = {
+            "nom": forms.TextInput(attrs={"class": "form-control", "placeholder": "Nom de l'entraînement"}),
+        }
+
+    exercice = forms.ModelChoiceField(
+        queryset=Exercice.objects.filter(est_approuve=True),
+        label="Exercice",
+        widget=forms.Select(attrs={"class": "form-select"})
+    )
+
+    sets = forms.IntegerField(
+        label="Séries",
+        widget=forms.NumberInput(attrs={"class": "form-control", "placeholder": "Séries", "min": 1})
+    )
+
+    reps = forms.IntegerField(
+        label="Répétitions",
+        min_value=1,
+        widget=forms.NumberInput(attrs={"class": "form-control", "placeholder": "Répétitions", "min": 1})
+    )

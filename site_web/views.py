@@ -2,8 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django.contrib import messages
-from .forms import ExerciceForm, RegisterForm, ConnexionForm
-from .models import Exercice
+from .forms import ExerciceForm, RegisterForm, ConnexionForm, EntrainementForm
+from .models import Exercice, ExerciceEntrainement
 
 # Create your views here.
 def est_admin(user):
@@ -127,7 +127,27 @@ def proposer_exercice(request):
 @login_required
 def new_workout(request):
     """Vue pour créer un nouvel entraînement"""
-    return render(request, "site_web/workouts/new_workout.html", {"est_admin": est_admin(request.user)})
+    if request.method == "POST":
+        form = EntrainementForm(request.POST)
+        if form.is_valid():
+            entrainement = form.save(commit=False)
+            entrainement.createur = request.user
+            entrainement.save()
+
+            ExerciceEntrainement.objects.create(
+                entrainement=entrainement,
+                exercice=form.cleaned_data['exercice'],
+                sets=form.cleaned_data['sets'],
+                reps=form.cleaned_data['reps']
+            )
+
+            messages.success(request, "Entraînement créé avec succès!")
+            return redirect("my_workouts")
+    else:
+        form = EntrainementForm()
+
+    return render(
+        request, "site_web/workouts/new_workout.html", {"form": form, "est_admin": est_admin(request.user)})
 
 @login_required
 def my_workouts(request):
