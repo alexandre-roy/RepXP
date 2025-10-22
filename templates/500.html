@@ -1,0 +1,29 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <link rel="icon" href="" />
+
+    <title>500 - Erreur serveur inattendue</title>
+
+    <link
+      href="{% static 'activities/styles/bootstrap.css' %}"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-danger text-light pt-5 mt-5">
+    <div class="text-center">
+      <h1 class="display-1 fw-bold">500</h1>
+      <h2 class="mb-3">Erreur serveur inattendue</h2>
+      <p>Mauvaise requête. Vérifiez l'URL ou réessayez.</p>
+      <a class="text-light" href="{% url 'index' %}">Retour à l'accueil </a>
+    </div>
+  </body>
+</html>
