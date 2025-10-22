@@ -161,3 +161,18 @@ class EntrainementForm(forms.ModelForm):
         min_value=1,
         widget=forms.NumberInput(attrs={"class": "form-control", "placeholder": "Répétitions", "min": 1})
     )
+
+
+class UserSearchForm(forms.Form):
+    """Formulaire de recherche d'utilisateurs"""
+
+    username = forms.CharField(
+        label="Nom d’utilisateur",
+        max_length=150,
+        required=False,
+        widget=forms.TextInput(attrs={
+            "class": "form-control",
+            "placeholder": "Nom d’utilisateur..."
+        })
+    )
+
