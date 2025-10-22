@@ -4,7 +4,7 @@ from django.contrib.auth import login
 from django.contrib import messages
 from django.core.paginator import Paginator
 from .forms import ExerciceForm, RegisterForm, ConnexionForm, EntrainementForm, UserSearchForm
-from .models import Exercice, ExerciceEntrainement, User
+from .models import Exercice, ExerciceEntrainement, User, Entrainement
 
 # Create your views here.
 def est_admin(user):
@@ -153,7 +153,13 @@ def new_workout(request):
 @login_required
 def my_workouts(request):
     """Vue pour voir mes entraînements"""
-    return render(request, "site_web/workouts/my_workouts.html", {"est_admin": est_admin(request.user)})
+    recherche = request.GET.get("recherche")
+    entrainements = Entrainement.objects.filter(createur=request.user).prefetch_related('exerciceentrainement_set')
+
+    if recherche:
+        entrainements = entrainements.filter(nom__icontains=recherche)
+    return render(request, 'site_web/workouts/my_workouts.html', {
+        "entrainements": entrainements, "est_admin": est_admin(request.user)})
 
 @login_required
 def profile(request):
@@ -192,3 +198,11 @@ def user_search(request):
             "username": form.cleaned_data.get("username") if form.is_valid() else "",
         },
     )
+
+@login_required
+def delete_workout(request, workout_id):
+    """Vue pour supprimer un entraînement"""
+    entrainement = Entrainement.objects.get(id=workout_id, createur=request.user)
+    entrainement.delete()
+    messages.success(request, "Entraînement supprimé avec succès!")
+    return redirect("my_workouts")

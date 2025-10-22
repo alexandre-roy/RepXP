@@ -12528,4 +12528,14 @@ textarea.form-control-lg {
   transform: translateY(-3px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   border-color: #6EE22A;
+.accordion-button, .accordion-body {
+  padding: 8px 16px;
+}
+.accordion-button:focus, .accordion-body:focus {
+  box-shadow: none;
+}
+
+.edit-img {
+  width: 20px;
+  height: 20px;
 }/*# sourceMappingURL=styles.css.map */
