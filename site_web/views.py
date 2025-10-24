@@ -130,24 +130,28 @@ def new_workout(request):
     if request.method == "POST":
         form = EntrainementForm(request.POST)
         if form.is_valid():
-            entrainement = form.save(commit=False)
-            entrainement.createur = request.user
-            entrainement.save()
-
-            ExerciceEntrainement.objects.create(
-                entrainement=entrainement,
-                exercice=form.cleaned_data['exercice'],
-                sets=form.cleaned_data['sets'],
-                reps=form.cleaned_data['reps']
+            entrainement = Entrainement.objects.create(
+                nom=form.cleaned_data["nom"],
+                createur=request.user
             )
+
+            for i in range(1, 5):
+                ExerciceEntrainement.objects.create(
+                    entrainement=entrainement,
+                    exercice=form.cleaned_data[f"exercice_{i}"],
+                    sets=form.cleaned_data[f"sets_{i}"],
+                    reps=form.cleaned_data[f"reps_{i}"]
+                )
 
             messages.success(request, "Entraînement créé avec succès!")
             return redirect("my_workouts")
     else:
         form = EntrainementForm()
 
-    return render(
-        request, "site_web/workouts/new_workout.html", {"form": form, "est_admin": est_admin(request.user)})
+    return render(request, "site_web/workouts/new_workout.html", {
+        "form": form,
+        "est_admin": est_admin(request.user)
+    })
 
 @login_required
 def my_workouts(request):
@@ -171,7 +175,8 @@ def profile(request):
 @login_required
 def delete_workout(request, workout_id):
     """Vue pour supprimer un entraînement"""
-    entrainement = Entrainement.objects.get(id=workout_id, createur=request.user)
-    entrainement.delete()
-    messages.success(request, "Entraînement supprimé avec succès!")
+    if request.method == "POST":
+        entrainement = Entrainement.objects.get(id=workout_id, createur=request.user)
+        entrainement.delete()
+        messages.success(request, "Entraînement supprimé avec succès!")
     return redirect("my_workouts")
