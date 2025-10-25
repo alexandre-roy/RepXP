@@ -1,16 +1,15 @@
 {% extends "site_web/base.html" %}
 {% block title %}
-    <title>RepXP | Création d'entrainements</title>
+    <title>RepXP | Modification d'entraînements</title>
 {% endblock %} {% block navigation %}
 
-<a href="{% url 'my_workouts' %}" class="inactive-link">MES ENTRAÎNEMENTS</a>
-<a href="{% url 'new_workout' %}" class="active-link">CRÉATION D'ENTRAÎNEMENTS</a>
+<a href="{% url 'edit_workout' entrainement.id %}" class="active-link">MODIFICATION D'ENTRAÎNEMENTS</a>
 
 {% endblock %} {% block main %}
     <form class="form-group background-form" method="post" novalidate>
         {% csrf_token %}
         <div class="mb-3 p-4">
-            <h2 class="text-center">CRÉER UN ENTRAÎNEMENT</h2>
+            <h2 class="text-center">MODIFIER L'ENTRAÎNEMENT {{entrainement.id}}</h2>
 
             <div class="mb-3">
                 <label for="{{ form.nom.id_for_label }}" class="form-label fw-semibold">Nom</label>
@@ -142,7 +141,7 @@
 
             <div class="d-flex justify-content-center">
                 <input type="reset" class="form-control mt-3 style-button-danger w-50" value="RÉINITIALISER">
-                <input type="submit" class="form-control mt-3 style-button w-50" value="CRÉER">
+                <input type="submit" class="form-control mt-3 style-button w-50" value="MODIFIER">
             </div>
         </div>
     </form>
