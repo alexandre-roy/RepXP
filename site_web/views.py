@@ -2,8 +2,9 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django.contrib import messages
-from .forms import ExerciceForm, RegisterForm, ConnexionForm, EntrainementForm
-from .models import Exercice, Entrainement,  ExerciceEntrainement
+from django.core.paginator import Paginator
+from .forms import ExerciceForm, RegisterForm, ConnexionForm, EntrainementForm, UserSearchForm
+from .models import Exercice, ExerciceEntrainement, User, Entrainement
 
 # Create your views here.
 def est_admin(user):
@@ -170,6 +171,36 @@ def profile(request):
         request,
         "site_web/profil/profil.html",
         {"user": request.user}
+    )
+
+
+@login_required
+def user_search(request):
+    """Vue pour rechercher des utilisateurs"""
+
+    form = UserSearchForm(request.GET or None)
+    if request.user.is_staff or request.user.is_superuser:
+        users = User.objects.all().order_by("username")
+    else:
+        users = User.objects.filter(is_staff=False, is_superuser=False).order_by("username")
+
+    if form.is_valid():
+        username = form.cleaned_data.get("username") or ""
+        if username:
+            users = users.filter(username__icontains=username)
+
+    paginator = Paginator(users, 15)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
+    return render(
+        request,
+        "site_web/users/search.html",
+        {
+            "form": form,
+            "page_obj": page_obj,
+            "username": form.cleaned_data.get("username") if form.is_valid() else "",
+        },
     )
 
 @login_required
