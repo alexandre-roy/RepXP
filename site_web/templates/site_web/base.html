@@ -9,7 +9,7 @@
     />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <link rel="icon" href="../../static/images/favicon.ico" />
+    <link rel="icon" href="{% static 'images/favicon.ico' %}" />
     <link href="{% static 'site_web/css/styles.css' %}" rel="stylesheet" />
 
     {% block title %} {% endblock %}
@@ -23,7 +23,7 @@
             <a href="{% url 'index' %}">
               <img
                 href="{% url 'index' %}"
-                src="../../static/images/repxp_logo_nobg.png"
+                src="{% static 'images/repxp_logo_nobg.png' %}"
                 alt=""
                 width="120"
                 height="120"
@@ -40,7 +40,7 @@
             <a class="nav-link mx-lg-2 disabled" href="#">DÉFIS</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link mx-lg-2" href="{% url 'new_workout' %}">ENTRAÎNEMENTS</a>
+            <a class="nav-link mx-lg-2" href="{% url 'my_workouts' %}">ENTRAÎNEMENTS</a>
           </li>
           {% if est_admin %}
           <li class="nav-item">
@@ -96,7 +96,7 @@
       <div class="toast-container position-fixed bottom-0 end-0 p-3">
         {% for message in messages %}
         <div
-          class="toast text-bg-{{ message.tags }} show"
+          class="toast text-bg-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} show"
           role="alert"
           aria-live="assertive"
           aria-atomic="true"

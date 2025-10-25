@@ -10,6 +10,7 @@ urlpatterns = [
     path('exercices/bank', views.bank, name='bank'),
     path('exercices/proposer', views.proposer_exercice, name='proposer_exercice'),
     path('workouts/new', views.new_workout, name='new_workout'),
+    path('workouts/edit/<int:workout_id>/', views.edit_workout, name='edit_workout'),
     path('workouts/', views.my_workouts, name='my_workouts'),
     path('workouts/delete/<int:workout_id>/', views.delete_workout, name='delete_workout'),
     path('signup/', views.register, name='signup'),
