@@ -3,7 +3,8 @@
     <title>RepXP | Profil</title>
 {% endblock %}
 {% block navigation %}
-    <a href="{% url 'profile' %}" class="active-link">INFORMATIONS</a>
+    <a href="{% url 'profile' %}" class="active-link">PROFIL</a>
+    <a href="{% url 'edit_profile' %}" class="inactive-link">MODIFIER PROFIL</a>
 {% endblock %}
 {% block main %}
     <div class="profile-container">

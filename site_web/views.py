@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django.contrib import messages
-from .forms import ExerciceForm, RegisterForm, ConnexionForm
+from .forms import ExerciceForm, RegisterForm, ConnexionForm, CustomUserChangeForm
 from .models import Exercice
 
 # Create your views here.
@@ -15,7 +15,7 @@ def index(request):
 
 def register(request):
     if request.method == 'POST':
-        form = RegisterForm(request.POST)
+        form = RegisterForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             messages.add_message(request, messages.INFO, "Compte créé avec succès!")
@@ -141,3 +141,17 @@ def profile(request):
         "site_web/profil/profil.html",
         {"user": request.user}
     )
+
+@login_required()
+def edit_profile(request):
+    if request.method == 'POST':
+        form = CustomUserChangeForm(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.add_message(request, messages.INFO, "Profil modifié avec succès!")
+
+            return redirect('profile')
+    else:
+        form = CustomUserChangeForm(instance=request.user)
+    
+    return render(request, 'site_web/profil/edit_profil.html', {'form': form})

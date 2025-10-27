@@ -1,7 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from django.utils import timezone
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, UserChangeForm
 from django.forms import inlineformset_factory
 from .models import User, Sexe, Exercice, Entrainement, ExerciceEntrainement
 
@@ -85,7 +85,6 @@ class RegisterForm(UserCreationForm):
             "poids",
             "password1",
             "password2",
-            "avatar"
         )
 
     def clean_title(self):
@@ -132,3 +131,32 @@ class ExerciceForm(forms.ModelForm):
             "description": forms.Textarea(attrs={"class": "form-control", "rows": 3, "placeholder": "Ajouter certaines détails sur l'exercice (mouvements, posture, etc.) 20 caractères minimum. 200 caractères maximum."}),
             "image": forms.ClearableFileInput(attrs={"class": "form-control"}),
         }
+
+class CustomUserChangeForm(UserChangeForm):
+    password = None
+    
+    class Meta:
+        model = User
+        fields = ('avatar', 'first_name', 'last_name', 'email', 'date_naissance', 'sexe', 'taille', 'poids')
+        widgets = {
+            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'date_naissance': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'sexe': forms.Select(attrs={'class': 'form-control'}),
+            'taille': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.1'}),
+            'poids': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.1'}),
+            'avatar': forms.FileInput(attrs={'class': 'form-control'})
+        }
+
+    def clean_taille(self):
+        taille = self.cleaned_data.get('taille')
+        if taille is not None and taille <= 0:
+            raise ValidationError("La taille doit être supérieure à 0.")
+        return taille
+
+    def clean_poids(self):
+        poids = self.cleaned_data.get('poids')
+        if poids is not None and poids <= 0:
+            raise ValidationError("Le poids doit être supérieur à 0.")
+        return poids
