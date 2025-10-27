@@ -135,7 +135,7 @@ def new_workout(request):
             for i in range(1, 5):
                 ex_id = form.cleaned_data[f"exercice_{i}"].id
                 if ex_id in exercices_ids:
-                    messages.error(request, "Vous ne pouvez pas utiliser le même exercice deux fois.")
+                    messages.error(request, "Vous ne pouvez pas utiliser le même exercice plusieurs fois.")
                     return render(request, "site_web/workouts/new_workout.html", {"form": form, "est_admin": est_admin(request.user)})
                 exercices_ids.append(ex_id)
 
@@ -156,11 +156,6 @@ def new_workout(request):
             return redirect("my_workouts")
     else:
         form = EntrainementForm()
-
-    return render(request, "site_web/workouts/new_workout.html", {
-        "form": form,
-        "est_admin": est_admin(request.user)
-    })
     return render(request, "site_web/workouts/new_workout.html", {"form": form, "est_admin": est_admin(request.user)})
 
 @login_required
@@ -177,7 +172,7 @@ def edit_workout(request, workout_id):
                 for i in range(1, 5):
                     ex_id = form.cleaned_data[f"exercice_{i}"].id
                     if ex_id in exercices_ids:
-                        messages.error(request, "Vous ne pouvez pas utiliser le même exercice deux fois.")
+                        messages.error(request, "Vous ne pouvez pas utiliser le même exercice plusieurs fois.")
                         return render(request, 'site_web/workouts/edit_workout.html', {"est_admin": est_admin(request.user), "entrainement": entrainement, "form": form, "exercices": exercices})
                     exercices_ids.append(ex_id)
 
@@ -237,7 +232,7 @@ def edit_profile(request):
             return redirect('profile')
     else:
         form = CustomUserChangeForm(instance=request.user)
-    
+
     return render(request, 'site_web/profil/edit_profil.html', {'form': form})
 
 @login_required
