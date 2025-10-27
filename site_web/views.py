@@ -227,7 +227,7 @@ def edit_profile(request):
         form = CustomUserChangeForm(request.POST, request.FILES, instance=request.user)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.INFO, "Profil modifié avec succès!")
+            messages.success(request, "Profil modifié avec succès!")
 
             return redirect('profile')
     else:

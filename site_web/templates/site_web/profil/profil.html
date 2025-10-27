@@ -4,7 +4,7 @@
 {% endblock %}
 {% block navigation %}
     <a href="{% url 'profile' %}" class="active-link">PROFIL</a>
-    <a href="{% url 'edit_profile' %}" class="inactive-link">MODIFIER PROFIL</a>
+    <a href="{% url 'edit_profile' %}" class="inactive-link">MODIFICATION DE PROFIL</a>
 {% endblock %}
 {% block main %}
     <div class="profile-container">
@@ -18,14 +18,14 @@
                 <h3>Informations personnelles</h3>
                 <div class="info-grid">
                     <div><strong>Nom complet :</strong> {{ user.first_name }} {{ user.last_name }}</div>
-                    <div><strong>Sexe :</strong> 
-                        {% if user.sexe == "M" %} Masculin 
-                        {% elif user.sexe == "F" %} Féminin 
+                    <div><strong>Sexe :</strong>
+                        {% if user.sexe == "M" %} Masculin
+                        {% elif user.sexe == "F" %} Féminin
                         {% else %} Non spécifié {% endif %}
                     </div>
                     <div><strong>Date de naissance :</strong> {{ user.date_naissance|date:"d/m/Y" }}</div>
                     <div><strong>Taille :</strong>
-                        {% if user.taille %} {{ user.taille }} m 
+                        {% if user.taille %} {{ user.taille }} m
                         {% else %} Non spécifié {% endif %}
                     </div>
                     <div><strong>Poids :</strong>

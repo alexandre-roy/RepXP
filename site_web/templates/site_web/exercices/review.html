@@ -14,7 +14,7 @@
 <a href="{% url 'review' %}" class="active-link">VÉRIFICATION D'EXERCICES</a>
 
 {% else %}
-<a href="{% url 'proposer_exercice' %}" class="inactive-link">PROPOSER UN EXERCICE</a>
+<a href="{% url 'proposer_exercice' %}" class="inactive-link">PROPOSITION D'EXERCICES</a>
 {% endif %} {% endblock %} {% block main %} {% if exercices %}
 <form
   class="form-group background-form"
@@ -25,7 +25,7 @@
   {% csrf_token %}
   <div class="mb-3 p-4">
     <div class="d-flex justify-content-center">
-      <h2 class="text-center mx-3">RÉVISION D'EXERCICES</h2>
+      <h2 class="text-center mx-3">RÉVISER LES EXERCICES</h2>
       <p class="notif">{{ to_review }}</p>
     </div>
 
