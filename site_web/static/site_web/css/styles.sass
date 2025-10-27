@@ -127,7 +127,7 @@ $inactive: #ADAEAF
     padding: 50px 0
     background-color: #f8f9fa
 
-.profile-card 
+.profile-card
     background-color: white
     border-radius: 16px
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1)
@@ -138,25 +138,25 @@ $inactive: #ADAEAF
     border-top: 6px solid $secondary
 
 
-.avatar-section 
+.avatar-section
     display: flex
     flex-direction: column
     align-items: center
     margin-bottom: 30px
 
-.username 
+.username
     margin-top: 15px
     font-size: 1.8em
     font-weight: 600
     color: $primary
 
 
-.info-section 
+.info-section
     text-align: left
     margin-top: 20px
 
 
-.info-section h3 
+.info-section h3
     color: $primary
     border-bottom: 2px solid $secondary
     display: inline-block
@@ -164,9 +164,30 @@ $inactive: #ADAEAF
     padding-bottom: 5px
 
 
-.info-grid 
+.info-grid
     display: grid
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr))
     gap: 15px
-    color: $primary 
+    color: $primary
     font-size: 1.05em
+
+
+.user-result
+    background-color: white
+    border-radius: 10px
+    transition: transform 0.15s ease, box-shadow 0.15s ease
+
+
+    &:hover
+      transform: translateY(-3px)
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1)
+      border-color: $secondary
+
+.accordion-button, .accordion-body
+  padding: 8px 16px
+  &:focus
+    box-shadow: none
+
+.edit-img
+  width: 20px
+  height: 20px

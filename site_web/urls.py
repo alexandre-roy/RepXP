@@ -11,11 +11,13 @@ urlpatterns = [
     path('exercices/proposer', views.proposer_exercice, name='proposer_exercice'),
     path('workouts/new', views.new_workout, name='new_workout'),
     path('workouts/', views.my_workouts, name='my_workouts'),
+    path('workouts/delete/<int:workout_id>/', views.delete_workout, name='delete_workout'),
     path('signup/', views.register, name='signup'),
     path('accounts/signin', views.connexion, name='signin'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('profil/', views.profile, name="profile"),
     path('edit_profil/', views.edit_profile, name="edit_profile"),
+    path('users/', views.user_search, name='user_search')
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 if settings.DEBUG:

@@ -1,0 +1,66 @@
+{% extends "site_web/base.html" %}
+
+{% block title %}
+<title>RepXP | Recherche d'utilisateurs</title>
+{% endblock %}
+
+{% block navigation %}
+<a href="#" class="active-link">UTILISATEURS</a>
+{% endblock %}
+
+{% block main %}
+<form method="get" class="my-3 pb-2 text-center d-flex justify-content-center">
+    {{ form.username }}
+    <button class="style-button ms-3" type="submit">RECHERCHER</button>
+</form>
+
+{% if page_obj.paginator.count == 0 %}
+    <p class="text-blue text-center">
+        Aucun utilisateur trouvé{% if username %} pour « {{ username }} »{% endif %}.
+    </p>
+{% else %}
+    <ul class="list-group w-75 mx-auto">
+        {% for u in page_obj %}
+            <a href="/users/{{ u.username }}/" class="text-decoration-none">
+                <li class="list-group-item bottom user-result d-flex align-items-center py-3">
+                    {% if u.avatar %}
+                        <img src="{{ u.avatar.url }}" alt="Avatar de {{ u.username }}" class="exercice-image rounded-circle me-3">
+                    {% else %}
+                        <img src="/media/avatars/default_avatar.png" alt="Avatar par défaut" class="exercice-image rounded-circle me-3">
+                    {% endif %}
+                        <div class="d-flex flex-column">
+                            <span class="fw-bold text-blue">@{{ u.username }}</span>
+                            <small class="text-muted">{{ u.first_name }} {{ u.last_name }}</small>
+                        </div>
+                </li>
+            </a>
+        {% endfor %}
+    </ul>
+
+    <div class="d-flex justify-content-center mt-4">
+        <nav>
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="style-button me-2" href="?username={{ username }}&page={{ page_obj.previous_page_number }}">Précédent</a>
+                    </li>
+                {% endif %}
+
+                <li class="page-item disabled">
+                    <span class="text-blue mx-3">
+                        Page {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+                    </span>
+                </li>
+
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="style-button ms-2" href="?username={{ username }}&page={{ page_obj.next_page_number }}">Suivant</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+
+{% endif %}
+
+{% endblock %}

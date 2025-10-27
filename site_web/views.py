@@ -2,8 +2,14 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django.contrib import messages
+<<<<<<< HEAD
 from .forms import ExerciceForm, RegisterForm, ConnexionForm, CustomUserChangeForm
 from .models import Exercice
+=======
+from django.core.paginator import Paginator
+from .forms import ExerciceForm, RegisterForm, ConnexionForm, EntrainementForm, UserSearchForm
+from .models import Exercice, ExerciceEntrainement, User, Entrainement
+>>>>>>> 34f6858a20faed57fb248d9a267526f4138e0475
 
 # Create your views here.
 def est_admin(user):
@@ -127,12 +133,38 @@ def proposer_exercice(request):
 @login_required
 def new_workout(request):
     """Vue pour créer un nouvel entraînement"""
-    return render(request, "site_web/workouts/new_workout.html", {"est_admin": est_admin(request.user)})
+    if request.method == "POST":
+        form = EntrainementForm(request.POST)
+        if form.is_valid():
+            entrainement = form.save(commit=False)
+            entrainement.createur = request.user
+            entrainement.save()
+
+            ExerciceEntrainement.objects.create(
+                entrainement=entrainement,
+                exercice=form.cleaned_data['exercice'],
+                sets=form.cleaned_data['sets'],
+                reps=form.cleaned_data['reps']
+            )
+
+            messages.success(request, "Entraînement créé avec succès!")
+            return redirect("my_workouts")
+    else:
+        form = EntrainementForm()
+
+    return render(
+        request, "site_web/workouts/new_workout.html", {"form": form, "est_admin": est_admin(request.user)})
 
 @login_required
 def my_workouts(request):
     """Vue pour voir mes entraînements"""
-    return render(request, "site_web/workouts/my_workouts.html", {"est_admin": est_admin(request.user)})
+    recherche = request.GET.get("recherche")
+    entrainements = Entrainement.objects.filter(createur=request.user).prefetch_related('exerciceentrainement_set')
+
+    if recherche:
+        entrainements = entrainements.filter(nom__icontains=recherche)
+    return render(request, 'site_web/workouts/my_workouts.html', {
+        "entrainements": entrainements, "est_admin": est_admin(request.user)})
 
 @login_required
 def profile(request):
@@ -155,3 +187,40 @@ def edit_profile(request):
         form = CustomUserChangeForm(instance=request.user)
     
     return render(request, 'site_web/profil/edit_profil.html', {'form': form})
+
+@login_required
+def user_search(request):
+    """Vue pour rechercher des utilisateurs"""
+
+    form = UserSearchForm(request.GET or None)
+    if request.user.is_staff or request.user.is_superuser:
+        users = User.objects.all().order_by("username")
+    else:
+        users = User.objects.filter(is_staff=False, is_superuser=False).order_by("username")
+
+    if form.is_valid():
+        username = form.cleaned_data.get("username") or ""
+        if username:
+            users = users.filter(username__icontains=username)
+
+    paginator = Paginator(users, 15)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
+    return render(
+        request,
+        "site_web/users/search.html",
+        {
+            "form": form,
+            "page_obj": page_obj,
+            "username": form.cleaned_data.get("username") if form.is_valid() else "",
+        },
+    )
+
+@login_required
+def delete_workout(request, workout_id):
+    """Vue pour supprimer un entraînement"""
+    entrainement = Entrainement.objects.get(id=workout_id, createur=request.user)
+    entrainement.delete()
+    messages.success(request, "Entraînement supprimé avec succès!")
+    return redirect("my_workouts")

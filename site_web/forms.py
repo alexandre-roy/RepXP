@@ -160,3 +160,46 @@ class CustomUserChangeForm(UserChangeForm):
         if poids is not None and poids <= 0:
             raise ValidationError("Le poids doit être supérieur à 0.")
         return poids
+class EntrainementForm(forms.ModelForm):
+    """Formulaire pour créer un entraînement"""
+
+    class Meta:
+        model = Entrainement
+        fields = [
+            "nom",
+        ]
+        widgets = {
+            "nom": forms.TextInput(attrs={"class": "form-control", "placeholder": "Nom de l'entraînement"}),
+        }
+
+    exercice = forms.ModelChoiceField(
+        queryset=Exercice.objects.filter(est_approuve=True),
+        label="Exercice",
+        widget=forms.Select(attrs={"class": "form-select"})
+    )
+
+    sets = forms.IntegerField(
+        label="Séries",
+        widget=forms.NumberInput(attrs={"class": "form-control", "placeholder": "Séries", "min": 1})
+    )
+
+    reps = forms.IntegerField(
+        label="Répétitions",
+        min_value=1,
+        widget=forms.NumberInput(attrs={"class": "form-control", "placeholder": "Répétitions", "min": 1})
+    )
+
+
+class UserSearchForm(forms.Form):
+    """Formulaire de recherche d'utilisateurs"""
+
+    username = forms.CharField(
+        label="Nom d’utilisateur",
+        max_length=150,
+        required=False,
+        widget=forms.TextInput(attrs={
+            "class": "form-control",
+            "placeholder": "Nom d’utilisateur..."
+        })
+    )
+
