@@ -2,14 +2,9 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django.contrib import messages
-<<<<<<< HEAD
-from .forms import ExerciceForm, RegisterForm, ConnexionForm, CustomUserChangeForm
-from .models import Exercice
-=======
 from django.core.paginator import Paginator
-from .forms import ExerciceForm, RegisterForm, ConnexionForm, EntrainementForm, UserSearchForm
+from .forms import ExerciceForm, RegisterForm, ConnexionForm, EntrainementForm, UserSearchForm, CustomUserChangeForm
 from .models import Exercice, ExerciceEntrainement, User, Entrainement
->>>>>>> 34f6858a20faed57fb248d9a267526f4138e0475
 
 # Create your views here.
 def est_admin(user):
