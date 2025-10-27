@@ -12,20 +12,6 @@
 {% block main %}
     <form class="form-group background-form" method="post" novalidate>
         {% csrf_token %}
-
-        {% if form.errors %}
-            <div class="alert alert-danger">
-                <p>Veuillez corriger les erreurs ci-dessous</p>
-                {% if form.non_field_errors %}
-                    <ul class="mb-0">
-                        {% for error in form.non_field_errors %}
-                            <li>{{ error }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-            </div>
-        {% endif %}
-
         <div class="mb-3 p-4">
             <h2 class="text-center">SE CONNECTER</h2>
             {% for field in form %}

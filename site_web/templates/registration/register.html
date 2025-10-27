@@ -7,7 +7,7 @@
     <a href="{% url 'signup' %}" class="active-link">INSCRIPTION</a>
 {% endblock %}
 {% block main %}
-<form class="form-group background-form" method="post" novalidate>
+<form class="form-group background-form" method="post" enctype="multipart/form-data" novalidate>
     {% csrf_token %}
     <div class="mb-3 p-4">
         <h2 class="text-center">INSCRIPTION</h2>

@@ -72,6 +72,14 @@ class User(AbstractUser):
                 raise ValidationError({
                     'date_naissance': 'Vous devez avoir au moins 15 ans pour vous inscrire.'
                 })
+            
+        if self.poids:
+            if self.poids <= 0:
+                raise ValidationError({'poids': "Le poids doit être supérieure à 0."})
+
+        if self.taille:
+            if self.taille <= 0:
+                raise ValidationError({'taille': "La taille doit être supérieure à 0."})
 
     def save(self, *args, **kwargs):
         self.full_clean()
