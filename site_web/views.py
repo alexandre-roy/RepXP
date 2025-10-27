@@ -157,6 +157,10 @@ def new_workout(request):
     else:
         form = EntrainementForm()
 
+    return render(request, "site_web/workouts/new_workout.html", {
+        "form": form,
+        "est_admin": est_admin(request.user)
+    })
     return render(request, "site_web/workouts/new_workout.html", {"form": form, "est_admin": est_admin(request.user)})
 
 @login_required
