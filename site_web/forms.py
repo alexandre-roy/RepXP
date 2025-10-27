@@ -145,21 +145,80 @@ class EntrainementForm(forms.ModelForm):
             "nom": forms.TextInput(attrs={"class": "form-control", "placeholder": "Nom de l'entraînement"}),
         }
 
-    exercice = forms.ModelChoiceField(
+    exercice_1 = forms.ModelChoiceField(
         queryset=Exercice.objects.filter(est_approuve=True),
-        label="Exercice",
-        widget=forms.Select(attrs={"class": "form-select"})
+        label="Exercice 1",
+        widget=forms.Select(attrs={"class": "form-select"}),
+        required=True
     )
-
-    sets = forms.IntegerField(
+    sets_1 = forms.IntegerField(
         label="Séries",
-        widget=forms.NumberInput(attrs={"class": "form-control", "placeholder": "Séries", "min": 1})
+        min_value=1,
+        widget=forms.NumberInput(attrs={"class": "form-control", "placeholder": "0", "min": 1}),
+        required=True
     )
-
-    reps = forms.IntegerField(
+    reps_1 = forms.IntegerField(
         label="Répétitions",
         min_value=1,
-        widget=forms.NumberInput(attrs={"class": "form-control", "placeholder": "Répétitions", "min": 1})
+        widget=forms.NumberInput(attrs={"class": "form-control", "placeholder": "0", "min": 1}),
+        required=True
+    )
+
+    exercice_2 = forms.ModelChoiceField(
+        queryset=Exercice.objects.filter(est_approuve=True),
+        label="Exercice 2",
+        widget=forms.Select(attrs={"class": "form-select"}),
+        required=True
+    )
+    sets_2 = forms.IntegerField(
+        label="Séries",
+        min_value=1,
+        widget=forms.NumberInput(attrs={"class": "form-control", "placeholder": "0", "min": 1}),
+        required=True
+    )
+    reps_2 = forms.IntegerField(
+        label="Répétitions",
+        min_value=1,
+        widget=forms.NumberInput(attrs={"class": "form-control", "placeholder": "0", "min": 1}),
+        required=True
+    )
+
+    exercice_3 = forms.ModelChoiceField(
+        queryset=Exercice.objects.filter(est_approuve=True),
+        label="Exercice 3",
+        widget=forms.Select(attrs={"class": "form-select"}),
+        required=True
+    )
+    sets_3 = forms.IntegerField(
+        label="Séries",
+        min_value=1,
+        widget=forms.NumberInput(attrs={"class": "form-control", "placeholder": "0", "min": 1}),
+        required=True
+    )
+    reps_3 = forms.IntegerField(
+        label="Répétitions",
+        min_value=1,
+        widget=forms.NumberInput(attrs={"class": "form-control", "placeholder": "0", "min": 1}),
+        required=True
+    )
+
+    exercice_4 = forms.ModelChoiceField(
+        queryset=Exercice.objects.filter(est_approuve=True),
+        label="Exercice 4",
+        widget=forms.Select(attrs={"class": "form-select"}),
+        required=True
+    )
+    sets_4 = forms.IntegerField(
+        label="Séries",
+        min_value=1,
+        widget=forms.NumberInput(attrs={"class": "form-control", "placeholder": "0", "min": 1}),
+        required=True
+    )
+    reps_4 = forms.IntegerField(
+        label="Répétitions",
+        min_value=1,
+        widget=forms.NumberInput(attrs={"class": "form-control", "placeholder": "0", "min": 1}),
+        required=True
     )
 
 

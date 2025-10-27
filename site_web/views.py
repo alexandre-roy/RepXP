@@ -19,7 +19,7 @@ def register(request):
         form = RegisterForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.INFO, "Compte créé avec succès!")
+            messages.success(request, "Compte créé avec succès!")
             return redirect('signin')
     else:
         form = RegisterForm()
@@ -41,7 +41,7 @@ def connexion(request):
 @login_required
 def review(request):
     if not est_admin(request.user):
-        messages.add_message(request, messages.ERROR, "Vous n'avez pas la permission d'accéder à cette page.")
+        messages.error(request,  "Vous n'avez pas la permission d'accéder à cette page.")
         return redirect("index")
 
     to_review = Exercice.objects.filter(est_approuve=False).count()
@@ -56,11 +56,11 @@ def review(request):
                 approved_exercice = form.save(commit=False)
                 approved_exercice.est_approuve = True
                 approved_exercice.save()
-                messages.add_message(request, messages.INFO, "Exercice accepté !")
+                messages.success(request,  "Exercice accepté !")
                 return redirect("review")
         elif action == "REFUSER":
             exercice.delete()
-            messages.add_message(request, messages.INFO, "Exercice refusé!")
+            messages.success(request, "Exercice refusé!")
             return redirect("review")
     else:
         form = ExerciceForm(instance=exercice)
@@ -88,7 +88,7 @@ def bank(request):
 def creer_exercice(request):
     """Vue pour créer un exercice par un admin"""
     if not est_admin(request.user):
-        messages.add_message(request, messages.ERROR, "Vous n'avez pas la permission d'accéder à cette page.")
+        messages.error(request, "Vous n'avez pas la permission d'accéder à cette page.")
         return redirect("index")
 
     if request.method == "POST":
@@ -131,24 +131,77 @@ def new_workout(request):
     if request.method == "POST":
         form = EntrainementForm(request.POST)
         if form.is_valid():
-            entrainement = form.save(commit=False)
-            entrainement.createur = request.user
-            entrainement.save()
+            exercices_ids = []
+            for i in range(1, 5):
+                ex_id = form.cleaned_data[f"exercice_{i}"].id
+                if ex_id in exercices_ids:
+                    messages.error(request, "Vous ne pouvez pas utiliser le même exercice deux fois.")
+                    return render(request, "site_web/workouts/new_workout.html", {"form": form, "est_admin": est_admin(request.user)})
+                exercices_ids.append(ex_id)
 
-            ExerciceEntrainement.objects.create(
-                entrainement=entrainement,
-                exercice=form.cleaned_data['exercice'],
-                sets=form.cleaned_data['sets'],
-                reps=form.cleaned_data['reps']
+            entrainement = Entrainement.objects.create(
+                nom=form.cleaned_data["nom"],
+                createur=request.user
             )
+
+            for i in range(1, 5):
+                ExerciceEntrainement.objects.create(
+                    entrainement=entrainement,
+                    exercice=form.cleaned_data[f"exercice_{i}"],
+                    sets=form.cleaned_data[f"sets_{i}"],
+                    reps=form.cleaned_data[f"reps_{i}"]
+                )
 
             messages.success(request, "Entraînement créé avec succès!")
             return redirect("my_workouts")
     else:
         form = EntrainementForm()
 
-    return render(
-        request, "site_web/workouts/new_workout.html", {"form": form, "est_admin": est_admin(request.user)})
+    return render(request, "site_web/workouts/new_workout.html", {"form": form, "est_admin": est_admin(request.user)})
+
+@login_required
+def edit_workout(request, workout_id):
+    """Vue pour modifier mes entrainements"""
+    entrainement = Entrainement.objects.get(id=workout_id)
+    exercices = ExerciceEntrainement.objects.filter(entrainement_id=workout_id)
+
+    if entrainement.createur == request.user:
+        if request.method == 'POST':
+            form = EntrainementForm(request.POST)
+            if form.is_valid():
+                exercices_ids = []
+                for i in range(1, 5):
+                    ex_id = form.cleaned_data[f"exercice_{i}"].id
+                    if ex_id in exercices_ids:
+                        messages.error(request, "Vous ne pouvez pas utiliser le même exercice deux fois.")
+                        return render(request, 'site_web/workouts/edit_workout.html', {"est_admin": est_admin(request.user), "entrainement": entrainement, "form": form, "exercices": exercices})
+                    exercices_ids.append(ex_id)
+
+                entrainement.nom = form.cleaned_data["nom"]
+                entrainement.save()
+
+                for i, exercice in enumerate(exercices, 1):
+                    exercice.exercice = form.cleaned_data[f"exercice_{i}"]
+                    exercice.sets = form.cleaned_data[f"sets_{i}"]
+                    exercice.reps = form.cleaned_data[f"reps_{i}"]
+                    exercice.save()
+
+                messages.success(request, "Entraînement modifié !")
+                return redirect("my_workouts")
+        else:
+            initial_data = {"nom": entrainement.nom}
+
+            for i, exercice in enumerate(exercices, start=1):
+                initial_data[f"exercice_{i}"] = exercice.exercice
+                initial_data[f"sets_{i}"] = exercice.sets
+                initial_data[f"reps_{i}"] = exercice.reps
+
+            form = EntrainementForm(initial=initial_data)
+    else:
+        messages.error(request, "Vous n'avez pas la permission d'accéder à cette page.")
+        return redirect("index")
+
+    return render(request, 'site_web/workouts/edit_workout.html', {"est_admin": est_admin(request.user), "entrainement": entrainement, "form": form, "exercices": exercices})
 
 @login_required
 def my_workouts(request):
@@ -202,7 +255,8 @@ def user_search(request):
 @login_required
 def delete_workout(request, workout_id):
     """Vue pour supprimer un entraînement"""
-    entrainement = Entrainement.objects.get(id=workout_id, createur=request.user)
-    entrainement.delete()
-    messages.success(request, "Entraînement supprimé avec succès!")
+    if request.method == "POST":
+        entrainement = Entrainement.objects.get(id=workout_id, createur=request.user)
+        entrainement.delete()
+        messages.success(request, "Entraînement supprimé avec succès!")
     return redirect("my_workouts")
