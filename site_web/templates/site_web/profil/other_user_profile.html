@@ -1,15 +1,15 @@
 {% extends "site_web/base.html" %}
 {% block title %}
-    <title>RepXP | Profil</title>
+    <title>RepXP | Profil de {{ user.username }}</title>
 {% endblock %}
 {% block navigation %}
-    <a href="{% url 'profile' %}" class="active-link">INFORMATIONS</a>
+    <a href="{% url 'view_other_user_profile' user.id %}" class="active-link">RECHERCHE</a>
 {% endblock %}
 {% block main %}
     <div class="profile-container">
         <div class="profile-card">
             <div class="avatar-section">
-                <img src="{{ user.avatar.url }}" class="rounded-circle" width="150" height="150">
+                <img src="{{ user.avatar.url }}" class="rounded-circle" width="150" height="150" alt="Avatar de {{ user.username }}">
                 <h2 class="username">{{ user.username }}</h2>
             </div>
 

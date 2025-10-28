@@ -1,6 +1,6 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import login
+from django.contrib.auth import login, get_user_model
 from django.contrib import messages
 from django.core.paginator import Paginator
 from .forms import ExerciceForm, RegisterForm, ConnexionForm, EntrainementForm, UserSearchForm
@@ -206,3 +206,21 @@ def delete_workout(request, workout_id):
     entrainement.delete()
     messages.success(request, "Entraînement supprimé avec succès!")
     return redirect("my_workouts")
+
+
+@login_required
+def view_other_user_profile(request, user_id):
+    """Vue pour voir le profil d'un autre utilisateur"""
+    user = get_object_or_404(get_user_model(), id=user_id)
+
+    if not request.user.is_staff and not request.user.is_superuser:
+        if user.is_staff or user.is_superuser:
+            messages.error(request, "Vous n'avez pas la permission de voir ce profil.")
+            return redirect("index")
+
+    return render(
+        request,
+        "site_web/profil/other_user_profile.html",
+        {"user": user, "est_admin": est_admin(request.user)}
+    )
+

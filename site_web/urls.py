@@ -16,6 +16,7 @@ urlpatterns = [
     path('accounts/signin', views.connexion, name='signin'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('profil/', views.profile, name="profile"),
+    path("profil/<int:user_id>/", views.view_other_user_profile, name="view_other_user_profile"),
     path('users/', views.user_search, name='user_search'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
