@@ -6,7 +6,7 @@
 
 {% block navigation %}
     <a href="{% url 'bank' %}" class="inactive-link">BANQUE D'EXERCICES</a>
-    <a href="{% url 'proposer_exercice' %}" class="active-link">PROPOSER UN EXERCICE</a>
+    <a href="{% url 'proposer_exercice' %}" class="active-link">PROPOSITION D'EXERCICES</a>
 {% endblock %}
 
 {% block main %}
@@ -22,7 +22,7 @@
         <form method="post" enctype="multipart/form-data" class="form-group background-form p-4" novalidate>
             {% csrf_token %}
 
-            <h2 class="text-center mb-4">Proposer un exercice</h2>
+            <h2 class="text-center mb-4">PROPOSER UN EXERCICE</h2>
 
 
             <div class="mb-3">

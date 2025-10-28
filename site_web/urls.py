@@ -10,6 +10,7 @@ urlpatterns = [
     path('exercices/bank', views.bank, name='bank'),
     path('exercices/proposer', views.proposer_exercice, name='proposer_exercice'),
     path('workouts/new', views.new_workout, name='new_workout'),
+    path('workouts/edit/<int:workout_id>/', views.edit_workout, name='edit_workout'),
     path('workouts/', views.my_workouts, name='my_workouts'),
     path('workouts/delete/<int:workout_id>/', views.delete_workout, name='delete_workout'),
     path('signup/', views.register, name='signup'),
@@ -18,6 +19,9 @@ urlpatterns = [
     path('profil/', views.profile, name="profile"),
     path("profil/<int:user_id>/", views.view_other_user_profile, name="view_other_user_profile"),
     path('users/', views.user_search, name='user_search'),
+    path('profile/', views.profile, name="profile"),
+    path('profile/edit/', views.edit_profile, name="edit_profile"),
+    path('users/', views.user_search, name='user_search')
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 if settings.DEBUG:

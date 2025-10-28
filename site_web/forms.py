@@ -1,7 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from django.utils import timezone
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, UserChangeForm
 from django.forms import inlineformset_factory
 from .models import User, Sexe, Exercice, Entrainement, ExerciceEntrainement
 
@@ -85,7 +85,6 @@ class RegisterForm(UserCreationForm):
             "poids",
             "password1",
             "password2",
-            "avatar"
         )
 
     def clean_title(self):
@@ -133,6 +132,34 @@ class ExerciceForm(forms.ModelForm):
             "image": forms.ClearableFileInput(attrs={"class": "form-control"}),
         }
 
+class CustomUserChangeForm(UserChangeForm):
+    password = None
+    
+    class Meta:
+        model = User
+        fields = ('avatar', 'first_name', 'last_name', 'email', 'date_naissance', 'sexe', 'taille', 'poids')
+        widgets = {
+            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'date_naissance': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'sexe': forms.Select(attrs={'class': 'form-control'}),
+            'taille': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.1'}),
+            'poids': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.1'}),
+            'avatar': forms.FileInput(attrs={'class': 'form-control'})
+        }
+
+    def clean_taille(self):
+        taille = self.cleaned_data.get('taille')
+        if taille is not None and taille <= 0:
+            raise ValidationError("La taille doit être supérieure à 0.")
+        return taille
+
+    def clean_poids(self):
+        poids = self.cleaned_data.get('poids')
+        if poids is not None and poids <= 0:
+            raise ValidationError("Le poids doit être supérieur à 0.")
+        return poids
 class EntrainementForm(forms.ModelForm):
     """Formulaire pour créer un entraînement"""
 
@@ -145,21 +172,80 @@ class EntrainementForm(forms.ModelForm):
             "nom": forms.TextInput(attrs={"class": "form-control", "placeholder": "Nom de l'entraînement"}),
         }
 
-    exercice = forms.ModelChoiceField(
+    exercice_1 = forms.ModelChoiceField(
         queryset=Exercice.objects.filter(est_approuve=True),
-        label="Exercice",
-        widget=forms.Select(attrs={"class": "form-select"})
+        label="Exercice 1",
+        widget=forms.Select(attrs={"class": "form-select"}),
+        required=True
     )
-
-    sets = forms.IntegerField(
+    sets_1 = forms.IntegerField(
         label="Séries",
-        widget=forms.NumberInput(attrs={"class": "form-control", "placeholder": "Séries", "min": 1})
+        min_value=1,
+        widget=forms.NumberInput(attrs={"class": "form-control", "placeholder": "0", "min": 1}),
+        required=True
     )
-
-    reps = forms.IntegerField(
+    reps_1 = forms.IntegerField(
         label="Répétitions",
         min_value=1,
-        widget=forms.NumberInput(attrs={"class": "form-control", "placeholder": "Répétitions", "min": 1})
+        widget=forms.NumberInput(attrs={"class": "form-control", "placeholder": "0", "min": 1}),
+        required=True
+    )
+
+    exercice_2 = forms.ModelChoiceField(
+        queryset=Exercice.objects.filter(est_approuve=True),
+        label="Exercice 2",
+        widget=forms.Select(attrs={"class": "form-select"}),
+        required=True
+    )
+    sets_2 = forms.IntegerField(
+        label="Séries",
+        min_value=1,
+        widget=forms.NumberInput(attrs={"class": "form-control", "placeholder": "0", "min": 1}),
+        required=True
+    )
+    reps_2 = forms.IntegerField(
+        label="Répétitions",
+        min_value=1,
+        widget=forms.NumberInput(attrs={"class": "form-control", "placeholder": "0", "min": 1}),
+        required=True
+    )
+
+    exercice_3 = forms.ModelChoiceField(
+        queryset=Exercice.objects.filter(est_approuve=True),
+        label="Exercice 3",
+        widget=forms.Select(attrs={"class": "form-select"}),
+        required=True
+    )
+    sets_3 = forms.IntegerField(
+        label="Séries",
+        min_value=1,
+        widget=forms.NumberInput(attrs={"class": "form-control", "placeholder": "0", "min": 1}),
+        required=True
+    )
+    reps_3 = forms.IntegerField(
+        label="Répétitions",
+        min_value=1,
+        widget=forms.NumberInput(attrs={"class": "form-control", "placeholder": "0", "min": 1}),
+        required=True
+    )
+
+    exercice_4 = forms.ModelChoiceField(
+        queryset=Exercice.objects.filter(est_approuve=True),
+        label="Exercice 4",
+        widget=forms.Select(attrs={"class": "form-select"}),
+        required=True
+    )
+    sets_4 = forms.IntegerField(
+        label="Séries",
+        min_value=1,
+        widget=forms.NumberInput(attrs={"class": "form-control", "placeholder": "0", "min": 1}),
+        required=True
+    )
+    reps_4 = forms.IntegerField(
+        label="Répétitions",
+        min_value=1,
+        widget=forms.NumberInput(attrs={"class": "form-control", "placeholder": "0", "min": 1}),
+        required=True
     )
 
 
