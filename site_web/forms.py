@@ -134,7 +134,7 @@ class ExerciceForm(forms.ModelForm):
 
 class CustomUserChangeForm(UserChangeForm):
     password = None
-    
+
     class Meta:
         model = User
         fields = ('avatar', 'first_name', 'last_name', 'email', 'date_naissance', 'sexe', 'taille', 'poids')
@@ -253,12 +253,12 @@ class UserSearchForm(forms.Form):
     """Formulaire de recherche d'utilisateurs"""
 
     username = forms.CharField(
-        label="Nom d’utilisateur",
+        label="Nom d'utilisateur",
         max_length=150,
         required=False,
         widget=forms.TextInput(attrs={
-            "class": "form-control",
-            "placeholder": "Nom d’utilisateur..."
+            "class": "form-control w-25 me-3",
+            "placeholder": "Rechercher un utilisateur..."
         })
     )
 
