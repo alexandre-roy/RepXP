@@ -1,7 +1,7 @@
 {% extends "site_web/base.html" %}
 
 {% block title %}
-<title>RepXP | Recherche d'utilisateurs</title>
+    <title>RepXP | Recherche d'utilisateurs</title>
 {% endblock %}
 
 {% block navigation %}
@@ -21,7 +21,7 @@
 {% else %}
     <ul class="list-group w-75 mx-auto">
         {% for u in page_obj %}
-            <a href="/users/{{ u.username }}/" class="text-decoration-none">
+            <a href="{% url 'view_other_user_profile' u.id %}" class="text-decoration-none">
                 <li class="list-group-item bottom user-result d-flex align-items-center py-3 my-1">
                     {% if u.avatar %}
                         <img src="{{ u.avatar.url }}" alt="Avatar de {{ u.username }}" class="exercice-image rounded-circle me-3">
