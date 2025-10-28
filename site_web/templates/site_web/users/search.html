@@ -5,13 +5,13 @@
 {% endblock %}
 
 {% block navigation %}
-<a href="#" class="active-link">UTILISATEURS</a>
+<a href="{% url 'user_search' %}" class="active-link">UTILISATEURS</a>
 {% endblock %}
 
 {% block main %}
 <form method="get" class="my-3 pb-2 text-center d-flex justify-content-center">
     {{ form.username }}
-    <button class="style-button ms-3" type="submit">RECHERCHER</button>
+    <button class="style-button" type="submit">RECHERCHER</button>
 </form>
 
 {% if page_obj.paginator.count == 0 %}
@@ -22,7 +22,7 @@
     <ul class="list-group w-75 mx-auto">
         {% for u in page_obj %}
             <a href="/users/{{ u.username }}/" class="text-decoration-none">
-                <li class="list-group-item bottom user-result d-flex align-items-center py-3">
+                <li class="list-group-item bottom user-result d-flex align-items-center py-3 my-1">
                     {% if u.avatar %}
                         <img src="{{ u.avatar.url }}" alt="Avatar de {{ u.username }}" class="exercice-image rounded-circle me-3">
                     {% else %}

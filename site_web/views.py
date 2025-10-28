@@ -218,7 +218,7 @@ def profile(request):
     return render(
         request,
         "site_web/profil/profil.html",
-        {"user": request.user}
+        {"user": request.user, "est_admin": est_admin(request.user)}
     )
 
 @login_required()
@@ -233,7 +233,7 @@ def edit_profile(request):
     else:
         form = CustomUserChangeForm(instance=request.user)
 
-    return render(request, 'site_web/profil/edit_profil.html', {'form': form})
+    return render(request, 'site_web/profil/edit_profil.html', {'form': form, "est_admin": est_admin(request.user)})
 
 @login_required
 def user_search(request):
@@ -260,7 +260,7 @@ def user_search(request):
         {
             "form": form,
             "page_obj": page_obj,
-            "username": form.cleaned_data.get("username") if form.is_valid() else "",
+            "username": form.cleaned_data.get("username") if form.is_valid() else "", "est_admin": est_admin(request.user)
         },
     )
 
