@@ -22,6 +22,19 @@
     <button class="style-button" type="submit">RECHERCHER</button>
 </form>
 
+<div class="text-center mb-3">
+    <div class="d-flex justify-content-center gap-2">
+        <a href="/exercices/bank" class="{% if not groupe_musculaire_filtre %}filter-button-active{% else %}filter-button{% endif %}">
+            Tous
+        </a>
+        {% for groupe in groupes_musculaires %}
+            <a href="/exercices/bank?groupemusculaire={{ groupe.id }}"
+               class="{% if groupe_musculaire_filtre == groupe.id %}filter-button-active{% else %}filter-button{% endif %}">
+                {{ groupe.nom }}
+            </a>
+        {% endfor %}
+    </div>
+</div>
 
 {% if exercices %}
     <p class="text-blue text-center mb-4">*Les séries et répétitions affichées sont des recommandations suggérés par les utilisateurs. Vous pouvez les ajuster dans vos entraînements personnalisés.</p>
@@ -34,7 +47,7 @@
                 <img src="../../../static/images/dumbbells.png" alt="default" class="exercice-image">
             {% endif %}
             <div>
-                <a href="#" class="text-blue text-decoration-none"><strong>{{ exo.nom }}</strong></a>
+                <a class="text-blue text-decoration-none"><strong>{{ exo.nom }}</strong></a>
                 <small class="text-muted">({{ exo.groupe_musculaire }})</small><br>
                 <p class="mb-0">Séries : {{ exo.series_sugg }} | Répétitions : {{ exo.reps_sugg }}</p>
                 <p class="mb-0">{{ exo.description }}</p>
@@ -43,7 +56,7 @@
     {% endfor %}
     </ul>
 {% else %}
-    <p>Aucun exercice enregistré pour l'instant.</p>
+    <p class="text-center">Aucun exercice enregistré pour l'instant.</p>
 {% endif %}
 
 {% endblock %}

@@ -12500,6 +12500,29 @@ textarea.form-control-lg {
   box-shadow: 0 0 5px rgba(110, 226, 42, 0.4);
 }
 
+.filter-button {
+  color: #033050;
+  border: 2px solid #033050;
+  padding: 4px 8px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+.filter-button:hover {
+  background-color: #ADAEAF;
+}
+
+.filter-button-active {
+  background-color: #6EE22A;
+  color: #033050;
+  border: 2px solid #033050;
+  padding: 4px 8px;
+  border-radius: 8px;
+  text-decoration: none;
+  display: inline-block;
+}
+
 form.background-form {
   max-width: 600px;
   width: 100%;

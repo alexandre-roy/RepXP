@@ -13,6 +13,7 @@ urlpatterns = [
     path('workouts/edit/<int:workout_id>/', views.edit_workout, name='edit_workout'),
     path('workouts/', views.my_workouts, name='my_workouts'),
     path('workouts/delete/<int:workout_id>/', views.delete_workout, name='delete_workout'),
+    path('workouts/complete/<int:workout_id>/', views.complete_workout, name='complete_workout'),
     path('signup/', views.register, name='signup'),
     path('accounts/signin', views.connexion, name='signin'),
     path('accounts/', include('django.contrib.auth.urls')),
