@@ -290,14 +290,12 @@ def view_other_user_profile(request, user_id):
         {"user": user, "est_admin": est_admin(request.user)}
     )
 
-
-
 @login_required
 def create_badge(request):
     """Vue permettant à un administrateur de créer un nouveau badge."""
 
     if not (request.user.is_staff or request.user.is_superuser):
-        messages.error(request, "Accès refusé : vous n'avez pas les permissions nécessaires.")
+        messages.error(request, "Vous n'avez pas la permission d'accéder à cette page.")
         return redirect("index")
 
     if request.method == "POST":
@@ -306,16 +304,16 @@ def create_badge(request):
             form.save()
             messages.success(request, "Badge créé avec succès !")
             return redirect("badge_list")
-        else:
-            messages.error(request, "Erreur dans le formulaire. Vérifiez les champs.")
     else:
         form = BadgeForm()
 
     return render(request, "site_web/badges/create_badge.html", {"form": form})
 
-
 @login_required
 def badge_list(request):
     """Vue pour afficher la liste des badges disponibles."""
     badges = Badge.objects.all().order_by("categorie", "nom")
+    if not (request.user.is_staff or request.user.is_superuser):
+        messages.error(request, "Vous n'avez pas la permission d'accéder à cette page.")
+        return redirect("index")
     return render(request, "site_web/badges/badge_list.html", {"badges": badges})

@@ -3,7 +3,7 @@
     <title>RepXP | Profil de {{ user.username }}</title>
 {% endblock %}
 {% block navigation %}
-    <a href="{% url 'view_other_user_profile' user.id %}" class="active-link">RECHERCHE</a>
+    <a href="{% url 'view_other_user_profile' user.id %}" class="active-link">UTILISATEUR {{ user.id }}</a>
 {% endblock %}
 {% block main %}
     <div class="profile-container">
