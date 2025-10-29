@@ -10,11 +10,9 @@
 <form class="form-group background-form" method="post" enctype="multipart/form-data" novalidate>
     {% csrf_token %}
     <div class="mb-3 p-4">
-        <h2 class="text-center">INSCRIPTION</h2>
-
-        <div class="d-flex justify-content-center mt-4">
+        <div class="d-flex justify-content-center">
             <div class="w-50">
-                <label for="{{ form.avatar.id_for_label }}" class="form-label mt-3 fw-semibold">
+                <label for="{{ form.avatar.id_for_label }}" class="form-label m-0 fw-semibold">
                     {{ form.avatar.label }}
                 </label>
                 {{ form.avatar }}
@@ -32,7 +30,7 @@
             <div class="col-md-6">
                 {% for field in form %}
                     {% if field.name in "username first_name last_name email date_naissance" %}
-                        <label for="{{ field.id_for_label }}" class="form-label mt-3 fw-semibold">{{ field.label }}</label>
+                        <label for="{{ field.id_for_label }}" class="form-label m-0 fw-semibold">{{ field.label }}</label>
                         {{ field }}
                         {% if field.errors %}
                             <div class="text-danger">
@@ -48,7 +46,7 @@
             <div class="col-md-6">
                 {% for field in form %}
                     {% if field.name in "sexe poids taille password1 password2" %}
-                        <label for="{{ field.id_for_label }}" class="form-label mt-3 fw-semibold">{{ field.label }}</label>
+                        <label for="{{ field.id_for_label }}" class="form-label m-0 fw-semibold">{{ field.label }}</label>
                         {{ field }}
                         {% if field.errors %}
                             <div class="text-danger">

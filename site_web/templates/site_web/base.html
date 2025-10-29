@@ -31,34 +31,34 @@
             </a>
           </li>
         </ul>
-        <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+        <ul class="navbar-nav justify-content-end flex-grow-1 pe-2">
           <li class="nav-item">
-            <a class="nav-link mx-lg-2" href="{% url 'index' %}">ACCUEIL</a>
+            <a class="nav-link mx-lg-1" href="{% url 'index' %}">ACCUEIL</a>
           </li>
           {% if user.is_authenticated %}
           <li class="nav-item">
-            <a class="nav-link mx-lg-2 disabled" href="#">DÉFIS</a>
+            <a class="nav-link mx-lg-1 disabled" href="#">DÉFIS</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link mx-lg-2" href="{% url 'my_workouts' %}">ENTRAÎNEMENTS</a>
+            <a class="nav-link mx-lg-1" href="{% url 'my_workouts' %}">ENTRAÎNEMENTS</a>
           </li>
           {% if user.is_superuser or user.is_staff %}
           <li class="nav-item">
-            <a class="nav-link mx-lg-2" href="{% url 'review' %}">EXERCICES</a>
+            <a class="nav-link mx-lg-1" href="{% url 'review' %}">EXERCICES</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link mx-lg-2" href="{% url 'badge_list' %}">BADGES</a>
+            <a class="nav-link mx-lg-1" href="{% url 'badge_list' %}">BADGES</a>
           </li>
           {% else %}
           <li class="nav-item">
-            <a class="nav-link mx-lg-2" href="{% url 'bank' %}">EXERCICES</a>
+            <a class="nav-link mx-lg-1" href="{% url 'bank' %}">EXERCICES</a>
           </li>
           {% endif %}
           <li class="nav-item">
-            <a class="nav-link mx-lg-2" href="{% url 'user_search' %}">UTILISATEURS</a>
+            <a class="nav-link mx-lg-1" href="{% url 'user_search' %}">UTILISATEURS</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link mx-lg-2" href="{% url 'profile' %}">{{user.username}}</a>
+            <a class="nav-link mx-lg-1" href="{% url 'profile' %}">{{user.username|upper}}</a>
           </li>
           {% endif %}
         </ul>
