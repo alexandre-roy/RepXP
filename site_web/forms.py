@@ -1,9 +1,10 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from django.utils import timezone
+from django.utils.text import slugify
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, UserChangeForm
 from django.forms import inlineformset_factory
-from .models import User, Sexe, Exercice, Entrainement, ExerciceEntrainement
+from .models import User, Sexe, Exercice, Entrainement, ExerciceEntrainement, Badge
 
 
 class RegisterForm(UserCreationForm):
@@ -160,6 +161,8 @@ class CustomUserChangeForm(UserChangeForm):
         if poids is not None and poids <= 0:
             raise ValidationError("Le poids doit être supérieur à 0.")
         return poids
+
+
 class EntrainementForm(forms.ModelForm):
     """Formulaire pour créer un entraînement"""
 
@@ -262,3 +265,52 @@ class UserSearchForm(forms.Form):
         })
     )
 
+
+class BadgeForm(forms.ModelForm):
+    """Formulaire de création d'un Badge pour les administrateurs du site."""
+
+    class Meta:
+        model = Badge
+        fields = ["nom", "description", "icone", "categorie", "code"]
+        widgets = {
+            "nom": forms.TextInput(attrs={
+                "class": "form-control",
+                "placeholder": "Nom du badge",
+            }),
+            "description": forms.Textarea(attrs={
+                "class": "form-control",
+                "rows": 4,
+                "placeholder": "Décrire comment obtenir ce badge.",
+            }),
+            "categorie": forms.Select(attrs={
+                "class": "form-select",
+            }),
+            "icone": forms.ClearableFileInput(attrs={
+                "class": "form-control",
+            }),
+            "code": forms.TextInput(attrs={
+                "class": "form-control",
+                "placeholder": "Laisse vide pour générer automatiquement",
+            }),
+        }
+        
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["code"].required = False
+
+    def clean_code(self):
+        code = self.cleaned_data.get("code", "").strip()
+        nom = self.cleaned_data.get("nom", "").strip()
+
+        if not code:
+            code = slugify(nom)
+
+        code = slugify(code)
+
+        if not code:
+            raise forms.ValidationError(
+                "Le code (slug) ne peut pas être vide. Veuillez entrer un nom valide."
+            )
+
+        return code

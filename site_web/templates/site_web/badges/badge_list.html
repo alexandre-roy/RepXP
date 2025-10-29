@@ -1,0 +1,43 @@
+{% extends "site_web/base.html" %}
+
+{% block title %}
+    <title>RepXP | Liste des badges</title>
+{% endblock %}
+
+{% block navigation %}
+    <a href="{% url 'badge_list' %}" class="active-link">LISTE DE BADGES</a>
+    <a href="{% url 'create_badge' %}" class="inactive-link">CRÉER UN BADGE</a>
+{% endblock %}
+
+
+{% block main %}
+
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">LISTE DES BADGES</h2>
+
+        {% if badges %}
+            <div class="container">
+                <div class="row justify-content-center">
+                    {% for badge in badges %}
+                        <div class="col-md-3 h-50 mb-4 d-flex justify-content-center">
+                            <div class="card text-center p-3 background-form" style="width: 16rem;">
+                                {% if badge.icone %}
+                                    <img src="{{ badge.icone.url }}" class="card-img-top mx-auto d-block" alt="{{ badge.nom }}" style="width: 60px; height: 60px; object-fit: contain;">
+                                {% else %}
+                                    <i class="bi bi-gear-fill display-5 text-light"></i>
+                                {% endif %}
+                                <div class="card-body text-light">
+                                    <h5 class="card-title">{{ badge.nom }}</h5>
+                                    <p class="card-text mb-1"><strong>Catégorie :</strong> {{ badge.get_categorie_display }}</p>
+                                    <p class="card-description">{{ badge.description }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% else %}
+            <p class="text-center text-muted mt-5">Aucun badge n’a encore été créé.</p>
+        {% endif %}
+    </div>
+{% endblock %}

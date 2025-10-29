@@ -21,7 +21,9 @@ urlpatterns = [
     path('users/', views.user_search, name='user_search'),
     path('profile/', views.profile, name="profile"),
     path('profile/edit/', views.edit_profile, name="edit_profile"),
-    path('users/', views.user_search, name='user_search')
+    path('users/', views.user_search, name='user_search'),
+    path('badges/create/', views.create_badge, name='create_badge'),
+    path('badges/', views.badge_list, name='badge_list'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 if settings.DEBUG:

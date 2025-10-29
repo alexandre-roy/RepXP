@@ -3,8 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, get_user_model
 from django.contrib import messages
 from django.core.paginator import Paginator
-from .forms import ExerciceForm, RegisterForm, ConnexionForm, EntrainementForm, UserSearchForm, CustomUserChangeForm
-from .models import Exercice, ExerciceEntrainement, User, Entrainement
+from .forms import ExerciceForm, RegisterForm, ConnexionForm, EntrainementForm, UserSearchForm, CustomUserChangeForm, BadgeForm
+from .models import Exercice, ExerciceEntrainement, User, Entrainement, Badge
 
 # Create your views here.
 def est_admin(user):
@@ -290,3 +290,32 @@ def view_other_user_profile(request, user_id):
         {"user": user, "est_admin": est_admin(request.user)}
     )
 
+
+
+@login_required
+def create_badge(request):
+    """Vue permettant à un administrateur de créer un nouveau badge."""
+
+    if not (request.user.is_staff or request.user.is_superuser):
+        messages.error(request, "Accès refusé : vous n'avez pas les permissions nécessaires.")
+        return redirect("index")
+
+    if request.method == "POST":
+        form = BadgeForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Badge créé avec succès !")
+            return redirect("badge_list")
+        else:
+            messages.error(request, "Erreur dans le formulaire. Vérifiez les champs.")
+    else:
+        form = BadgeForm()
+
+    return render(request, "site_web/badges/create_badge.html", {"form": form})
+
+
+@login_required
+def badge_list(request):
+    """Vue pour afficher la liste des badges disponibles."""
+    badges = Badge.objects.all().order_by("categorie", "nom")
+    return render(request, "site_web/badges/badge_list.html", {"badges": badges})
