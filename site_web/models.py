@@ -72,7 +72,7 @@ class User(AbstractUser):
                 raise ValidationError({
                     'date_naissance': 'Vous devez avoir au moins 15 ans pour vous inscrire.'
                 })
-            
+
         if self.poids:
             if self.poids <= 0:
                 raise ValidationError({'poids': "Le poids doit être supérieure à 0."})
@@ -232,3 +232,37 @@ class ExerciceEntrainement(models.Model):
 
     def __str__(self):
         return f"{self.exercice} dans {self.entrainement}"
+
+
+
+
+class Badge(models.Model):
+    """Modèle des badges"""
+
+    CATEGORIES = [
+        ('FORCE', 'Force'),
+        ('ENDURANCE', 'Endurance'),
+        ('ASSIDUITE', 'Assiduité'),
+        ('TECHNIQUE', 'Technique'),
+        ('NUTRITION', 'Nutrition'),
+        ('AUTRE', 'Autre'),
+    ]
+
+    nom = models.CharField(max_length=100)
+    description = models.TextField()
+    icone = models.ImageField(upload_to='badges/icones/')
+    categorie = models.CharField(max_length=50, choices=CATEGORIES)
+    code = models.SlugField(
+        unique=True,
+        error_messages={
+            'unique': "Un badge avec ce code existe déjà. Choississez un autre nom ou laissez le champ vide pour générer automatiquement le code.",
+        }
+    )
+
+    class Meta:
+        ordering = ['nom']
+        verbose_name = "Badge"
+        verbose_name_plural = "Badges"
+
+    def __str__(self):
+        return self.nom
