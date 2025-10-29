@@ -24,9 +24,9 @@
             <a href="{% url 'view_other_user_profile' u.id %}" class="text-decoration-none">
                 <li class="list-group-item bottom user-result d-flex align-items-center py-3 my-1">
                     {% if u.avatar %}
-                        <img src="{{ u.avatar.url }}" alt="Avatar de {{ u.username }}" class="exercice-image rounded-circle me-3">
+                        <img src="{{ u.avatar.url }}" alt="Avatar de {{ u.username }}" class="avatar-image rounded-circle me-3">
                     {% else %}
-                        <img src="/media/avatars/default_avatar.png" alt="Avatar par défaut" class="exercice-image rounded-circle me-3">
+                        <img src="/media/avatars/default_avatar.png" alt="Avatar par défaut" class="avatar-image rounded-circle me-3">
                     {% endif %}
                         <div class="d-flex flex-column">
                             <span class="fw-bold text-blue">@{{ u.username }}</span>

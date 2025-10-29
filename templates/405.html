@@ -11,7 +11,7 @@
     <meta name="author" content="" />
     <link rel="icon" href="" />
 
-    <title>500 - Erreur serveur inattendue</title>
+    <title>405 - Méthode non autorisée</title>
 
     <link
       href="{% static 'site_web/css/bootstrap.css' %}"
@@ -20,9 +20,11 @@
   </head>
   <body class="bg-danger text-light pt-5 mt-5">
     <div class="text-center">
-      <h1 class="display-1 fw-bold">500</h1>
-      <h2 class="mb-3">Erreur serveur inattendue</h2>
-      <p>Mauvaise requête. Vérifiez l'URL ou réessayez.</p>
+      <h1 class="display-1 fw-bold">405</h1>
+      <h2 class="mb-3">Méthode non autorisée</h2>
+      <p>
+        La méthode HTTP utilisée n'est pas autorisée pour cette ressource.
+      </p>
       <a class="text-light" href="{% url 'index' %}">Retour à l'accueil </a>
     </div>
   </body>

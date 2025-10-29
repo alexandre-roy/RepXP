@@ -11,7 +11,7 @@
     <meta name="author" content="" />
     <link rel="icon" href="" />
 
-    <title>500 - Erreur serveur inattendue</title>
+    <title>400 - Mauvaise requête</title>
 
     <link
       href="{% static 'site_web/css/bootstrap.css' %}"
@@ -20,9 +20,11 @@
   </head>
   <body class="bg-danger text-light pt-5 mt-5">
     <div class="text-center">
-      <h1 class="display-1 fw-bold">500</h1>
-      <h2 class="mb-3">Erreur serveur inattendue</h2>
-      <p>Mauvaise requête. Vérifiez l'URL ou réessayez.</p>
+      <h1 class="display-1 fw-bold">400</h1>
+      <h2 class="mb-3">Mauvaise requête</h2>
+      <p>
+        La requête envoyée est invalide. Vérifiez les données et réessayez.
+      </p>
       <a class="text-light" href="{% url 'index' %}">Retour à l'accueil </a>
     </div>
   </body>
