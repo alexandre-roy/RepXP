@@ -1,38 +1,38 @@
 {% extends "site_web/base.html" %}
 {% block title %}
-    <title>RepXP | Profil de {{ user.username }}</title>
+    <title>RepXP | Profil de {{ other_user.username }}</title>
 {% endblock %}
 {% block navigation %}
-    <a href="{% url 'view_other_user_profile' user.id %}" class="active-link">UTILISATEUR {{ user.id }}</a>
+    <a href="{% url 'view_other_user_profile' other_user.id %}" class="active-link">UTILISATEUR {{ other_user.id }}</a>
 {% endblock %}
 {% block main %}
     <div class="profile-container">
         <div class="profile-card">
             <div class="avatar-section">
-                <img src="{{ user.avatar.url }}" class="rounded-circle" width="150" height="150" alt="Avatar de {{ user.username }}">
-                <h2 class="username">{{ user.username }}</h2>
+                <img src="{{ other_user.avatar.url }}" class="rounded-circle" width="150" height="150" alt="Avatar de {{ other_user.username }}">
+                <h2 class="username">{{ other_user.username }}</h2>
             </div>
 
             <div class="info-section">
                 <h3>Informations personnelles</h3>
                 <div class="info-grid">
-                    <div><strong>Nom complet :</strong> {{ user.first_name }} {{ user.last_name }}</div>
+                    <div><strong>Nom complet :</strong> {{ other_user.first_name }} {{ other_user.last_name }}</div>
                     <div><strong>Sexe :</strong>
-                        {% if user.sexe == "M" %} Masculin
-                        {% elif user.sexe == "F" %} Féminin
+                        {% if other_user.sexe == "M" %} Masculin
+                        {% elif other_user.sexe == "F" %} Féminin
                         {% else %} Non spécifié {% endif %}
                     </div>
-                    <div><strong>Date de naissance :</strong> {{ user.date_naissance|date:"d/m/Y" }}</div>
+                    <div><strong>Date de naissance :</strong> {{ other_user.date_naissance|date:"d/m/Y" }}</div>
                     <div><strong>Taille :</strong>
-                        {% if user.taille %} {{ user.taille }} m
+                        {% if other_user.taille %} {{ other_user.taille }} m
                         {% else %} Non spécifié {% endif %}
                     </div>
                     <div><strong>Poids :</strong>
-                        {% if user.poids %} {{ user.poids }} kg
+                        {% if other_user.poids %} {{ other_user.poids }} kg
                         {% else %} Non spécifié {% endif %}
                     </div>
                     <div><strong>Adresse courriel :</strong>
-                        {% if user.email %} {{ user.email }}
+                        {% if other_user.email %} {{ other_user.email }}
                         {% else %} Non spécifié {% endif %}
                     </div>
                 </div>
