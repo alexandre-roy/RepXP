@@ -364,3 +364,7 @@ def badge_list(request):
         messages.error(request, "Vous n'avez pas la permission d'accéder à cette page.")
         return redirect("index")
     return render(request, "site_web/badges/badge_list.html", {"badges": badges})
+
+def classement(request):
+    """Vue pour afficher les classements."""
+    return render(request, "site_web/classement.html")
