@@ -1,7 +1,7 @@
 """Affichage de la base de données sur la partie admin du site"""
 
 from django.contrib import admin
-from .models import User, GroupeMusculaire, Exercice, Entrainement, ExerciceEntrainement, Badge
+from .models import User, GroupeMusculaire, Exercice, Entrainement, ExerciceEntrainement, Badge, Statistiques
 
 # Register your models here.
 @admin.register(User)
@@ -94,3 +94,19 @@ class BadgeAdmin(admin.ModelAdmin):
     list_filter = ("categorie",)
     search_fields = ("nom", "description")
     prepopulated_fields = {"code": ("nom",)}
+
+@admin.register(Statistiques)
+class StatistiquesAdmin(admin.ModelAdmin):
+    """Affichage des statistiques"""
+
+    list_display = (
+        "id",
+        "user_id",
+        "sets_effectues",
+        "reps_effectuees",
+        "entrainements_completes",
+        "exercices_completes",
+        "badges_obtenus"
+    )
+    list_filter = ("user_id",)
+    search_fields = ("user_id__username",)

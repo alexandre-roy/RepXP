@@ -4,7 +4,7 @@ from django.contrib.auth import login, get_user_model
 from django.contrib import messages
 from django.core.paginator import Paginator
 from .forms import ExerciceForm, RegisterForm, ConnexionForm, EntrainementForm, UserSearchForm, CustomUserChangeForm, BadgeForm
-from .models import Exercice, ExerciceEntrainement, User, Entrainement, Badge
+from .models import Exercice, ExerciceEntrainement, User, Entrainement, Badge, GroupeMusculaire, Statistiques
 
 # Create your views here.
 def est_admin(user):
@@ -76,12 +76,22 @@ def review(request):
 def bank(request):
     recherche = request.GET.get("recherche")
     exercices = Exercice.objects.filter(est_approuve=True)
+    groupe_musculaire_filtre = request.GET.get("groupemusculaire")
+    groupes_musculaires = GroupeMusculaire.objects.all()
+
+    if groupe_musculaire_filtre:
+        groupe_musculaire_filtre = int(groupe_musculaire_filtre)
 
     if recherche:
         exercices = exercices.filter(nom__icontains=recherche)
+
+    if groupe_musculaire_filtre:
+        exercices = exercices.filter(groupe_musculaire__id=groupe_musculaire_filtre)
+
     return render(request, 'site_web/exercices/bank.html', {
         'exercices': exercices,
-        'est_admin': est_admin(request.user)
+        'est_admin': est_admin(request.user),
+        'groupe_musculaire_filtre' : groupe_musculaire_filtre, 'groupes_musculaires' : groupes_musculaires
     })
 
 @login_required
@@ -267,11 +277,48 @@ def user_search(request):
 @login_required
 def delete_workout(request, workout_id):
     """Vue pour supprimer un entraînement"""
-    if request.method == "POST":
-        entrainement = Entrainement.objects.get(id=workout_id, createur=request.user)
-        entrainement.delete()
-        messages.success(request, "Entraînement supprimé avec succès!")
-    return redirect("my_workouts")
+    entrainement = Entrainement.objects.get(id=workout_id)
+
+    if entrainement.createur == request.user:
+        if request.method == "POST":
+            entrainement.delete()
+            messages.success(request, "Entraînement supprimé avec succès!")
+        return redirect("my_workouts")
+    else:
+        messages.error(request, "Vous n'avez pas la permission d'accéder à cette page.")
+        return redirect("index")
+
+@login_required
+def complete_workout(request, workout_id):
+    """Vue pour compléter un entraînement et mettre à jour les statistiques"""
+    entrainement = Entrainement.objects.get(id=workout_id)
+
+    if entrainement.createur == request.user:
+        if request.method == "POST":
+            entrainement = Entrainement.objects.get(id=workout_id, createur=request.user)
+
+            statistiques, _ = Statistiques.objects.get_or_create(user_id=request.user)
+
+            total_sets = 0
+            total_reps = 0
+            exercices_count = 0
+
+            for exercice in entrainement.exerciceentrainement_set.all():
+                total_sets += exercice.sets
+                total_reps += exercice.sets * exercice.reps
+                exercices_count += 1
+
+            statistiques.sets_effectues += total_sets
+            statistiques.reps_effectuees += total_reps
+            statistiques.entrainements_completes += 1
+            statistiques.exercices_completes += exercices_count
+            statistiques.save()
+
+            messages.success(request, f"Entraînement complété! +{total_sets} sets, +{total_reps} reps")
+        return redirect("my_workouts")
+    else:
+            messages.error(request, "Vous n'avez pas la permission d'accéder à cette page.")
+            return redirect("index")
 
 
 @login_required
@@ -317,3 +364,7 @@ def badge_list(request):
         messages.error(request, "Vous n'avez pas la permission d'accéder à cette page.")
         return redirect("index")
     return render(request, "site_web/badges/badge_list.html", {"badges": badges})
+
+def classement(request):
+    """Vue pour afficher les classements."""
+    return render(request, "site_web/classement.html")

@@ -233,9 +233,6 @@ class ExerciceEntrainement(models.Model):
     def __str__(self):
         return f"{self.exercice} dans {self.entrainement}"
 
-
-
-
 class Badge(models.Model):
     """Modèle des badges"""
 
@@ -265,4 +262,49 @@ class Badge(models.Model):
         verbose_name_plural = "Badges"
 
     def __str__(self):
-        return self.nom
+        return f"{self.nom}"
+
+
+class Statistiques(models.Model):
+    """Modèle des statistiques utilisateur"""
+
+    user_id = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="statistiques",
+        verbose_name="Utilisateur"
+    )
+
+    sets_effectues = models.PositiveIntegerField(
+        default=0,
+        verbose_name="Séries effectués"
+    )
+
+    reps_effectuees = models.PositiveIntegerField(
+        default=0,
+        verbose_name="Répétitions effectuées"
+    )
+
+    entrainements_completes = models.PositiveIntegerField(
+        default=0,
+        verbose_name="Entraînements complétés"
+    )
+
+    exercices_completes = models.PositiveIntegerField(
+        default=0,
+        verbose_name="Exercices complétés"
+    )
+
+    badges_obtenus = models.PositiveIntegerField(
+        default=0,
+        verbose_name="Badges obtenus"
+    )
+
+    class Meta:
+        """Classe meta des statistiques"""
+        verbose_name = "Statistique"
+        verbose_name_plural = "Statistiques"
+        ordering = ["exercices_completes"]
+
+    def __str__(self):
+        return f"Statistiques de {self.user_id.username}"

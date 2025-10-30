@@ -22,11 +22,8 @@
         <form method="post" enctype="multipart/form-data" class="form-group background-form p-4" novalidate>
             {% csrf_token %}
 
-            <h2 class="text-center mb-4">PROPOSER UN EXERCICE</h2>
-
-
             <div class="mb-3">
-                <label for="{{ form.nom.id_for_label }}" class="form-label">Nom</label>
+                <label for="{{ form.nom.id_for_label }}" class="form-label m-0 fw-semibold">Nom</label>
                 {{ form.nom }}
                 {% if form.nom.errors %}
                     <div class="invalid-feedback d-block">
@@ -36,7 +33,7 @@
             </div>
 
             <div class="mb-3">
-                <label for="{{ form.groupe_musculaire.id_for_label }}" class="form-label mt-3 fw-semibold">Groupe musculaire</label>
+                <label for="{{ form.groupe_musculaire.id_for_label }}" class="form-label m-0 fw-semibold">Groupe musculaire</label>
                 {{ form.groupe_musculaire }}
                 {% if form.groupe_musculaire.errors %}
                     <div class="invalid-feedback d-block">
@@ -46,7 +43,7 @@
             </div>
 
             <div class="mb-3">
-                <label for="{{ form.series_sugg.id_for_label }}" class="form-label mt-3 fw-semibold">Séries suggérées</label>
+                <label for="{{ form.series_sugg.id_for_label }}" class="form-label m-0 fw-semibold">Séries suggérées</label>
                 {{ form.series_sugg }}
                 {% if form.series_sugg.errors %}
                     <div class="invalid-feedback d-block">
@@ -56,7 +53,7 @@
             </div>
 
             <div class="mb-3">
-                <label for="{{ form.reps_sugg.id_for_label }}" class="form-label mt-3 fw-semibold">Répétitions suggérées</label>
+                <label for="{{ form.reps_sugg.id_for_label }}" class="form-label m-0 fw-semibold">Répétitions suggérées</label>
                 {{ form.reps_sugg }}
                 {% if form.reps_sugg.errors %}
                     <div class="invalid-feedback d-block">
@@ -66,7 +63,7 @@
             </div>
 
             <div class="mb-3">
-                <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+                <label for="{{ form.description.id_for_label }}" class="form-label m-0 fw-semibold">Description</label>
                 {{ form.description }}
                 {% if form.description.errors %}
                     <div class="invalid-feedback d-block">
@@ -76,7 +73,7 @@
             </div>
 
             <div class="mb-3">
-                <label for="{{ form.image.id_for_label }}" class="form-label mt-3 fw-semibold">Image</label>
+                <label for="{{ form.image.id_for_label }}" class="form-label m-0 fw-semibold">Image</label>
                 {{ form.image }}
             </div>
 
