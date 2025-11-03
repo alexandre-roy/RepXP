@@ -26,6 +26,7 @@ urlpatterns = [
     path('users/', views.user_search, name='user_search'),
     path('badges/create/', views.create_badge, name='create_badge'),
     path('badges/', views.badge_list, name='badge_list'),
+    path('defis/create/', views.create_defi, name='create_defi')
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 if settings.DEBUG:

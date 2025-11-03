@@ -3,8 +3,8 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 from django.utils.text import slugify
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, UserChangeForm
-from django.forms import inlineformset_factory
-from .models import User, Sexe, Exercice, Entrainement, ExerciceEntrainement, Badge
+from django_select2.forms import Select2MultipleWidget
+from .models import User, Sexe, Exercice, Entrainement, Badge, Defis
 
 
 class RegisterForm(UserCreationForm):
@@ -314,3 +314,26 @@ class BadgeForm(forms.ModelForm):
             )
 
         return code
+    
+class DefiForm(forms.ModelForm):
+    badges = forms.ModelMultipleChoiceField(
+        queryset=Badge.objects.all(),
+        widget=Select2MultipleWidget(
+            attrs={'data-placeholder': 'Sélectionnez les badges...'}
+        ),
+        required=True
+    )
+
+    date_limite = forms.DateField(
+        label="Date limite de complétion",
+        widget=forms.DateInput(attrs={
+            'type': 'date',
+            'class': 'form-control mb-3'
+        },
+        format="%Y-%m-%d"
+        )
+    )
+
+    class Meta:
+        model = Defis
+        fields = ['nom', 'date_limite', 'badges']

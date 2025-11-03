@@ -3,8 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, get_user_model
 from django.contrib import messages
 from django.core.paginator import Paginator
-from .forms import ExerciceForm, RegisterForm, ConnexionForm, EntrainementForm, UserSearchForm, CustomUserChangeForm, BadgeForm
-from .models import Exercice, ExerciceEntrainement, User, Entrainement, Badge, GroupeMusculaire, Statistiques
+from .forms import ExerciceForm, RegisterForm, ConnexionForm, EntrainementForm, UserSearchForm, CustomUserChangeForm, BadgeForm, DefiForm
+from .models import Exercice, ExerciceEntrainement, User, Entrainement, Badge, GroupeMusculaire, Statistiques, DefiBadge
 
 # Create your views here.
 def est_admin(user):
@@ -368,3 +368,27 @@ def badge_list(request):
 def classement(request):
     """Vue pour afficher les classements."""
     return render(request, "site_web/classement.html")
+
+
+@login_required
+def create_defi(request):
+    """Vue permettant à un administrateur de créer un nouveau défi."""
+    if not (request.user.is_staff or request.user.is_superuser):
+        messages.error(request, "Vous n'avez pas la permission d'accéder à cette page.")
+        return redirect("index")
+    
+    if request.method == 'POST':
+        form = DefiForm(request.POST)
+        if form.is_valid():
+            defi = form.save(commit=False)
+            defi.save()
+
+            for badge in form.cleaned_data['badges']:
+                DefiBadge.objects.create(defi=defi, badge=badge)
+
+            messages.success(request, "Défi créé avec succès !")
+            return redirect('index')
+    else:
+        form = DefiForm()
+
+    return render(request, "site_web/defis/create_defi.html", {"form": form})
