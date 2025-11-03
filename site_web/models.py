@@ -308,3 +308,61 @@ class Statistiques(models.Model):
 
     def __str__(self):
         return f"Statistiques de {self.user_id.username}"
+ 
+class Defis(models.Model):
+    """Modèle des défis"""
+
+    nom = models.CharField(
+        max_length=100,
+        blank=False,
+        verbose_name="Nom du défi"
+    )
+    date_creation = models.DateTimeField(auto_now_add=True)
+    date_limite = models.DateTimeField(
+        verbose_name="Date limite de complétion",
+    )
+  
+    badges = models.ManyToManyField(Badge, through="DefiBadge")
+
+    class Meta:
+        """Classe meta des défis"""
+        verbose_name = "Défi"
+        verbose_name_plural = "Défis"
+        ordering =  ["nom"]
+
+    def __str__(self):
+        return f"Défi {self.nom}"
+    
+    def clean(self):
+        if self.date_limite:
+            if self.date_limite < timezone.now():
+                raise ValidationError({
+                    'date_limite': 'La date limite ne peux pas être passé'
+                })
+    
+    def est_expire(self):
+        """Retourne True si la date limite est dépassée."""
+        return timezone.now() > self.date_limite
+    
+class DefiBadge(models.Model):
+    defi = models.ForeignKey(Defis, on_delete=models.CASCADE)
+    badge = models.ForeignKey('Badge', on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('defi', 'badge')
+
+    def __str__(self):
+        return f"{self.defi} → {self.badge}"
+    
+class UserBadgeProgress(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    badge = models.ForeignKey(Badge, on_delete=models.CASCADE)
+    defi = models.ForeignKey(Defis, on_delete=models.CASCADE, null=False)
+    est_complete = models.BooleanField(default=False)
+    date_completion = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        unique_together = ('user', 'badge', 'defi')
+
+    def __str__(self):
+        return f"{self.user} - {self.badge}"

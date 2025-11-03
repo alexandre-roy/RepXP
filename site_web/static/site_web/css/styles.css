@@ -12533,4 +12533,8 @@ form.background-form input, form.background-form select, form.background-form te
   border: none;
   padding: 8px;
   margin-top: 4px;
+}
+
+.select2-selection__choice__display {
+  color: #000000;
 }/*# sourceMappingURL=styles.css.map */

@@ -37,9 +37,6 @@
           </li>
           {% if user.is_authenticated %}
           <li class="nav-item">
-            <a class="nav-link mx-lg-1 disabled" href="#">DÉFIS</a>
-          </li>
-          <li class="nav-item">
             <a class="nav-link mx-lg-1" href="{% url 'my_workouts' %}">ENTRAÎNEMENTS</a>
           </li>
           {% if user.is_superuser or user.is_staff %}
@@ -48,6 +45,9 @@
           </li>
           <li class="nav-item">
             <a class="nav-link mx-lg-1" href="{% url 'badge_list' %}">BADGES</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link mx-lg-1" href="{% url 'create_defi' %}">DÉFIS</a>
           </li>
           {% else %}
           <li class="nav-item">
