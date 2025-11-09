@@ -1,14 +1,75 @@
 {% extends "site_web/base.html" %} {% block title %}
 
-<title>RepXP | Page principale</title>
+<title>RepXP | Classement</title>
 
 {% endblock %} {% block navigation %}
 
-<a href="{% url 'index' %}" class="active-link">PAGE PRINCIPALE</a>
-<a href="{% url 'classement' %}" class="inactive-link">CLASSEMENT</a>
+<a href="{% url 'index' %}" class="active-link">CLASSEMENT</a>
 
 {% endblock %} {% block main %}
 
-<h1 class="text-center text-blue mt-3"></h1>
-
+<div class="container mt-3">
+    {% if classement %}
+        <table class="table">
+            <thead class="bluee">
+                <tr>
+                    <th scope="col" class="text-center">Rang</th>
+                    <th scope="col">Utilisateur</th>
+                    <th scope="col" class="text-center">
+                        <a href="?sort=badges_obtenus" class="text-decoration-none {% if current_sort == 'badges_obtenus' %}style-button-link{% endif %}">
+                            Badges
+                        </a>
+                    </th>
+                    <th scope="col" class="text-center">
+                        <a href="?sort=reps_effectuees" class="text-decoration-none {% if current_sort == 'reps_effectuees' %}style-button-link{% endif %}">
+                            Répétitions
+                        </a>
+                    </th>
+                    <th scope="col" class="text-center">
+                        <a href="?sort=sets_effectues" class="text-decoration-none {% if current_sort == 'sets_effectues' %}style-button-link{% endif %}">
+                            Séries
+                        </a>
+                    </th>
+                    <th scope="col" class="text-center">
+                        <a href="?sort=entrainements_completes" class="text-decoration-none {% if current_sort == 'entrainements_completes' %}style-button-link{% endif %}">
+                            Entraînements
+                        </a>
+                    </th>
+                    <th scope="col" class="text-center">
+                        <a href="?sort=exercices_completes" class="text-decoration-none {% if current_sort == 'exercices_completes' %}style-button-link{% endif %}">
+                            Exercices
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for personne in classement %}
+                <tr>
+                    <td class="text-center">
+                        {% if personne.rang == 1 %}
+                            <span class="badge bg-warning text-dark">1er</span>
+                        {% elif personne.rang == 2 %}
+                            <span class="badge bg-secondary">2e</span>
+                        {% elif personne.rang == 3 %}
+                            <span class="badge bg-brown">3e</span>
+                        {% else %}
+                            <span class="badge bg-light text-dark">{{ personne.rang }}e</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'view_other_user_profile' personne.user.id %}" class="text-decoration-none"><img src="{{ personne.user.avatar.url }}" alt="pfp" class="rounded-circle me-2 edit-img"><strong>{{ personne.user }}</strong></a>
+                    </td>
+                    <td class="text-center">{{ personne.badges_obtenus }}</td>
+                    <td class="text-center">{{ personne.reps_effectuees }}</td>
+                    <td class="text-center">{{ personne.sets_effectues }}</td>
+                    <td class="text-center">{{ personne.entrainements_completes }}</td>
+                    <td class="text-center">{{ personne.exercices_completes }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="text-center">Aucun classement enregistré pour l'instant.</p>
+    {% endif %}
+</div>
 {% endblock %}

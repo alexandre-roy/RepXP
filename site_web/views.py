@@ -12,7 +12,30 @@ def est_admin(user):
 
 def index(request):
     """Page d'accueil de activities"""
-    return render(request, "site_web/index.html", {"est_admin": est_admin(request.user)})
+    sort_by = request.GET.get('sort')
+
+    sort_fields = ['badges_obtenus', 'reps_effectuees', 'sets_effectues','entrainements_completes', 'exercices_completes']
+
+    if sort_by not in sort_fields:
+        sort_by = 'badges_obtenus'
+
+    statistiques = Statistiques.objects.select_related('user_id').order_by(f'-{sort_by}')
+
+    classement = []
+    rang = 1
+    for stat in statistiques:
+        classement.append({
+            'rang': rang,
+            'user': stat.user_id,
+            'sets_effectues': stat.sets_effectues,
+            'reps_effectuees': stat.reps_effectuees,
+            'entrainements_completes': stat.entrainements_completes,
+            'exercices_completes': stat.exercices_completes,
+            'badges_obtenus': stat.badges_obtenus,
+        })
+        rang += 1
+
+    return render(request, "site_web/index.html", {"est_admin": est_admin(request.user),"classement": classement, "current_sort": sort_by})
 
 def register(request):
     if request.method == 'POST':
@@ -365,18 +388,13 @@ def badge_list(request):
         return redirect("index")
     return render(request, "site_web/badges/badge_list.html", {"badges": badges})
 
-def classement(request):
-    """Vue pour afficher les classements."""
-    return render(request, "site_web/classement.html")
-
-
 @login_required
 def create_defi(request):
     """Vue permettant à un administrateur de créer un nouveau défi."""
     if not (request.user.is_staff or request.user.is_superuser):
         messages.error(request, "Vous n'avez pas la permission d'accéder à cette page.")
         return redirect("index")
-    
+
     if request.method == 'POST':
         form = DefiForm(request.POST)
         if form.is_valid():

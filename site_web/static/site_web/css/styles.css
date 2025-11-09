@@ -12535,6 +12535,26 @@ form.background-form input, form.background-form select, form.background-form te
   margin-top: 4px;
 }
 
+.bg-brown {
+  background-color: #835f21;
+}
+
+.bluee {
+  background-color: #033050;
+  color: white;
+}
+.bluee th {
+  background-color: #033050;
+  color: white;
+}
+.bluee a {
+  color: white;
+}
+
+.style-button-link {
+  color: #6EE22A !important;
+}
+
 .select2-selection__choice__display {
   color: #000000;
 }/*# sourceMappingURL=styles.css.map */
