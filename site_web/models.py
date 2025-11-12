@@ -4,6 +4,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinLengthValidator, MaxLengthValidator
 from django.utils import timezone
+from django.utils.text import slugify
 from django.core.exceptions import ValidationError
 from dateutil.relativedelta import relativedelta
 
@@ -245,15 +246,34 @@ class Badge(models.Model):
         ('AUTRE', 'Autre'),
     ]
 
+    CONDITIONS = [
+        ('DEFI', 'Compléter un défi spécifique'),
+        ('NB_DEFIS', 'Compléter un certain nombre de défis'),
+    ]
+
     nom = models.CharField(max_length=100)
     description = models.TextField()
     icone = models.ImageField(upload_to='badges/icones/')
-    categorie = models.CharField(max_length=50, choices=CATEGORIES)
+    categorie = models.CharField(
+        max_length=50,
+        choices=CATEGORIES,
+        verbose_name="Catégorie du badge"
+    )
     code = models.SlugField(
         unique=True,
-        error_messages={
-            'unique': "Un badge avec ce code existe déjà. Choississez un autre nom ou laissez le champ vide pour générer automatiquement le code.",
-        }
+        blank=True,
+        null=False,
+        help_text="Identifiant unique (généré automatiquement à partir du nom s'il est laissé vide)."
+    )
+
+    condition_type = models.CharField(
+        max_length=20,
+        choices=CONDITIONS,
+        verbose_name="Type de condition pour obtenir ce badge"
+    )
+    condition_param = models.CharField(
+        max_length=100,
+        verbose_name="Paramètre de la condition (ex: ID du défi ou nombre de défis)"
     )
 
     class Meta:
@@ -263,6 +283,12 @@ class Badge(models.Model):
 
     def __str__(self):
         return f"{self.nom}"
+
+    def save(self, *args, **kwargs):
+        if not self.code and self.nom:
+            self.code = slugify(self.nom)
+        super().save(*args, **kwargs)
+
 
 
 class Statistiques(models.Model):
@@ -308,7 +334,7 @@ class Statistiques(models.Model):
 
     def __str__(self):
         return f"Statistiques de {self.user_id.username}"
- 
+
 class Defis(models.Model):
     """Modèle des défis"""
 
@@ -321,7 +347,7 @@ class Defis(models.Model):
     date_limite = models.DateTimeField(
         verbose_name="Date limite de complétion",
     )
-  
+
     badges = models.ManyToManyField(Badge, through="DefiBadge")
 
     class Meta:
@@ -332,18 +358,18 @@ class Defis(models.Model):
 
     def __str__(self):
         return f"Défi {self.nom}"
-    
+
     def clean(self):
         if self.date_limite:
             if self.date_limite < timezone.now():
                 raise ValidationError({
                     'date_limite': 'La date limite ne peux pas être passé'
                 })
-    
+
     def est_expire(self):
         """Retourne True si la date limite est dépassée."""
         return timezone.now() > self.date_limite
-    
+
 class DefiBadge(models.Model):
     defi = models.ForeignKey(Defis, on_delete=models.CASCADE)
     badge = models.ForeignKey('Badge', on_delete=models.CASCADE)
@@ -353,7 +379,7 @@ class DefiBadge(models.Model):
 
     def __str__(self):
         return f"{self.defi} → {self.badge}"
-    
+
 class UserBadgeProgress(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     badge = models.ForeignKey(Badge, on_delete=models.CASCADE)

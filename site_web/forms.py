@@ -271,7 +271,14 @@ class BadgeForm(forms.ModelForm):
 
     class Meta:
         model = Badge
-        fields = ["nom", "description", "icone", "categorie", "code"]
+        fields = [
+            "nom",
+            "description",
+            "icone",
+            "categorie",
+            "condition_type",
+            "condition_param"
+        ]
         widgets = {
             "nom": forms.TextInput(attrs={
                 "class": "form-control mb-3",
@@ -288,33 +295,17 @@ class BadgeForm(forms.ModelForm):
             "icone": forms.ClearableFileInput(attrs={
                 "class": "form-control mb-3",
             }),
-            "code": forms.TextInput(attrs={
+            "condition_type": forms.Select(attrs={
+                "class": "form-select mb-3",
+            }),
+            "condition_param": forms.TextInput(attrs={
                 "class": "form-control mb-3",
-                "placeholder": "Laisse vide pour générer automatiquement",
+                "placeholder": "Ex : ID du défi ou nombre de défis à compléter",
             }),
         }
 
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields["code"].required = False
 
-    def clean_code(self):
-        code = self.cleaned_data.get("code", "").strip()
-        nom = self.cleaned_data.get("nom", "").strip()
-
-        if not code:
-            code = slugify(nom)
-
-        code = slugify(code)
-
-        if not code:
-            raise forms.ValidationError(
-                "Le code (slug) ne peut pas être vide. Veuillez entrer un nom valide."
-            )
-
-        return code
-    
 class DefiForm(forms.ModelForm):
     badges = forms.ModelMultipleChoiceField(
         queryset=Badge.objects.all(),
