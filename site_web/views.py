@@ -248,11 +248,16 @@ def my_workouts(request):
 
 @login_required
 def profile(request):
-    return render(
-        request,
-        "site_web/profil/profil.html",
-        {"user": request.user, "est_admin": est_admin(request.user)}
-    )
+    user = request.user
+    statistiques = Statistiques.objects.get_or_create(user_id=user)
+
+    context = {
+        "user": user,
+        "stats": statistiques,
+        "est_admin": est_admin(user),
+    }
+
+    return render(request, "site_web/profil/profil.html", context)
 
 @login_required()
 def edit_profile(request):
@@ -354,11 +359,14 @@ def view_other_user_profile(request, user_id):
             messages.error(request, "Vous n'avez pas la permission de voir ce profil.")
             return redirect("index")
 
-    return render(
-        request,
-        "site_web/profil/other_user_profile.html",
-        {"other_user": other_user, "est_admin": est_admin(request.user)}
-    )
+    statistiques = Statistiques.objects.get_or_create(user_id=other_user)
+
+    context = {
+        "other_user": other_user,
+        "stats": statistiques,
+        "est_admin": est_admin(request.user),
+    }
+    return render(request, "site_web/profil/other_user_profile.html", context)
 
 @login_required
 def create_badge(request):
