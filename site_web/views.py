@@ -3,9 +3,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, get_user_model
 from django.contrib import messages
 from django.utils import timezone
+from django.http import JsonResponse
 from django.core.paginator import Paginator
 from .forms import ExerciceForm, RegisterForm, ConnexionForm, EntrainementForm, UserSearchForm, CustomUserChangeForm, BadgeForm, DefiForm
-from .models import Exercice, ExerciceEntrainement, User, Entrainement, Badge, GroupeMusculaire, Statistiques, DefiBadge, UserBadge, UserDefi, Defis, UserBadgeProgress
+from .models import BadgeEquipe, Exercice, ExerciceEntrainement, User, Entrainement, Badge, GroupeMusculaire, Statistiques, DefiBadge, UserBadge, UserDefi, Defis, UserBadgeProgress
 
 # Create your views here.
 def est_admin(user):
@@ -77,6 +78,8 @@ def index(request):
         "current_sort": sort_by,
         "defis_actifs": defis_actifs
     })
+
+
 
 def register(request):
     if request.method == 'POST':
@@ -289,15 +292,32 @@ def my_workouts(request):
     return render(request, 'site_web/workouts/my_workouts.html', {
         "entrainements": entrainements, "est_admin": est_admin(request.user)})
 
+
 @login_required
 def profile(request):
     user = request.user
-    statistiques = Statistiques.objects.get_or_create(user_id=user)
+    statistiques, _ = Statistiques.objects.get_or_create(user_id=user)
+
+    badges_obtenus = UserBadge.objects.filter(user=user).select_related('badge').order_by('badge__categorie', 'badge__nom')
+
+    badges_pas_obtenus = Badge.objects.exclude(id__in=badges_obtenus.values_list('badge_id', flat=True)).order_by('categorie', 'nom')
+
+    badges_equipes_queryset = BadgeEquipe.objects.filter(user=user).select_related("badge").order_by("slot")
+
+    badges_equipes = [None, None, None]
+    for be in badges_equipes_queryset:
+        if 1 <= be.slot <= 3:
+            badges_equipes[be.slot - 1] = be
+
 
     context = {
         "user": user,
         "stats": statistiques,
         "est_admin": est_admin(user),
+        "badges_obtenus": badges_obtenus,
+        "badges_equipes": badges_equipes,
+        "badges_pas_obtenus": badges_pas_obtenus,
+        "badges_equipes": badges_equipes,
     }
 
     return render(request, "site_web/profil/profil.html", context)
@@ -315,6 +335,29 @@ def edit_profile(request):
         form = CustomUserChangeForm(instance=request.user)
 
     return render(request, 'site_web/profil/edit_profil.html', {'form': form, "est_admin": est_admin(request.user)})
+
+
+
+@login_required
+def equiper_badge(request, badge_id, slot):
+    user = request.user
+
+    if not UserBadge.objects.filter(user=user, badge_id=badge_id).exists():
+        return JsonResponse({'error': 'Badge non obtenu'}, status=403)
+
+    if slot not in [1, 2, 3]:
+        return JsonResponse({'error': 'Slot invalide'}, status=400)
+
+    BadgeEquipe.objects.filter(user=user, slot=slot).delete()
+
+    BadgeEquipe.objects.update_or_create(
+        user=user,
+        slot=slot,
+        defaults={'badge_id': badge_id}
+    )
+
+    return JsonResponse({'success': True})
+
 
 @login_required
 def user_search(request):

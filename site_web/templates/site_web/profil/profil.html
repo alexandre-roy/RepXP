@@ -1,4 +1,5 @@
 {% extends "site_web/base.html" %}
+{% load static %}
 {% block title %}
     <title>RepXP | Mon Profil</title>
 {% endblock %}
@@ -12,6 +13,18 @@
             <div class="avatar-section">
                 <img src="{{ user.avatar.url }}" class="rounded-circle" width="150" height="150">
                 <h2 class="username">{{ user.username }}</h2>
+            </div>
+
+            <div class="equipped-badges">
+                {% for eq in badges_equipes %}
+                    <div class="equipped-slot">
+                        {% if eq %}
+                            <img src="{{ eq.badge.icone.url }}" class="equipped-img">
+                        {% else %}
+                            <img src="{% static 'images/empty_slot.png' %}" class="equipped-img">
+                        {% endif %}
+                    </div>
+                {% endfor %}
             </div>
 
             <div class="info-section">
@@ -38,6 +51,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="info-section">
                 <h3>Statistiques</h3>
                 <div class="info-grid">
@@ -45,9 +59,107 @@
                     <div><strong>Répétitions effectuées :</strong> {{ stats.reps_effectuees }}</div>
                     <div><strong>Exercices complétés :</strong> {{ stats.exercices_completes }}</div>
                     <div><strong>Entraînements complétés :</strong> {{ stats.entrainements_completes }}</div>
-                    <div><strong>Badges obtenus :</strong> {{ stats.badges_obtenus }}</div>
+                    <div><strong>Badges obtenus :</strong> {{ badges_obtenus.count }} </div>
                 </div>
             </div>
+
+            <div class="info-section">
+                <h3>Badges obtenus</h3>
+
+                {% regroup badges_obtenus by badge.categorie as badges_par_categorie %}
+                {% if badges_par_categorie %}
+                    {% for groupe in badges_par_categorie %}
+                        <h5 class="badge-category-title">{{ groupe.grouper }}</h5>
+
+                        <div class="badges-grid">
+                            {% for b in groupe.list %}
+                                <div class="badge-card"
+                                    data-badge-id="{{ b.badge.id }}"
+                                    data-bs-toggle="popover"
+                                    data-bs-title="{{ b.badge.nom }}"
+                                    data-bs-content="{{ b.badge.description }}"
+                                    data-bs-placement="top">
+                                    <img src="{{ b.badge.icone.url }}" class="badge-img">
+                                    <div class="badge-name">{{ b.badge.nom }}</div>
+                                    <div class="badge-date">
+                                        Obtenu le {{ b.date_obtenu|date:"d/m/Y" }}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>Aucun badge obtenu pour le moment.</p>
+                {% endif %}
+            </div>
+
+
+            <div class="info-section">
+                <h3>Badges non obtenus</h3>
+
+                {% regroup badges_pas_obtenus by categorie as badges_non_par_categorie %}
+
+                {% if badges_non_par_categorie %}
+                    {% for groupe in badges_non_par_categorie %}
+                        <h5 class="badge-category-title inactive">{{ groupe.grouper }}</h5>
+
+                        <div class="badges-grid">
+                            {% for b in groupe.list %}
+                                <div class="badge-card badge-locked"
+                                    data-bs-toggle="popover"
+                                    data-bs-title="{{ b.nom }}"
+                                    data-bs-content="{{ b.description }}"
+                                    data-bs-placement="top">
+                                    <img src="{{ b.icone.url }}" class="badge-img">
+                                    <div class="badge-name">{{ b.nom }}</div>
+                                    <div class="badge-condition">
+                                        Objectif : {{ b.seuil }} {{ b.stat_cible }}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>Vous avez obtenu tous les badges.</p>
+                {% endif %}
+            </div>
+
         </div>
     </div>
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    document.querySelectorAll('[data-bs-toggle="popover"]').forEach(el => {
+        new bootstrap.Popover(el, {
+            trigger: 'hover',
+            html: true
+        });
+    });
+
+    document.querySelectorAll(".badge-card[data-badge-id]").forEach(card => {
+        card.addEventListener("click", function () {
+            const badgeId = this.dataset.badgeId;
+            let slot = prompt("Dans quel slot équiper ce badge ? (1, 2 ou 3)");
+
+            slot = parseInt(slot);
+            if (![1, 2, 3].includes(slot)) return;
+
+            fetch(`/profile/equiper_badge/${badgeId}/${slot}/`)
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert("Impossible d’équiper ce badge.");
+                    }
+                });
+        });
+    });
+
+
+});
+</script>
 {% endblock %}

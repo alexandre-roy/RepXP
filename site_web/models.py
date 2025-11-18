@@ -422,6 +422,16 @@ class UserBadge(models.Model):
 
 
 
+class BadgeEquipe(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    badge = models.ForeignKey(Badge, on_delete=models.CASCADE)
+    slot = models.PositiveSmallIntegerField() 
+
+    class Meta:
+        unique_together = ('user', 'slot')
+        ordering = ['slot']
+
+
 class UserDefi(models.Model):
     """Statut d'un défi pour un utilisateur."""
 
