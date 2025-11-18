@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.utils import timezone
 from django.http import JsonResponse
 from django.core.paginator import Paginator
+from django.http import JsonResponse
 from .forms import ExerciceForm, RegisterForm, ConnexionForm, EntrainementForm, UserSearchForm, CustomUserChangeForm, BadgeForm, DefiForm
 from .models import BadgeEquipe, Exercice, ExerciceEntrainement, User, Entrainement, Badge, GroupeMusculaire, Statistiques, DefiBadge, UserBadge, UserDefi, Defis, UserBadgeProgress
 
@@ -304,6 +305,8 @@ def profile(request):
 
     badges_equipes_queryset = BadgeEquipe.objects.filter(user=user).select_related("badge").order_by("slot")
 
+    nb_defis = UserDefi.objects.filter(user=user, est_complete=True).count()
+
     badges_equipes = [None, None, None]
     for be in badges_equipes_queryset:
         if 1 <= be.slot <= 3:
@@ -318,6 +321,7 @@ def profile(request):
         "badges_equipes": badges_equipes,
         "badges_pas_obtenus": badges_pas_obtenus,
         "badges_equipes": badges_equipes,
+        "nb_defis": nb_defis
     }
 
     return render(request, "site_web/profil/profil.html", context)
@@ -450,11 +454,13 @@ def view_other_user_profile(request, user_id):
             return redirect("index")
 
     statistiques = Statistiques.objects.get_or_create(user_id=other_user)
+    nb_defis = UserDefi.objects.filter(user=other_user, est_complete=True).count()
 
     context = {
         "other_user": other_user,
         "stats": statistiques,
         "est_admin": est_admin(request.user),
+        "nb_defis": nb_defis
     }
     return render(request, "site_web/profil/other_user_profile.html", context)
 
@@ -508,3 +514,25 @@ def create_defi(request):
         form = DefiForm()
 
     return render(request, "site_web/defis/create_defi.html", {"form": form})
+
+@login_required
+def ajax_statistiques(request):
+    stats = Statistiques.objects.get(user_id=request.user)
+
+    return JsonResponse({
+        "sets": stats.sets_effectues,
+        "reps": stats.reps_effectuees,
+        "exercices": stats.exercices_completes,
+        "entrainements": stats.entrainements_completes,
+        "badges": stats.badges_obtenus,
+    })
+
+@login_required
+def check_email(request):
+    """Vue permettant de vérifier le courriel"""
+    email = request.GET.get("email", "").strip()
+    user_id = request.user.id
+
+    exists = User.objects.filter(email=email).exclude(id=user_id).exists()
+
+    return JsonResponse({"exists": exists})

@@ -53,13 +53,21 @@
             </div>
 
             <div class="info-section">
-                <h3>Statistiques</h3>
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <h3 class="mb-0">Statistiques</h3>
+
+                    <button id="refresh-stats" class="btn btn-light p-2 rounded-circle shadow-sm"
+                            title="Actualiser les statistiques">
+                        <i class="bi bi-arrow-repeat"></i>
+                    </button>
+                </div>
                 <div class="info-grid">
-                    <div><strong>Séries effectuées :</strong> {{ stats.sets_effectues }}</div>
-                    <div><strong>Répétitions effectuées :</strong> {{ stats.reps_effectuees }}</div>
-                    <div><strong>Exercices complétés :</strong> {{ stats.exercices_completes }}</div>
-                    <div><strong>Entraînements complétés :</strong> {{ stats.entrainements_completes }}</div>
-                    <div><strong>Badges obtenus :</strong> {{ badges_obtenus.count }} </div>
+                    <div><strong>Séries effectuées :</strong> <span id="stats-sets">{{ stats.sets_effectues }}</span></div>
+                    <div><strong>Répétitions effectuées :</strong> <span id="stats-reps">{{ stats.reps_effectuees }}</span></div>
+                    <div><strong>Exercices complétés :</strong> <span id="stats-ex">{{ stats.exercices_completes }}</span></div>
+                    <div><strong>Entraînements complétés :</strong> <span id="stats-ent">{{ stats.entrainements_completes }}</span></div>
+                    <div><strong>Badges obtenus :</strong> <span id="stats-bad">{{ stats.badges_obtenus }}</span></div>
+                    <div><strong>Défis complétés :</strong> <span>{{ nb_defis }}</span></div>
                 </div>
             </div>
 
@@ -127,39 +135,42 @@
         </div>
     </div>
 
+    <script>
+        const refreshStatsUrl = "{% url 'ajax_statistiques' %}";
+    </script>
+
+    <script src="{% static 'site_web/js/profil.js' %}"></script>
 
 
-<script>
-document.addEventListener("DOMContentLoaded", function () {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
 
-    document.querySelectorAll('[data-bs-toggle="popover"]').forEach(el => {
-        new bootstrap.Popover(el, {
-            trigger: 'hover',
-            html: true
-        });
-    });
-
-    document.querySelectorAll(".badge-card[data-badge-id]").forEach(card => {
-        card.addEventListener("click", function () {
-            const badgeId = this.dataset.badgeId;
-            let slot = prompt("Dans quel slot équiper ce badge ? (1, 2 ou 3)");
-
-            slot = parseInt(slot);
-            if (![1, 2, 3].includes(slot)) return;
-
-            fetch(`/profile/equiper_badge/${badgeId}/${slot}/`)
-                .then(r => r.json())
-                .then(data => {
-                    if (data.success) {
-                        location.reload();
-                    } else {
-                        alert("Impossible d’équiper ce badge.");
-                    }
+            document.querySelectorAll('[data-bs-toggle="popover"]').forEach(el => {
+                new bootstrap.Popover(el, {
+                    trigger: 'hover',
+                    html: true
                 });
+            });
+
+            document.querySelectorAll(".badge-card[data-badge-id]").forEach(card => {
+                card.addEventListener("click", function () {
+                    const badgeId = this.dataset.badgeId;
+                    let slot = prompt("Dans quel slot équiper ce badge ? (1, 2 ou 3)");
+
+                    slot = parseInt(slot);
+                    if (![1, 2, 3].includes(slot)) return;
+
+                    fetch(`/profile/equiper_badge/${badgeId}/${slot}/`)
+                        .then(r => r.json())
+                        .then(data => {
+                            if (data.success) {
+                                location.reload();
+                            } else {
+                                alert("Impossible d’équiper ce badge.");
+                            }
+                        });
+                });
+            });
         });
-    });
-
-
-});
-</script>
+    </script>
 {% endblock %}
