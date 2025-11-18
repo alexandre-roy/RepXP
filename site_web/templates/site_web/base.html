@@ -32,35 +32,43 @@
           </li>
         </ul>
         <ul class="navbar-nav justify-content-end flex-grow-1 pe-2">
-          <li class="nav-item">
-            <a class="nav-link mx-lg-1" href="{% url 'index' %}">ACCUEIL</a>
-          </li>
-          {% if user.is_authenticated %}
-          <li class="nav-item">
-            <a class="nav-link mx-lg-1" href="{% url 'my_workouts' %}">ENTRAÎNEMENTS</a>
-          </li>
-          {% if user.is_superuser or user.is_staff %}
-          <li class="nav-item">
-            <a class="nav-link mx-lg-1" href="{% url 'review' %}">EXERCICES</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link mx-lg-1" href="{% url 'badge_list' %}">BADGES</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link mx-lg-1" href="{% url 'create_defi' %}">DÉFIS</a>
-          </li>
-          {% else %}
-          <li class="nav-item">
-            <a class="nav-link mx-lg-1" href="{% url 'bank' %}">EXERCICES</a>
-          </li>
-          {% endif %}
-          <li class="nav-item">
-            <a class="nav-link mx-lg-1" href="{% url 'user_search' %}">UTILISATEURS</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link mx-lg-1" href="{% url 'profile' %}">{{user.username|upper}}</a>
-          </li>
-          {% endif %}
+            <li class="nav-item">
+              <a class="nav-link mx-lg-1" href="{% url 'index' %}">ACCUEIL</a>
+            </li>
+
+            {% if user.is_authenticated %}
+                <li class="nav-item">
+                  <a class="nav-link mx-lg-1" href="{% url 'my_workouts' %}">ENTRAÎNEMENTS</a>
+                </li>
+
+                {% if user.is_superuser or user.is_staff %}
+                    <li class="nav-item">
+                      <a class="nav-link mx-lg-1" href="{% url 'review' %}">EXERCICES</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                      <a class="nav-link mx-lg-1" href="{% url 'bank' %}">EXERCICES</a>
+                    </li>
+                {% endif %}
+
+                <li class="nav-item">
+                  <a class="nav-link mx-lg-1" href="{% url 'badge_list' %}">BADGES</a>
+                </li>
+
+                {% if user.is_superuser or user.is_staff %}
+                    <li class="nav-item">
+                      <a class="nav-link mx-lg-1" href="{% url 'create_defi' %}">DÉFIS</a>
+                    </li>
+                {% endif %}
+
+                <li class="nav-item">
+                  <a class="nav-link mx-lg-1" href="{% url 'user_search' %}">UTILISATEURS</a>
+                </li>
+
+                <li class="nav-item">
+                  <a class="nav-link mx-lg-1" href="{% url 'profile' %}">{{ user.username|upper }}</a>
+                </li>
+            {% endif %}
         </ul>
         <div class="text-end">
           {% if user.is_authenticated %}
@@ -117,7 +125,7 @@
       {% block main %} {% endblock %}
     </main>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     {% if user.is_authenticated %} {% include "partials/logout_partial.html" %}
     {% endif %}
   </body>

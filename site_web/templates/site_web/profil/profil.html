@@ -94,36 +94,6 @@
             </div>
 
 
-            <div class="info-section">
-                <h3>Badges non obtenus</h3>
-
-                {% regroup badges_pas_obtenus by categorie as badges_non_par_categorie %}
-
-                {% if badges_non_par_categorie %}
-                    {% for groupe in badges_non_par_categorie %}
-                        <h5 class="badge-category-title inactive">{{ groupe.grouper }}</h5>
-
-                        <div class="badges-grid">
-                            {% for b in groupe.list %}
-                                <div class="badge-card badge-locked"
-                                    data-bs-toggle="popover"
-                                    data-bs-title="{{ b.nom }}"
-                                    data-bs-content="{{ b.description }}"
-                                    data-bs-placement="top">
-                                    <img src="{{ b.icone.url }}" class="badge-img">
-                                    <div class="badge-name">{{ b.nom }}</div>
-                                    <div class="badge-condition">
-                                        Objectif : {{ b.seuil }} {{ b.stat_cible }}
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    {% endfor %}
-                {% else %}
-                    <p>Vous avez obtenu tous les badges.</p>
-                {% endif %}
-            </div>
-
         </div>
     </div>
 
@@ -142,7 +112,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll(".badge-card[data-badge-id]").forEach(card => {
         card.addEventListener("click", function () {
             const badgeId = this.dataset.badgeId;
-            let slot = prompt("Dans quel slot équiper ce badge ? (1, 2 ou 3)");
+            let slot = prompt("Dans quel emplacement voulez-vous équiper ce badge ? (1, 2 ou 3)");
 
             slot = parseInt(slot);
             if (![1, 2, 3].includes(slot)) return;

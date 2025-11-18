@@ -1,52 +1,64 @@
 {% extends "site_web/base.html" %}
+{% load static %}
+
 {% block title %}
     <title>RepXP | Profil de {{ other_user.username }}</title>
 {% endblock %}
-{% block navigation %}
-    <a href="{% url 'view_other_user_profile' other_user.id %}" class="active-link">PROFIL DE {{ other_user.username|upper }}</a>
-{% endblock %}
-{% block main %}
-    <div class="profile-container">
-        <div class="profile-card">
-            <div class="avatar-section">
-                <img src="{{ other_user.avatar.url }}" class="rounded-circle" width="150" height="150" alt="Avatar de {{ other_user.username }}">
-                <h2 class="username">{{ other_user.username }}</h2>
-            </div>
 
-            <div class="info-section">
-                <h3>Informations personnelles</h3>
-                <div class="info-grid">
-                    <div><strong>Nom complet :</strong> {{ other_user.first_name }} {{ other_user.last_name }}</div>
-                    <div><strong>Sexe :</strong>
-                        {% if other_user.sexe == "M" %} Masculin
-                        {% elif other_user.sexe == "F" %} Féminin
-                        {% else %} Non spécifié {% endif %}
-                    </div>
-                    <div><strong>Date de naissance :</strong> {{ other_user.date_naissance|date:"d/m/Y" }}</div>
-                    <div><strong>Taille :</strong>
-                        {% if other_user.taille %} {{ other_user.taille }} m
-                        {% else %} Non spécifié {% endif %}
-                    </div>
-                    <div><strong>Poids :</strong>
-                        {% if other_user.poids %} {{ other_user.poids }} kg
-                        {% else %} Non spécifié {% endif %}
-                    </div>
-                    <div><strong>Adresse courriel :</strong>
-                        {% if other_user.email %} {{ other_user.email }}
-                        {% else %} Non spécifié {% endif %}
-                    </div>
+{% block navigation %}
+    <a href="{% url 'view_other_user_profile' other_user.id %}" class="active-link">
+        PROFIL DE {{ other_user.username|upper }}
+    </a>
+{% endblock %}
+
+{% block main %}
+<div class="profile-container">
+    <div class="profile-card">
+
+        <div class="avatar-section">
+            <img src="{{ other_user.avatar.url }}" class="rounded-circle" width="150" height="150" alt="Avatar de {{ other_user.username }}">
+            <h2 class="username">{{ other_user.username }}</h2>
+        </div>
+
+        <div class="equipped-badges">
+            {% for eq in badges_equipes %}
+                <div class="equipped-slot">
+                    {% if eq %}
+                        <img src="{{ eq.badge.icone.url }}" class="equipped-img">
+                    {% else %}
+                        <img src="{% static 'images/empty_slot.png' %}" class="equipped-img">
+                    {% endif %}
                 </div>
-            </div>
-            <div class="info-section">
-                <h3>Statistiques</h3>
-                <div class="info-grid">
-                    <div><strong>Séries effectuées :</strong> {{ stats.sets_effectues }}</div>
-                    <div><strong>Répétitions effectuées :</strong> {{ stats.reps_effectuees }}</div>
-                    <div><strong>Exercices complétés :</strong> {{ stats.exercices_completes }}</div>
-                    <div><strong>Entraînements complétés :</strong> {{ stats.entrainements_completes }}</div>
-                    <div><strong>Badges obtenus :</strong> {{ stats.badges_obtenus }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="info-section">
+            <h3>Informations personnelles</h3>
+            <div class="info-grid">
+                <div><strong>Nom complet :</strong> {{ other_user.first_name }} {{ other_user.last_name }}</div>
+                <div><strong>Sexe :</strong>
+                    {% if other_user.sexe == "M" %} Masculin
+                    {% elif other_user.sexe == "F" %} Féminin
+                    {% else %} Non spécifié {% endif %}
                 </div>
+                <div><strong>Date de naissance :</strong> {{ other_user.date_naissance|date:"d/m/Y" }}</div>
+                <div><strong>Taille :</strong> {{ other_user.taille|default:"Non spécifié" }} m</div>
+                <div><strong>Poids :</strong> {{ other_user.poids|default:"Non spécifié" }} kg</div>
+                <div><strong>Adresse courriel :</strong> {{ other_user.email|default:"Non spécifié" }}</div>
             </div>
         </div>
+
+        <div class="info-section">
+            <h3>Statistiques</h3>
+            <div class="info-grid">
+                <div><strong>Séries effectuées :</strong> {{ stats.sets_effectues }}</div>
+                <div><strong>Répétitions effectuées :</strong> {{ stats.reps_effectuees }}</div>
+                <div><strong>Exercices complétés :</strong> {{ stats.exercices_completes }}</div>
+                <div><strong>Entraînements complétés :</strong> {{ stats.entrainements_completes }}</div>
+                <div><strong>Badges obtenus :</strong> {{ badges_obtenus.count }}</div>
+            </div>
+        </div>
+
     </div>
+</div>
 {% endblock %}
