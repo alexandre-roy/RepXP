@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, get_user_model
 from django.contrib import messages
 from django.core.paginator import Paginator
+from django.http import JsonResponse
 from .forms import ExerciceForm, RegisterForm, ConnexionForm, EntrainementForm, UserSearchForm, CustomUserChangeForm, BadgeForm, DefiForm
 from .models import Exercice, ExerciceEntrainement, User, Entrainement, Badge, GroupeMusculaire, Statistiques, DefiBadge
 
@@ -418,3 +419,15 @@ def create_defi(request):
         form = DefiForm()
 
     return render(request, "site_web/defis/create_defi.html", {"form": form})
+
+@login_required
+def ajax_statistiques(request):
+    stats = Statistiques.objects.get(user_id=request.user)
+
+    return JsonResponse({
+        "sets": stats.sets_effectues,
+        "reps": stats.reps_effectuees,
+        "exercices": stats.exercices_completes,
+        "entrainements": stats.entrainements_completes,
+        "badges": stats.badges_obtenus,
+    })
