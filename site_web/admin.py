@@ -89,10 +89,12 @@ class BadgeAdmin(admin.ModelAdmin):
         "nom",
         "categorie",
         "code",
-        "description"
+        "stat_cible",
+        "seuil",
+        "description",
     )
-    list_filter = ("categorie",)
-    search_fields = ("nom", "description")
+    list_filter = ("categorie", "stat_cible")
+    search_fields = ("nom", "description", "code")
     prepopulated_fields = {"code": ("nom",)}
 
 @admin.register(Statistiques)

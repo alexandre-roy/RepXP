@@ -267,11 +267,18 @@ class UserSearchForm(forms.Form):
 
 
 class BadgeForm(forms.ModelForm):
-    """Formulaire de création d'un Badge pour les administrateurs du site."""
+    """Formulaire de création d'un Badge basé sur les statistiques."""
 
     class Meta:
         model = Badge
-        fields = ["nom", "description", "icone", "categorie", "code"]
+        fields = [
+            "nom",
+            "description",
+            "icone",
+            "categorie",
+            "stat_cible",
+            "seuil",
+        ]
         widgets = {
             "nom": forms.TextInput(attrs={
                 "class": "form-control mb-3",
@@ -279,42 +286,28 @@ class BadgeForm(forms.ModelForm):
             }),
             "description": forms.Textarea(attrs={
                 "class": "form-control mb-3",
-                "rows": 4,
                 "placeholder": "Décrire comment obtenir ce badge.",
-            }),
-            "categorie": forms.Select(attrs={
-                "class": "form-select mb-3",
+                "rows": 3,
             }),
             "icone": forms.ClearableFileInput(attrs={
                 "class": "form-control mb-3",
             }),
-            "code": forms.TextInput(attrs={
+            "categorie": forms.Select(attrs={
+                "class": "form-select mb-3",
+            }),
+            "stat_cible": forms.Select(attrs={
+                "class": "form-select mb-3",
+            }),
+            "seuil": forms.NumberInput(attrs={
                 "class": "form-control mb-3",
-                "placeholder": "Laisse vide pour générer automatiquement",
+                "placeholder": "Ex. 200",
+                "min": "1",
             }),
         }
 
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields["code"].required = False
 
-    def clean_code(self):
-        code = self.cleaned_data.get("code", "").strip()
-        nom = self.cleaned_data.get("nom", "").strip()
 
-        if not code:
-            code = slugify(nom)
-
-        code = slugify(code)
-
-        if not code:
-            raise forms.ValidationError(
-                "Le code (slug) ne peut pas être vide. Veuillez entrer un nom valide."
-            )
-
-        return code
-    
 class DefiForm(forms.ModelForm):
     badges = forms.ModelMultipleChoiceField(
         queryset=Badge.objects.all(),
