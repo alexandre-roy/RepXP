@@ -6,6 +6,7 @@ from django.core.validators import MinLengthValidator, MaxLengthValidator
 from django.utils import timezone
 from django.utils.text import slugify
 from django.core.exceptions import ValidationError
+from django.conf import settings
 from dateutil.relativedelta import relativedelta
 
 # Create your models here.
@@ -246,9 +247,11 @@ class Badge(models.Model):
         ('AUTRE', 'Autre'),
     ]
 
-    CONDITIONS = [
-        ('DEFI', 'Compléter un défi spécifique'),
-        ('NB_DEFIS', 'Compléter un certain nombre de défis'),
+    STAT_CHOICES = [
+        ('REPS', 'Répétitions totales'),
+        ('SETS', 'Séries totales'),
+        ('EXOS', 'Exercices complétés'),
+        ('WORKOUTS', 'Entraînements complétés'),
     ]
 
     nom = models.CharField(max_length=100)
@@ -259,21 +262,21 @@ class Badge(models.Model):
         choices=CATEGORIES,
         verbose_name="Catégorie du badge"
     )
+
     code = models.SlugField(
         unique=True,
         blank=True,
         null=False,
-        help_text="Identifiant unique (généré automatiquement à partir du nom s'il est laissé vide)."
     )
 
-    condition_type = models.CharField(
+    stat_cible = models.CharField(
         max_length=20,
-        choices=CONDITIONS,
-        verbose_name="Type de condition pour obtenir ce badge"
+        choices=STAT_CHOICES,
+        verbose_name="Statistique ciblée pour ce badge",
     )
-    condition_param = models.CharField(
-        max_length=100,
-        verbose_name="Paramètre de la condition (ex: ID du défi ou nombre de défis)"
+
+    seuil = models.PositiveIntegerField(
+        verbose_name="Seuil à atteindre pour obtenir ce badge",
     )
 
     class Meta:
@@ -378,7 +381,7 @@ class DefiBadge(models.Model):
         unique_together = ('defi', 'badge')
 
     def __str__(self):
-        return f"{self.defi} → {self.badge}"
+        return f"{self.defi} - {self.badge}"
 
 class UserBadgeProgress(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -392,3 +395,56 @@ class UserBadgeProgress(models.Model):
 
     def __str__(self):
         return f"{self.user} - {self.badge}"
+
+
+class UserBadge(models.Model):
+    """Badge obtenu par un utilisateur."""
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="badges_gagnes"
+    )
+    badge = models.ForeignKey(
+        Badge,
+        on_delete=models.CASCADE,
+        related_name="earned_by"
+    )
+    date_obtenu = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'badge')
+        verbose_name = "Badge obtenu"
+        verbose_name_plural = "Badges obtenus"
+
+    def __str__(self):
+        return f"{self.user} - {self.badge}"
+
+
+
+def check_badges_for_user(user):
+    """Vérifie les badges basés sur les statistiques du user et fait gagner ceux atteints."""
+
+    stats, _ = user.statistiques.get_or_create()
+
+    from .models import Badge, UserBadge
+
+    badges = Badge.objects.all()
+
+    for badge in badges:
+        if UserBadge.objects.filter(user=user, badge=badge).exists():
+            continue
+
+        if badge.stat_cible == "REPS":
+            valeur_stat = stats.reps_effectuees
+        elif badge.stat_cible == "SETS":
+            valeur_stat = stats.sets_effectues
+        elif badge.stat_cible == "EXOS":
+            valeur_stat = stats.exercices_completes
+        elif badge.stat_cible == "WORKOUTS":
+            valeur_stat = stats.entrainements_completes
+        else:
+            continue
+
+        if valeur_stat >= badge.seuil:
+            UserBadge.objects.create(user=user, badge=badge)

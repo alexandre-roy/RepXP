@@ -342,6 +342,9 @@ def complete_workout(request, workout_id):
             statistiques.exercices_completes += exercices_count
             statistiques.save()
 
+            from .models import check_badges_for_user
+            check_badges_for_user(request.user)
+
             messages.success(request, f"Entraînement complété! +{total_sets} sets, +{total_reps} reps")
         return redirect("my_workouts")
     else:

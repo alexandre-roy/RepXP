@@ -89,11 +89,11 @@ class BadgeAdmin(admin.ModelAdmin):
         "nom",
         "categorie",
         "code",
-        "condition_type",
-        "condition_param",
-        "description"
+        "stat_cible",
+        "seuil",
+        "description",
     )
-    list_filter = ("categorie", "condition_type")
+    list_filter = ("categorie", "stat_cible")
     search_fields = ("nom", "description", "code")
     prepopulated_fields = {"code": ("nom",)}
 

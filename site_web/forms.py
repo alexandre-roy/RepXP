@@ -267,7 +267,7 @@ class UserSearchForm(forms.Form):
 
 
 class BadgeForm(forms.ModelForm):
-    """Formulaire de création d'un Badge pour les administrateurs du site."""
+    """Formulaire de création d'un Badge basé sur les statistiques."""
 
     class Meta:
         model = Badge
@@ -276,8 +276,8 @@ class BadgeForm(forms.ModelForm):
             "description",
             "icone",
             "categorie",
-            "condition_type",
-            "condition_param"
+            "stat_cible",
+            "seuil",
         ]
         widgets = {
             "nom": forms.TextInput(attrs={
@@ -286,23 +286,25 @@ class BadgeForm(forms.ModelForm):
             }),
             "description": forms.Textarea(attrs={
                 "class": "form-control mb-3",
-                "rows": 4,
                 "placeholder": "Décrire comment obtenir ce badge.",
-            }),
-            "categorie": forms.Select(attrs={
-                "class": "form-select mb-3",
+                "rows": 3,
             }),
             "icone": forms.ClearableFileInput(attrs={
                 "class": "form-control mb-3",
             }),
-            "condition_type": forms.Select(attrs={
+            "categorie": forms.Select(attrs={
                 "class": "form-select mb-3",
             }),
-            "condition_param": forms.TextInput(attrs={
+            "stat_cible": forms.Select(attrs={
+                "class": "form-select mb-3",
+            }),
+            "seuil": forms.NumberInput(attrs={
                 "class": "form-control mb-3",
-                "placeholder": "Ex : ID du défi ou nombre de défis à compléter",
+                "placeholder": "Ex. 200",
+                "min": "1",
             }),
         }
+
 
 
 
