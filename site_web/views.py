@@ -526,3 +526,13 @@ def ajax_statistiques(request):
         "entrainements": stats.entrainements_completes,
         "badges": stats.badges_obtenus,
     })
+
+@login_required
+def check_email(request):
+    """Vue permettant de vérifier le courriel"""
+    email = request.GET.get("email", "").strip()
+    user_id = request.user.id
+
+    exists = User.objects.filter(email=email).exclude(id=user_id).exists()
+
+    return JsonResponse({"exists": exists})

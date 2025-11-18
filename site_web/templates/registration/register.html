@@ -1,4 +1,5 @@
 {% extends "site_web/base.html" %}
+{% load static %}
 {% block title %}
     <title>RepXP | Inscription</title>
 {% endblock %}
@@ -32,6 +33,11 @@
                     {% if field.name in "username first_name last_name email date_naissance" %}
                         <label for="{{ field.id_for_label }}" class="form-label m-0 fw-semibold">{{ field.label }}</label>
                         {{ field }}
+
+                        {% if field.name == "email" %}
+                            <small id="verify-email" class="d-block mt-1"></small>
+                        {% endif %}
+
                         {% if field.errors %}
                             <div class="text-danger">
                                 {% for error in field.errors %}
@@ -65,5 +71,9 @@
         </div>
     </div>
 </form>
+<script>
+    window.checkEmailUrl = "{% url 'check_email' %}";
+</script>
+<script src="{% static 'site_web/js/check_email.js' %}"></script>
 
 {% endblock %}
