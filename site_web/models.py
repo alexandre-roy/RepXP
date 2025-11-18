@@ -422,8 +422,35 @@ class UserBadge(models.Model):
 
 
 
+class UserDefi(models.Model):
+    """Statut d'un défi pour un utilisateur."""
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="defis_utilisateur",
+    )
+    defi = models.ForeignKey(
+        Defis,
+        on_delete=models.CASCADE,
+        related_name="participants",
+    )
+    est_complete = models.BooleanField(default=False)
+    date_completion = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        unique_together = ("user", "defi")
+        verbose_name = "Défi utilisateur"
+        verbose_name_plural = "Défis utilisateurs"
+
+    def __str__(self):
+        return f"{self.user} - {self.defi} ({'completé' if self.est_complete else 'en cours'})"
+
+
+
+
 def check_badges_for_user(user):
-    """Vérifie les badges basés sur les statistiques du user et fait gagner ceux atteints."""
+    """Vérifie les badges selon les statistiques du user et fait gagner ceux atteints."""
 
     stats, _ = user.statistiques.get_or_create()
 
@@ -448,3 +475,31 @@ def check_badges_for_user(user):
 
         if valeur_stat >= badge.seuil:
             UserBadge.objects.create(user=user, badge=badge)
+
+
+def check_defis_for_user(user):
+    """Vérifie quels défis sont complétés par l'utilisateur selon les badges obtenus."""
+
+    from .models import Defis, UserDefi, UserBadge
+
+    badges_gagnes_ids = set(
+        UserBadge.objects.filter(user=user).values_list("badge_id", flat=True)
+    )
+
+    for defi in Defis.objects.all():
+        badges_requis_ids = set(defi.badges.values_list("id", flat=True))
+        if badges_requis_ids.issubset(badges_gagnes_ids):
+
+            user_defi, created = UserDefi.objects.get_or_create(
+                user=user,
+                defi=defi,
+                defaults={
+                    "est_complete": True,
+                    "date_completion": timezone.now(),
+                }
+            )
+
+            if not created and not user_defi.est_complete:
+                user_defi.est_complete = True
+                user_defi.date_completion = timezone.now()
+                user_defi.save()

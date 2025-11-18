@@ -16,7 +16,12 @@
                     <th scope="col" class="text-center">Rang</th>
                     <th scope="col">Utilisateur</th>
                     <th scope="col" class="text-center">
-                        <a href="?sort=badges_obtenus" class="text-decoration-none {% if current_sort == 'badges_obtenus' %}style-button-link{% endif %}">
+                        <a href="?sort=nb_defis" class="text-decoration-none {% if current_sort == 'nb_defis' %}style-button-link{% endif %}">
+                            Défis complétés
+                        </a>
+                    </th>
+                    <th scope="col" class="text-center">
+                        <a href="?sort=nb_badges" class="text-decoration-none {% if current_sort == 'nb_badges' %}style-button-link{% endif %}">
                             Badges
                         </a>
                     </th>
@@ -59,7 +64,8 @@
                     <td>
                         <a href="{% url 'view_other_user_profile' personne.user.id %}" class="text-decoration-none"><img src="{{ personne.user.avatar.url }}" alt="pfp" class="rounded-circle me-2 edit-img"><strong>{{ personne.user }}</strong></a>
                     </td>
-                    <td class="text-center">{{ personne.badges_obtenus }}</td>
+                    <td class="text-center">{{ personne.nb_defis }}</td>
+                    <td class="text-center">{{ personne.nb_badges }}</td>
                     <td class="text-center">{{ personne.reps_effectuees }}</td>
                     <td class="text-center">{{ personne.sets_effectues }}</td>
                     <td class="text-center">{{ personne.entrainements_completes }}</td>

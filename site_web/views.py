@@ -4,35 +4,48 @@ from django.contrib.auth import login, get_user_model
 from django.contrib import messages
 from django.core.paginator import Paginator
 from .forms import ExerciceForm, RegisterForm, ConnexionForm, EntrainementForm, UserSearchForm, CustomUserChangeForm, BadgeForm, DefiForm
-from .models import Exercice, ExerciceEntrainement, User, Entrainement, Badge, GroupeMusculaire, Statistiques, DefiBadge
+from .models import Exercice, ExerciceEntrainement, User, Entrainement, Badge, GroupeMusculaire, Statistiques, DefiBadge, UserBadge, UserDefi
 
 # Create your views here.
 def est_admin(user):
     return user.is_authenticated and user.is_staff
 
 def index(request):
-    """Page d'accueil de activities"""
+    """Page d'accueil qui montre le classement des utilisateurs"""
     sort_by = request.GET.get('sort')
 
-    sort_fields = ['badges_obtenus', 'reps_effectuees', 'sets_effectues','entrainements_completes', 'exercices_completes']
+    sort_fields = ['nb_badges', 'nb_defis', 'reps_effectuees', 'sets_effectues', 'entrainements_completes', 'exercices_completes']
 
     if sort_by not in sort_fields:
-        sort_by = 'badges_obtenus'
+        sort_by = 'nb_badges'
 
-    statistiques = Statistiques.objects.select_related('user_id').order_by(f'-{sort_by}')
+    statistiques = Statistiques.objects.select_related('user_id')
 
     classement = []
-    rang = 1
     for stat in statistiques:
+        user = stat.user_id
+
+        nb_badges = UserBadge.objects.filter(user=user).count()
+        nb_defis = UserDefi.objects.filter(user=user, est_complete=True).count()
+
         classement.append({
-            'rang': rang,
-            'user': stat.user_id,
-            'sets_effectues': stat.sets_effectues,
+            'user': user,
+            'nb_badges': nb_badges,
+            'nb_defis': nb_defis,
             'reps_effectuees': stat.reps_effectuees,
+            'sets_effectues': stat.sets_effectues,
             'entrainements_completes': stat.entrainements_completes,
             'exercices_completes': stat.exercices_completes,
-            'badges_obtenus': stat.badges_obtenus,
         })
+
+    def sort_key(personne):
+        return personne[sort_by]
+
+    classement = sorted(classement, key=sort_key, reverse=True)
+
+    rang = 1
+    for personne in classement:
+        personne['rang'] = rang
         rang += 1
 
     return render(request, "site_web/index.html", {"est_admin": est_admin(request.user),"classement": classement, "current_sort": sort_by})
@@ -60,6 +73,8 @@ def connexion(request):
         form = ConnexionForm(request)
 
     return render(request, 'registration/login.html', {'form': form, "est_admin": est_admin(request.user)})
+
+
 
 @login_required
 def review(request):
@@ -342,8 +357,9 @@ def complete_workout(request, workout_id):
             statistiques.exercices_completes += exercices_count
             statistiques.save()
 
-            from .models import check_badges_for_user
+            from .models import check_badges_for_user, check_defis_for_user
             check_badges_for_user(request.user)
+            check_defis_for_user(request.user)
 
             messages.success(request, f"Entraînement complété! +{total_sets} sets, +{total_reps} reps")
         return redirect("my_workouts")
