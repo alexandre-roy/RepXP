@@ -19,6 +19,7 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('profil/', views.profile, name="profile"),
     path("profil/<int:user_id>/", views.view_other_user_profile, name="view_other_user_profile"),
+    path('profile/equiper_badge/<int:badge_id>/<int:slot>/', views.equiper_badge, name='equiper_badge'),
     path('users/', views.user_search, name='user_search'),
     path('profile/', views.profile, name="profile"),
     path('profile/edit/', views.edit_profile, name="edit_profile"),

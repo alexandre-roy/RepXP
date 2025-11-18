@@ -2,41 +2,85 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, get_user_model
 from django.contrib import messages
+from django.utils import timezone
+from django.http import JsonResponse
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from .forms import ExerciceForm, RegisterForm, ConnexionForm, EntrainementForm, UserSearchForm, CustomUserChangeForm, BadgeForm, DefiForm
-from .models import Exercice, ExerciceEntrainement, User, Entrainement, Badge, GroupeMusculaire, Statistiques, DefiBadge
+from .models import BadgeEquipe, Exercice, ExerciceEntrainement, User, Entrainement, Badge, GroupeMusculaire, Statistiques, DefiBadge, UserBadge, UserDefi, Defis, UserBadgeProgress
 
 # Create your views here.
 def est_admin(user):
     return user.is_authenticated and user.is_staff
 
 def index(request):
-    """Page d'accueil de activities"""
+    """Page d'accueil qui montre le classement des utilisateurs"""
     sort_by = request.GET.get('sort')
 
-    sort_fields = ['badges_obtenus', 'reps_effectuees', 'sets_effectues','entrainements_completes', 'exercices_completes']
+    sort_fields = ['nb_badges', 'nb_defis', 'reps_effectuees', 'sets_effectues', 'entrainements_completes', 'exercices_completes']
 
     if sort_by not in sort_fields:
-        sort_by = 'badges_obtenus'
+        sort_by = 'nb_badges'
 
-    statistiques = Statistiques.objects.select_related('user_id').order_by(f'-{sort_by}')
+    statistiques = Statistiques.objects.select_related('user_id')
 
     classement = []
-    rang = 1
     for stat in statistiques:
+        user = stat.user_id
+
+        nb_badges = UserBadge.objects.filter(user=user).count()
+        nb_defis = UserDefi.objects.filter(user=user, est_complete=True).count()
+
         classement.append({
-            'rang': rang,
-            'user': stat.user_id,
-            'sets_effectues': stat.sets_effectues,
+            'user': user,
+            'nb_badges': nb_badges,
+            'nb_defis': nb_defis,
             'reps_effectuees': stat.reps_effectuees,
+            'sets_effectues': stat.sets_effectues,
             'entrainements_completes': stat.entrainements_completes,
             'exercices_completes': stat.exercices_completes,
-            'badges_obtenus': stat.badges_obtenus,
         })
+
+    def sort_key(personne):
+        return personne[sort_by]
+
+    classement = sorted(classement, key=sort_key, reverse=True)
+
+    rang = 1
+    for personne in classement:
+        personne['rang'] = rang
         rang += 1
 
-    return render(request, "site_web/index.html", {"est_admin": est_admin(request.user),"classement": classement, "current_sort": sort_by})
+    defis_actifs = (
+        Defis.objects.filter(date_limite__gte=timezone.now())
+        .prefetch_related("badges")
+        .order_by("date_limite")
+    )
+
+    if request.user.is_authenticated:
+
+        for defi in defis_actifs:
+            completed = UserBadgeProgress.objects.filter(
+                user_id=request.user,
+                defi_id=defi,
+                est_complete=True
+            ).count()
+
+            total_badges = defi.badges.count()
+
+            if total_badges > 0 and completed == total_badges:
+                defi.is_complete = True
+            else:
+                defi.is_complete = False
+
+    return render(request, "site_web/index.html", {
+        "est_admin": est_admin(request.user),
+        "classement": classement,
+        "current_sort": sort_by,
+        "defis_actifs": defis_actifs
+    })
+
+
 
 def register(request):
     if request.method == 'POST':
@@ -61,6 +105,8 @@ def connexion(request):
         form = ConnexionForm(request)
 
     return render(request, 'registration/login.html', {'form': form, "est_admin": est_admin(request.user)})
+
+
 
 @login_required
 def review(request):
@@ -247,15 +293,35 @@ def my_workouts(request):
     return render(request, 'site_web/workouts/my_workouts.html', {
         "entrainements": entrainements, "est_admin": est_admin(request.user)})
 
+
 @login_required
 def profile(request):
     user = request.user
-    statistiques = Statistiques.objects.get_or_create(user_id=user)
+    statistiques, _ = Statistiques.objects.get_or_create(user_id=user)
+
+    badges_obtenus = UserBadge.objects.filter(user=user).select_related('badge').order_by('badge__categorie', 'badge__nom')
+
+    badges_pas_obtenus = Badge.objects.exclude(id__in=badges_obtenus.values_list('badge_id', flat=True)).order_by('categorie', 'nom')
+
+    badges_equipes_queryset = BadgeEquipe.objects.filter(user=user).select_related("badge").order_by("slot")
+
+    nb_defis = UserDefi.objects.filter(user=user, est_complete=True).count()
+
+    badges_equipes = [None, None, None]
+    for be in badges_equipes_queryset:
+        if 1 <= be.slot <= 3:
+            badges_equipes[be.slot - 1] = be
+
 
     context = {
         "user": user,
         "stats": statistiques,
         "est_admin": est_admin(user),
+        "badges_obtenus": badges_obtenus,
+        "badges_equipes": badges_equipes,
+        "badges_pas_obtenus": badges_pas_obtenus,
+        "badges_equipes": badges_equipes,
+        "nb_defis": nb_defis
     }
 
     return render(request, "site_web/profil/profil.html", context)
@@ -273,6 +339,29 @@ def edit_profile(request):
         form = CustomUserChangeForm(instance=request.user)
 
     return render(request, 'site_web/profil/edit_profil.html', {'form': form, "est_admin": est_admin(request.user)})
+
+
+
+@login_required
+def equiper_badge(request, badge_id, slot):
+    user = request.user
+
+    if not UserBadge.objects.filter(user=user, badge_id=badge_id).exists():
+        return JsonResponse({'error': 'Badge non obtenu'}, status=403)
+
+    if slot not in [1, 2, 3]:
+        return JsonResponse({'error': 'Slot invalide'}, status=400)
+
+    BadgeEquipe.objects.filter(user=user, slot=slot).delete()
+
+    BadgeEquipe.objects.update_or_create(
+        user=user,
+        slot=slot,
+        defaults={'badge_id': badge_id}
+    )
+
+    return JsonResponse({'success': True})
+
 
 @login_required
 def user_search(request):
@@ -343,6 +432,10 @@ def complete_workout(request, workout_id):
             statistiques.exercices_completes += exercices_count
             statistiques.save()
 
+            from .models import check_badges_for_user, check_defis_for_user
+            check_badges_for_user(request.user)
+            check_defis_for_user(request.user)
+
             messages.success(request, f"Entraînement complété! +{total_sets} sets, +{total_reps} reps")
         return redirect("my_workouts")
     else:
@@ -361,11 +454,13 @@ def view_other_user_profile(request, user_id):
             return redirect("index")
 
     statistiques = Statistiques.objects.get_or_create(user_id=other_user)
+    nb_defis = UserDefi.objects.filter(user=other_user, est_complete=True).count()
 
     context = {
         "other_user": other_user,
         "stats": statistiques,
         "est_admin": est_admin(request.user),
+        "nb_defis": nb_defis
     }
     return render(request, "site_web/profil/other_user_profile.html", context)
 

@@ -6,16 +6,15 @@
 
 {% block navigation %}
     <a href="{% url 'badge_list' %}" class="inactive-link">LISTE DE BADGES</a>
-    <a href="{% url 'create_badge' %}" class="active-link">CREER UN BADGE</a>
+    <a href="{% url 'create_badge' %}" class="active-link">CRÉER UN BADGE</a>
 {% endblock %}
 
 {% block main %}
+<div class="container d-flex justify-content-center">
+    <form method="post" enctype="multipart/form-data" class="form-group background-form" novalidate>
+        {% csrf_token %}
+        <div class="mb-3 p-4">
 
-
-    <div class="container d-flex justify-content-center">
-        <form method="post" enctype="multipart/form-data" class="form-group background-form" novalidate>
-            {% csrf_token %}
-            <div class="mb-3 p-4">
             <div class="mb-3 text-start">
                 <label for="{{ form.nom.id_for_label }}" class="form-label m-0 fw-semibold">Nom</label>
                 {{ form.nom }}
@@ -28,15 +27,7 @@
                 <label for="{{ form.icone.id_for_label }}" class="form-label m-0 fw-semibold">Icône</label>
                 {{ form.icone }}
                 {% if form.icone.errors %}
-                    <div class="invalid-feedback d-block">{{ form.icone.errors.0 }}</div>
-                {% endif %}
-            </div>
-
-            <div class="mb-3 text-start">
-                <label for="{{ form.description.id_for_label }}" class="form-label m-0 fw-semibold">Description</label>
-                {{ form.description }}
-                {% if form.description.errors %}
-                    <div class="invalid-feedback d-block">{{ form.description.errors.0 }}</div>
+                <div class="invalid-feedback d-block">{{ form.icone.errors.0 }}</div>
                 {% endif %}
             </div>
 
@@ -44,19 +35,31 @@
                 <label for="{{ form.categorie.id_for_label }}" class="form-label m-0 fw-semibold">Catégorie</label>
                 {{ form.categorie }}
                 {% if form.categorie.errors %}
-                    <div class="invalid-feedback d-block">{{ form.categorie.errors.0 }}</div>
+                <div class="invalid-feedback d-block">{{ form.categorie.errors.0 }}</div>
                 {% endif %}
             </div>
 
+            <div class="mb-3 text-start">
+                <label for="{{ form.stat_cible.id_for_label }}" class="form-label m-0 fw-semibold">Statistique ciblée</label>
+                {{ form.stat_cible }}
+                {% if form.stat_cible.errors %}
+                <div class="invalid-feedback d-block">{{ form.stat_cible.errors.0 }}</div>
+                {% endif %}
+            </div>
 
             <div class="mb-3 text-start">
-                <label for="{{ form.code.id_for_label }}" class="form-label m-0 fw-semibold">Code</label>
-                {{ form.code }}
-                <div class="form-text">
-                    {{ form.code.help_text }}
-                </div>
-                {% if form.code.errors %}
-                    <div class="invalid-feedback d-block">{{ form.code.errors.0 }}</div>
+                <label for="{{ form.seuil.id_for_label }}" class="form-label m-0 fw-semibold">Seuil requis</label>
+                {{ form.seuil }}
+                {% if form.seuil.errors %}
+                <div class="invalid-feedback d-block">{{ form.seuil.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="mb-3 text-start">
+                <label for="{{ form.description.id_for_label }}" class="form-label m-0 fw-semibold">Description</label>
+                {{ form.description }}
+                {% if form.description.errors %}
+                <div class="invalid-feedback d-block">{{ form.description.errors.0 }}</div>
                 {% endif %}
             </div>
 
@@ -64,7 +67,8 @@
                 <input type="reset" class="form-control mt-3 style-button-danger w-50" value="RÉINITIALISER">
                 <input type="submit" class="form-control mt-3 style-button w-50" value="CRÉER">
             </div>
-            </div>
-        </form>
-    </div>
+
+        </div>
+    </form>
+</div>
 {% endblock %}

@@ -4,7 +4,9 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinLengthValidator, MaxLengthValidator
 from django.utils import timezone
+from django.utils.text import slugify
 from django.core.exceptions import ValidationError
+from django.conf import settings
 from dateutil.relativedelta import relativedelta
 
 # Create your models here.
@@ -245,15 +247,36 @@ class Badge(models.Model):
         ('AUTRE', 'Autre'),
     ]
 
+    STAT_CHOICES = [
+        ('REPS', 'Répétitions totales'),
+        ('SETS', 'Séries totales'),
+        ('EXOS', 'Exercices complétés'),
+        ('WORKOUTS', 'Entraînements complétés'),
+    ]
+
     nom = models.CharField(max_length=100)
     description = models.TextField()
     icone = models.ImageField(upload_to='badges/icones/')
-    categorie = models.CharField(max_length=50, choices=CATEGORIES)
+    categorie = models.CharField(
+        max_length=50,
+        choices=CATEGORIES,
+        verbose_name="Catégorie du badge"
+    )
+
     code = models.SlugField(
         unique=True,
-        error_messages={
-            'unique': "Un badge avec ce code existe déjà. Choississez un autre nom ou laissez le champ vide pour générer automatiquement le code.",
-        }
+        blank=True,
+        null=False,
+    )
+
+    stat_cible = models.CharField(
+        max_length=20,
+        choices=STAT_CHOICES,
+        verbose_name="Statistique ciblée pour ce badge",
+    )
+
+    seuil = models.PositiveIntegerField(
+        verbose_name="Seuil à atteindre pour obtenir ce badge",
     )
 
     class Meta:
@@ -263,6 +286,12 @@ class Badge(models.Model):
 
     def __str__(self):
         return f"{self.nom}"
+
+    def save(self, *args, **kwargs):
+        if not self.code and self.nom:
+            self.code = slugify(self.nom)
+        super().save(*args, **kwargs)
+
 
 
 class Statistiques(models.Model):
@@ -308,7 +337,7 @@ class Statistiques(models.Model):
 
     def __str__(self):
         return f"Statistiques de {self.user_id.username}"
- 
+
 class Defis(models.Model):
     """Modèle des défis"""
 
@@ -321,7 +350,7 @@ class Defis(models.Model):
     date_limite = models.DateTimeField(
         verbose_name="Date limite de complétion",
     )
-  
+
     badges = models.ManyToManyField(Badge, through="DefiBadge")
 
     class Meta:
@@ -332,18 +361,18 @@ class Defis(models.Model):
 
     def __str__(self):
         return f"Défi {self.nom}"
-    
+
     def clean(self):
         if self.date_limite:
             if self.date_limite < timezone.now():
                 raise ValidationError({
                     'date_limite': 'La date limite ne peux pas être passé'
                 })
-    
+
     def est_expire(self):
         """Retourne True si la date limite est dépassée."""
         return timezone.now() > self.date_limite
-    
+
 class DefiBadge(models.Model):
     defi = models.ForeignKey(Defis, on_delete=models.CASCADE)
     badge = models.ForeignKey('Badge', on_delete=models.CASCADE)
@@ -352,8 +381,8 @@ class DefiBadge(models.Model):
         unique_together = ('defi', 'badge')
 
     def __str__(self):
-        return f"{self.defi} → {self.badge}"
-    
+        return f"{self.defi} - {self.badge}"
+
 class UserBadgeProgress(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     badge = models.ForeignKey(Badge, on_delete=models.CASCADE)
@@ -366,3 +395,121 @@ class UserBadgeProgress(models.Model):
 
     def __str__(self):
         return f"{self.user} - {self.badge}"
+
+
+class UserBadge(models.Model):
+    """Badge obtenu par un utilisateur."""
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="badges_gagnes"
+    )
+    badge = models.ForeignKey(
+        Badge,
+        on_delete=models.CASCADE,
+        related_name="earned_by"
+    )
+    date_obtenu = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'badge')
+        verbose_name = "Badge obtenu"
+        verbose_name_plural = "Badges obtenus"
+
+    def __str__(self):
+        return f"{self.user} - {self.badge}"
+
+
+
+class BadgeEquipe(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    badge = models.ForeignKey(Badge, on_delete=models.CASCADE)
+    slot = models.PositiveSmallIntegerField() 
+
+    class Meta:
+        unique_together = ('user', 'slot')
+        ordering = ['slot']
+
+
+class UserDefi(models.Model):
+    """Statut d'un défi pour un utilisateur."""
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="defis_utilisateur",
+    )
+    defi = models.ForeignKey(
+        Defis,
+        on_delete=models.CASCADE,
+        related_name="participants",
+    )
+    est_complete = models.BooleanField(default=False)
+    date_completion = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        unique_together = ("user", "defi")
+        verbose_name = "Défi utilisateur"
+        verbose_name_plural = "Défis utilisateurs"
+
+    def __str__(self):
+        return f"{self.user} - {self.defi} ({'completé' if self.est_complete else 'en cours'})"
+
+
+
+
+def check_badges_for_user(user):
+    """Vérifie les badges selon les statistiques du user et fait gagner ceux atteints."""
+
+    stats, _ = user.statistiques.get_or_create()
+
+    from .models import Badge, UserBadge
+
+    badges = Badge.objects.all()
+
+    for badge in badges:
+        if UserBadge.objects.filter(user=user, badge=badge).exists():
+            continue
+
+        if badge.stat_cible == "REPS":
+            valeur_stat = stats.reps_effectuees
+        elif badge.stat_cible == "SETS":
+            valeur_stat = stats.sets_effectues
+        elif badge.stat_cible == "EXOS":
+            valeur_stat = stats.exercices_completes
+        elif badge.stat_cible == "WORKOUTS":
+            valeur_stat = stats.entrainements_completes
+        else:
+            continue
+
+        if valeur_stat >= badge.seuil:
+            UserBadge.objects.create(user=user, badge=badge)
+
+
+def check_defis_for_user(user):
+    """Vérifie quels défis sont complétés par l'utilisateur selon les badges obtenus."""
+
+    from .models import Defis, UserDefi, UserBadge
+
+    badges_gagnes_ids = set(
+        UserBadge.objects.filter(user=user).values_list("badge_id", flat=True)
+    )
+
+    for defi in Defis.objects.all():
+        badges_requis_ids = set(defi.badges.values_list("id", flat=True))
+        if badges_requis_ids.issubset(badges_gagnes_ids):
+
+            user_defi, created = UserDefi.objects.get_or_create(
+                user=user,
+                defi=defi,
+                defaults={
+                    "est_complete": True,
+                    "date_completion": timezone.now(),
+                }
+            )
+
+            if not created and not user_defi.est_complete:
+                user_defi.est_complete = True
+                user_defi.date_completion = timezone.now()
+                user_defi.save()
