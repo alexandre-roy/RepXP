@@ -83,6 +83,7 @@ def index(request):
 
 
 def register(request):
+    """Vue pour l'inscription d'un nouvel utilisateur"""
     if request.method == 'POST':
         form = RegisterForm(request.POST, request.FILES)
         if form.is_valid():
@@ -95,6 +96,7 @@ def register(request):
     return render(request, 'registration/register.html', {'form': form, "est_admin": est_admin(request.user)})
 
 def connexion(request):
+    """Vue pour la connexion d'un utilisateur"""
     if request.method == 'POST':
         form = ConnexionForm(request, data=request.POST)
         if form.is_valid():
@@ -110,6 +112,7 @@ def connexion(request):
 
 @login_required
 def review(request):
+    """Vue pour revoir les exercices proposés par les utilisateurs"""
     if not est_admin(request.user):
         messages.error(request,  "Vous n'avez pas la permission d'accéder à cette page.")
         return redirect("index")
@@ -144,6 +147,7 @@ def review(request):
 
 @login_required
 def bank(request):
+    """Vue pour afficher la banque d'exercices"""
     recherche = request.GET.get("recherche")
     exercices = Exercice.objects.filter(est_approuve=True)
     groupe_musculaire_filtre = request.GET.get("groupemusculaire")
@@ -296,13 +300,11 @@ def my_workouts(request):
 
 @login_required
 def profile(request):
+    """Vue pour afficher le profil d'un utilisateur"""
     user = request.user
     statistiques, _ = Statistiques.objects.get_or_create(user_id=user)
-
     badges_obtenus = UserBadge.objects.filter(user=user).select_related('badge').order_by('badge__categorie', 'badge__nom')
-
     badges_pas_obtenus = Badge.objects.exclude(id__in=badges_obtenus.values_list('badge_id', flat=True)).order_by('categorie', 'nom')
-
     badges_equipes_queryset = BadgeEquipe.objects.filter(user=user).select_related("badge").order_by("slot")
 
     nb_defis = UserDefi.objects.filter(user=user, est_complete=True).count()
@@ -328,6 +330,7 @@ def profile(request):
 
 @login_required()
 def edit_profile(request):
+    """Vue pour éditer le profil d'un utilisateur"""
     if request.method == 'POST':
         form = CustomUserChangeForm(request.POST, request.FILES, instance=request.user)
         if form.is_valid():
@@ -344,13 +347,14 @@ def edit_profile(request):
 
 @login_required
 def equiper_badge(request, badge_id, slot):
+    """Vue pour équiper un badge dans l'emplacement d'un utilisateur"""
     user = request.user
 
     if not UserBadge.objects.filter(user=user, badge_id=badge_id).exists():
         return JsonResponse({'error': 'Badge non obtenu'}, status=403)
 
     if slot not in [1, 2, 3]:
-        return JsonResponse({'error': 'Slot invalide'}, status=400)
+        return JsonResponse({'error': 'Emplacement invalide'}, status=400)
 
     BadgeEquipe.objects.filter(user=user, slot=slot).delete()
 
@@ -453,13 +457,22 @@ def view_other_user_profile(request, user_id):
             messages.error(request, "Vous n'avez pas la permission de voir ce profil.")
             return redirect("index")
 
-    statistiques = Statistiques.objects.get_or_create(user_id=other_user)
+    statistiques, _ = Statistiques.objects.get_or_create(user_id=other_user)
+    badges_obtenus = UserBadge.objects.filter(user=other_user).select_related("badge")
+
+    badges_equipes = []
+    for slot in [1, 2, 3]:
+        eq = BadgeEquipe.objects.filter(user=other_user, slot=slot).first()
+        badges_equipes.append(eq)
+    
     nb_defis = UserDefi.objects.filter(user=other_user, est_complete=True).count()
 
     context = {
         "other_user": other_user,
         "stats": statistiques,
         "est_admin": est_admin(request.user),
+        "badges_obtenus": badges_obtenus,
+        "badges_equipes": badges_equipes,
         "nb_defis": nb_defis
     }
     return render(request, "site_web/profil/other_user_profile.html", context)
@@ -470,7 +483,7 @@ def create_badge(request):
 
     if not (request.user.is_staff or request.user.is_superuser):
         messages.error(request, "Vous n'avez pas la permission d'accéder à cette page.")
-        return redirect("index")
+        return redirect("badge_list")
 
     if request.method == "POST":
         form = BadgeForm(request.POST, request.FILES)
@@ -485,12 +498,11 @@ def create_badge(request):
 
 @login_required
 def badge_list(request):
-    """Vue pour afficher la liste des badges disponibles."""
+    """Vue pour afficher la liste des badges créés."""
     badges = Badge.objects.all().order_by("categorie", "nom")
-    if not (request.user.is_staff or request.user.is_superuser):
-        messages.error(request, "Vous n'avez pas la permission d'accéder à cette page.")
-        return redirect("index")
     return render(request, "site_web/badges/badge_list.html", {"badges": badges})
+
+
 
 @login_required
 def create_defi(request):

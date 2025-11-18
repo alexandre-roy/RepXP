@@ -1,43 +1,77 @@
 {% extends "site_web/base.html" %}
+{% load static %}
 
 {% block title %}
     <title>RepXP | Liste des badges</title>
 {% endblock %}
 
 {% block navigation %}
-    <a href="{% url 'badge_list' %}" class="active-link">LISTE DE BADGES</a>
-    <a href="{% url 'create_badge' %}" class="inactive-link">CRÉER UN BADGE</a>
-{% endblock %}
+    <a href="{% url 'badge_list' %}" class="active-link">LISTE DES BADGES</a>
 
+    {% if request.user.is_superuser or request.user.is_staff %}
+        <a href="{% url 'create_badge' %}" class="inactive-link">CRÉER UN BADGE</a>
+    {% endif %}
+{% endblock %}
 
 {% block main %}
 
-    <div class="container mt-5">
-        <h2 class="text-center mb-4">LISTE DES BADGES</h2>
+<div class="container mt-5">
+    <h2 class="text-center mb-4">LISTE DES BADGES</h2>
 
-        {% if badges %}
-            <div class="container">
-                <div class="row justify-content-center">
-                    {% for badge in badges %}
-                        <div class="col-md-3 h-50 mb-4 d-flex justify-content-center">
-                            <div class="card text-center p-3 background-form" style="width: 16rem;">
-                                {% if badge.icone %}
-                                    <img src="{{ badge.icone.url }}" class="card-img-top mx-auto d-block" alt="{{ badge.nom }}" style="width: 60px; height: 60px; object-fit: contain;">
-                                {% else %}
-                                    <i class="bi bi-gear-fill display-5 text-light"></i>
-                                {% endif %}
-                                <div class="card-body text-light">
-                                    <h5 class="card-title">{{ badge.nom }}</h5>
-                                    <p class="card-text mb-1"><strong>Catégorie :</strong> {{ badge.get_categorie_display }}</p>
-                                    <p class="card-description">{{ badge.description }}</p>
-                                </div>
+    {% regroup badges by categorie as badges_par_categorie %}
+
+    {% if badges_par_categorie %}
+        {% for groupe in badges_par_categorie %}
+            <h4 class="badge-category-title mt-4">{{ groupe.grouper }}</h4>
+
+            <div class="badges-grid">
+                {% for b in groupe.list %}
+                    <div class="badge-card">
+
+                        {% if b.icone %}
+                            <img src="{{ b.icone.url }}" class="badge-img" alt="{{ b.nom }}">
+                        {% else %}
+                            <img src="{% static 'images/default_badge.png' %}" class="badge-img" alt="Badge">
+                        {% endif %}
+
+                        <div class="badge-name">{{ b.nom }}</div>
+
+                        {% if b.description|length > 80 %}
+                            <p class="badge-description text-muted mb-1">
+                                {{ b.description|truncatechars:80 }}
+                            </p>
+
+                            <div class="collapse mt-2" id="desc-{{ b.id }}">
+                                <p class="badge-description-full">
+                                    {{ b.description }}
+                                </p>
                             </div>
+
+                            <button class="btn btn-link p-0 mt-2"
+                                    type="button"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#desc-{{ b.id }}">
+                                Voir plus
+                            </button>
+
+                        {% else %}
+                            <p class="badge-description-full">
+                                {{ b.description }}
+                            </p>
+                        {% endif %}
+
+                        <div class="badge-condition mt-2">
+                            <strong>Objectif :</strong> {{ b.seuil }} {{ b.stat_cible }}
                         </div>
-                    {% endfor %}
-                </div>
+
+                    </div>
+                {% endfor %}
             </div>
-        {% else %}
-            <p class="text-center text-muted mt-5">Aucun badge n’a encore été créé.</p>
-        {% endif %}
-    </div>
+
+        {% endfor %}
+    {% else %}
+        <p class="text-center text-muted mt-5">Aucun badge n’a encore été créé.</p>
+    {% endif %}
+</div>
+
 {% endblock %}
