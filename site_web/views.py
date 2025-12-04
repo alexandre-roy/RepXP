@@ -553,3 +553,21 @@ def check_email(request):
         return JsonResponse({"valid": False, "message": "Courriel déjà utilisé."})
 
     return JsonResponse({"valid": True, "message": "Courriel disponible."})
+
+def error_400(request, exception):
+    return render(request, "errors/400.html", status=400)
+
+def error_401(request, exception=None):
+    return render(request, "errors/401.html", status=401)
+
+def error_403(request, exception):
+    return render(request, "errors/403.html", status=403)
+
+def error_404(request, exception):
+    return render(request, "errors/404.html", status=404)
+
+def error_405(request, exception):
+    return render(request, "errors/405.html", status=405)
+
+def error_500(request):
+    return render(request, "errors/500.html", status=500)
