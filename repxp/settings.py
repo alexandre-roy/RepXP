@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-wuzq0$ivqo!l)gw=a%hh)x_3ns!h*3*_qxgdh=1g@gai*4mrqp'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DEBUG", "False") == "True"
 
 # Hosts/domain names that are valid for this site
 ALLOWED_HOSTS = ['rexpxp-3ed7983af3c4.herokuapp.com', 'localhost', '127.0.0.1', 'repxp.ca']
