@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_select2',
     'site_web',
+    'cloudinary',
+    'cloudinary_storage',
 ]
 
 MIDDLEWARE = [
@@ -107,10 +109,16 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.getenv('CLOUDINARY_NAME'),
+    'API_KEY': os.getenv('CLOUDINARY_KEY'),
+    'API_SECRET': os.getenv('CLOUDINARY_SECRET'),
+}
 LOGOUT_REDIRECT_URL = '/'
 LOGIN_URL = '/accounts/signin'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 # Activate Django-Heroku.
 django_heroku.settings(locals())
 
