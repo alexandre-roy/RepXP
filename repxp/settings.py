@@ -114,18 +114,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.getenv('CLOUDINARY_NAME'),
-    'API_KEY': os.getenv('CLOUDINARY_KEY'),
-    'API_SECRET': os.getenv('CLOUDINARY_SECRET'),
-}
-
-cloudinary.config( 
-  cloud_name = os.getenv('CLOUDINARY_NAME'),
-  api_key = os.getenv('CLOUDINARY_KEY'),
-  api_secret = os.getenv('CLOUDINARY_SECRET'),
-  secure = True
-)
+CLOUDINARY_URL = os.environ.get('CLOUDINARY_URL')
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 LOGOUT_REDIRECT_URL = '/'
