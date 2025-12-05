@@ -13,7 +13,12 @@ import os
 from pathlib import Path
 import dj_database_url
 import django_heroku
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -114,11 +119,19 @@ CLOUDINARY_STORAGE = {
     'API_KEY': os.getenv('CLOUDINARY_KEY'),
     'API_SECRET': os.getenv('CLOUDINARY_SECRET'),
 }
+
+cloudinary.config( 
+  cloud_name = os.getenv('CLOUDINARY_NAME'),
+  api_key = os.getenv('CLOUDINARY_KEY'),
+  api_secret = os.getenv('CLOUDINARY_SECRET'),
+  secure = True
+)
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
 LOGOUT_REDIRECT_URL = '/'
 LOGIN_URL = '/accounts/signin'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 # Activate Django-Heroku.
 django_heroku.settings(locals())
 
