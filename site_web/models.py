@@ -425,7 +425,7 @@ class UserBadge(models.Model):
 class BadgeEquipe(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     badge = models.ForeignKey(Badge, on_delete=models.CASCADE)
-    slot = models.PositiveSmallIntegerField() 
+    slot = models.PositiveSmallIntegerField()
 
     class Meta:
         unique_together = ('user', 'slot')
@@ -464,7 +464,7 @@ def check_badges_for_user(user):
 
     stats, _ = user.statistiques.get_or_create()
 
-    from .models import Badge, UserBadge
+    from .models import Badge, UserBadge, Defis, UserBadgeProgress
 
     badges = Badge.objects.all()
 
@@ -485,6 +485,28 @@ def check_badges_for_user(user):
 
         if valeur_stat >= badge.seuil:
             UserBadge.objects.create(user=user, badge=badge)
+            defis_concernes = Defis.objects.filter(badges=badge)
+
+            for defi in defis_concernes:
+                progression, created = UserBadgeProgress.objects.get_or_create(
+                    user=user,
+                    badge=badge,
+                    defi=defi,
+                    defaults={
+                        "est_complete": True,
+                        "date_completion": timezone.now(),
+                    },
+                )
+
+                if not created and not progression.est_complete:
+                    progression.est_complete = True
+                    progression.date_completion = timezone.now()
+                    progression.save()
+
+    from .models import UserBadge
+    stats.badges_obtenus = UserBadge.objects.filter(user=user).count()
+    stats.save()
+
 
 
 def check_defis_for_user(user):
