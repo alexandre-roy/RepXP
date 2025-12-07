@@ -8,6 +8,7 @@ from django.core.paginator import Paginator
 from django.http import JsonResponse
 from .forms import ExerciceForm, RegisterForm, ConnexionForm, EntrainementForm, UserSearchForm, CustomUserChangeForm, BadgeForm, DefiForm
 from .models import BadgeEquipe, Exercice, ExerciceEntrainement, User, Entrainement, Badge, GroupeMusculaire, Statistiques, DefiBadge, UserBadge, UserDefi, Defis, UserBadgeProgress
+import re
 
 # Create your views here.
 def est_admin(user):
@@ -539,12 +540,34 @@ def ajax_statistiques(request):
         "badges": stats.badges_obtenus,
     })
 
-@login_required
 def check_email(request):
-    """Vue permettant de vérifier le courriel"""
     email = request.GET.get("email", "").strip()
-    user_id = request.user.id
+    if not email:
+        return JsonResponse({"valid": False, "message": ""})
 
-    exists = User.objects.filter(email=email).exclude(id=user_id).exists()
+    regex = r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"
+    if not re.match(regex, email):
+        return JsonResponse({"valid": False, "message": "Format invalide."})
 
-    return JsonResponse({"exists": exists})
+    if User.objects.filter(email__iexact=email).exists():
+        return JsonResponse({"valid": False, "message": "Courriel déjà utilisé."})
+
+    return JsonResponse({"valid": True, "message": "Courriel disponible."})
+
+def error_400(request, exception):
+    return render(request, "errors/400.html", status=400)
+
+def error_401(request, exception=None):
+    return render(request, "errors/401.html", status=401)
+
+def error_403(request, exception):
+    return render(request, "errors/403.html", status=403)
+
+def error_404(request, exception):
+    return render(request, "errors/404.html", status=404)
+
+def error_405(request, exception):
+    return render(request, "errors/405.html", status=405)
+
+def error_500(request):
+    return render(request, "errors/500.html", status=500)

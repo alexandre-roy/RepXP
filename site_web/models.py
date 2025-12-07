@@ -8,6 +8,8 @@ from django.utils.text import slugify
 from django.core.exceptions import ValidationError
 from django.conf import settings
 from dateutil.relativedelta import relativedelta
+from cloudinary.models import CloudinaryField
+
 
 # Create your models here.
 class Sexe(models.TextChoices):
@@ -19,11 +21,10 @@ class Sexe(models.TextChoices):
 class User(AbstractUser):
     """Modèle des utilisateurs"""
 
-    avatar = models.ImageField(
-        upload_to="avatars/",
+    avatar = CloudinaryField(
+        'image',
         null=True,
-        blank=True,
-        default='avatars/default_avatar.png'
+        blank=True
     )
 
     date_naissance = models.DateField(
@@ -142,10 +143,7 @@ class Exercice(models.Model):
         validators=[MinLengthValidator(20), MaxLengthValidator(400)]
     )
 
-    image = models.ImageField(
-        upload_to="images_exercices/",
-        blank=True
-    )
+    image = CloudinaryField('image', blank=True)
 
     est_approuve = models.BooleanField(default=False)
 
@@ -256,7 +254,7 @@ class Badge(models.Model):
 
     nom = models.CharField(max_length=100)
     description = models.TextField()
-    icone = models.ImageField(upload_to='badges/icones/')
+    icone = CloudinaryField('image')
     categorie = models.CharField(
         max_length=50,
         choices=CATEGORIES,

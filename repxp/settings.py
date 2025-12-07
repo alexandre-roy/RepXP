@@ -13,7 +13,12 @@ import os
 from pathlib import Path
 import dj_database_url
 import django_heroku
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-wuzq0$ivqo!l)gw=a%hh)x_3ns!h*3*_qxgdh=1g@gai*4mrqp'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DEBUG", "False") == "True"
 
 # Hosts/domain names that are valid for this site
 ALLOWED_HOSTS = ['rexpxp-3ed7983af3c4.herokuapp.com', 'localhost', '127.0.0.1', 'repxp.ca']
@@ -37,6 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_select2',
     'site_web',
+    'cloudinary',
+    'cloudinary_storage',
 ]
 
 MIDDLEWARE = [
@@ -107,6 +114,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+CLOUDINARY_URL = os.environ.get('CLOUDINARY_URL')
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
 LOGOUT_REDIRECT_URL = '/'
 LOGIN_URL = '/accounts/signin'
 MEDIA_URL = '/media/'
