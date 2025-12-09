@@ -12654,6 +12654,7 @@ form.background-form input, form.background-form select, form.background-form te
   text-align: center;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  scroll-margin-top: 180px;
 }
 .badge-card:hover {
   transform: translateY(-5px);
@@ -12829,4 +12830,13 @@ form.background-form input, form.background-form select, form.background-form te
 .slot-select-modal .slot-choice-btn {
   min-width: 90px;
   text-align: center;
+}
+
+.badge-link {
+  display: inline-block;
+}
+.badge-link:hover .bg-body-secondary {
+  background-color: #ADAEAF !important;
+  transition: 0.2s ease;
+  cursor: pointer;
 }/*# sourceMappingURL=styles.css.map */

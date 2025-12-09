@@ -289,6 +289,7 @@ form.background-form
   text-align: center
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2)
   transition: transform 0.2s ease, box-shadow 0.2s ease
+  scroll-margin-top: 180px
 
   &:hover
     transform: translateY(-5px)
@@ -450,3 +451,11 @@ form.background-form
     min-width: 90px
     text-align: center
 
+
+.badge-link
+  display: inline-block
+
+  &:hover .bg-body-secondary
+    background-color: $inactive !important
+    transition: 0.2s ease
+    cursor: pointer
