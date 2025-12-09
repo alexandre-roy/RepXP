@@ -37,9 +37,6 @@
                         <div class="badge-name">{{ b.nom }}</div>
 
                         {% if b.description|length > 80 %}
-                            <p class="badge-description text-muted mb-1">
-                                {{ b.description|truncatechars:80 }}
-                            </p>
 
                             <div class="collapse mt-2" id="desc-{{ b.id }}">
                                 <p class="badge-description-full">
@@ -47,7 +44,7 @@
                                 </p>
                             </div>
 
-                            <button class="btn btn-link p-0 mt-2"
+                            <button class="style-button p-1 fs-6 mt-3"
                                     type="button"
                                     data-bs-toggle="collapse"
                                     data-bs-target="#desc-{{ b.id }}">
@@ -60,7 +57,7 @@
                             </p>
                         {% endif %}
 
-                        <div class="badge-condition mt-2">
+                        <div class="badge-condition mt-3">
                             <strong>Objectif :</strong> {{ b.seuil }} {{ b.stat_cible }}
                         </div>
 

@@ -105,6 +105,34 @@
         </div>
     </div>
 
+
+    <div class="modal fade slot-select-modal" id="slotSelectModal" tabindex="-1" aria-labelledby="slotSelectLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-blue shadow-form">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title" id="slotSelectLabel">Choisir un emplacement pour le badge</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-3">Dans quels emplacements voulez-vous équiper ce badge&nbsp;?</p>
+                    <div class="d-flex justify-content-center gap-3">
+                        <button type="button" class="style-button slot-choice-btn" data-slot="1">
+                            Slot&nbsp;1
+                        </button>
+                        <button type="button" class="style-button slot-choice-btn" data-slot="2">
+                            Slot&nbsp;2
+                        </button>
+                        <button type="button" class="style-button slot-choice-btn" data-slot="3">
+                            Slot&nbsp;3
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
     <script>
         const refreshStatsUrl = "{% url 'ajax_statistiques' %}";
     </script>
@@ -122,15 +150,29 @@
                 });
             });
 
+            const slotModalEl = document.getElementById("slotSelectModal");
+            const slotModal = new bootstrap.Modal(slotModalEl);
+            let selectedBadgeId = null;
+
             document.querySelectorAll(".badge-card[data-badge-id]").forEach(card => {
                 card.addEventListener("click", function () {
-                    const badgeId = this.dataset.badgeId;
-                    let slot = prompt("Dans quel slot équiper ce badge ? (1, 2 ou 3)");
+                    selectedBadgeId = this.dataset.badgeId;
+                    slotModal.show();
+                });
+            });
 
-                    slot = parseInt(slot);
-                    if (![1, 2, 3].includes(slot)) return;
+            slotModalEl.querySelectorAll(".slot-choice-btn").forEach(btn => {
+                btn.addEventListener("click", function () {
+                    if (!selectedBadgeId) {
+                        return;
+                    }
 
-                    fetch(`/profile/equiper_badge/${badgeId}/${slot}/`)
+                    const slot = parseInt(this.dataset.slot, 10);
+                    if (![1, 2, 3].includes(slot)) {
+                        return;
+                    }
+
+                    fetch(`/profile/equiper_badge/${selectedBadgeId}/${slot}/`)
                         .then(r => r.json())
                         .then(data => {
                             if (data.success) {
@@ -138,6 +180,10 @@
                             } else {
                                 alert("Impossible d’équiper ce badge.");
                             }
+                        })
+                        .finally(() => {
+                            slotModal.hide();
+                            selectedBadgeId = null;
                         });
                 });
             });

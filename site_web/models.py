@@ -241,15 +241,14 @@ class Badge(models.Model):
         ('ENDURANCE', 'Endurance'),
         ('ASSIDUITE', 'Assiduité'),
         ('TECHNIQUE', 'Technique'),
-        ('NUTRITION', 'Nutrition'),
         ('AUTRE', 'Autre'),
     ]
 
     STAT_CHOICES = [
-        ('REPS', 'Répétitions totales'),
-        ('SETS', 'Séries totales'),
-        ('EXOS', 'Exercices complétés'),
-        ('WORKOUTS', 'Entraînements complétés'),
+        ('RÉPÉTITIONS', 'Répétitions totales'),
+        ('SÉRIES', 'Séries totales'),
+        ('EXERCICES', 'Exercices complétés'),
+        ('ENTRAÎNEMENTS', 'Entraînements complétés'),
     ]
 
     nom = models.CharField(max_length=100)

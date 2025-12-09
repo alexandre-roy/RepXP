@@ -29,6 +29,9 @@ def index(request):
     for stat in statistiques:
         user = stat.user_id
 
+        if user.is_staff or user.is_superuser:
+            continue
+
         nb_badges = UserBadge.objects.filter(user=user).count()
         nb_defis = UserDefi.objects.filter(user=user, est_complete=True).count()
 
@@ -465,7 +468,7 @@ def view_other_user_profile(request, user_id):
     for slot in [1, 2, 3]:
         eq = BadgeEquipe.objects.filter(user=other_user, slot=slot).first()
         badges_equipes.append(eq)
-    
+
     nb_defis = UserDefi.objects.filter(user=other_user, est_complete=True).count()
 
     context = {
