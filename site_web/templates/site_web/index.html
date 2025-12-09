@@ -4,7 +4,7 @@
 
 {% endblock %} {% block navigation %}
 
-<a href="{% url 'index' %}" class="active-link">CLASSEMENT{% if user.is_authenticated %} ET DÉFIS DE LA SEMAINE{% endif %}</a>
+<a href="{% url 'index' %}" class="active-link">CLASSEMENT{% if user.is_authenticated %} ET DÉFIS{% endif %}</a>
 
 {% endblock %} {% block main %}
 

@@ -301,10 +301,6 @@ form.background-form
   object-fit: contain
   color: $light
 
-// .badge-cat
-//   font-size: 0.95rem
-//   color: lighten($light, 10%)
-
 .badge-description
   font-size: 0.9rem
   margin-top: 8px
@@ -320,8 +316,7 @@ form.background-form
 
 .badges-grid
   display: grid
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr))
-  gap: 20px
+  grid-template-columns: auto auto auto auto
   margin-top: 15px
 
 .badge-card
@@ -420,4 +415,38 @@ form.background-form
   max-height: 50px
 
 
+.slot-select-modal
+  .modal-dialog
+    max-width: 500px
+    max-height: 800px
+
+  .modal-content
+    background-color: $primary
+    color: $light
+    border-radius: 16px
+    border: 2px solid $secondary
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45)
+
+  .modal-header
+    border-bottom: none
+    padding-bottom: 0
+
+    .modal-title
+      font-size: 1.2rem
+      font-weight: 600
+
+    .btn-close
+      filter: invert(1)
+      opacity: 0.9
+
+      &:focus
+        box-shadow: none
+
+  .modal-body
+    padding-top: 0.5rem
+    font-size: 0.95rem
+
+  .slot-choice-btn
+    min-width: 90px
+    text-align: center
 
