@@ -26,7 +26,7 @@
 
             <div class="badges-grid">
                 {% for b in groupe.list %}
-                    <div class="badge-card">
+                    <div class="badge-card" id="badge-{{ b.id }}">
 
                         {% if b.icone %}
                             <img src="{{ b.icone.url }}" class="badge-img" alt="{{ b.nom }}">
@@ -44,10 +44,7 @@
                                 </p>
                             </div>
 
-                            <button class="style-button p-1 fs-6 mt-3"
-                                    type="button"
-                                    data-bs-toggle="collapse"
-                                    data-bs-target="#desc-{{ b.id }}">
+                            <button class="style-button p-1 fs-6 mt-3" type="button" data-bs-toggle="collapse" data-bs-target="#desc-{{ b.id }}">
                                 Voir plus
                             </button>
 

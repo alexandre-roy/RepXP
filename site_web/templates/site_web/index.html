@@ -107,15 +107,17 @@
                                             <strong><p class="small mb-2">Badges à obtenir :</p></strong>
                                             <div class="d-flex flex-wrap gap-2">
                                                 {% for badge in defi.badges.all %}
-                                                    <div class="d-flex align-items-center bg-body-secondary p-2 rounded">
-                                                        {% if badge.icone %}
-                                                            <img src="{{ badge.icone.url }}" alt="icone" class="me-2 edit-img border rounded">
-                                                        {% endif %}
-                                                        <div>
-                                                            <div class="small fw-bold">{{ badge.nom }}</div>
-                                                            <div>{{ badge.categorie }}</div>
+                                                    <a href="{% url 'badge_list' %}#badge-{{ badge.id }}" class="badge-link text-decoration-none text-reset">
+                                                        <div class="d-flex align-items-center bg-body-secondary p-2 rounded">
+                                                            {% if badge.icone %}
+                                                                <img src="{{ badge.icone.url }}" alt="icone" class="me-2 edit-img border rounded">
+                                                            {% endif %}
+                                                            <div>
+                                                                <div class="small fw-bold">{{ badge.nom }}</div>
+                                                                <div>{{ badge.categorie }}</div>
+                                                            </div>
                                                         </div>
-                                                    </div>
+                                                    </a>
                                                 {% endfor %}
                                             </div>
                                         </div>
