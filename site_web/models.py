@@ -469,13 +469,13 @@ def check_badges_for_user(user):
         if UserBadge.objects.filter(user=user, badge=badge).exists():
             continue
 
-        if badge.stat_cible == "REPS":
+        if badge.stat_cible == "RÉPÉTITIONS":
             valeur_stat = stats.reps_effectuees
-        elif badge.stat_cible == "SETS":
+        elif badge.stat_cible == "SÉRIES":
             valeur_stat = stats.sets_effectues
-        elif badge.stat_cible == "EXOS":
+        elif badge.stat_cible == "EXERCICES":
             valeur_stat = stats.exercices_completes
-        elif badge.stat_cible == "WORKOUTS":
+        elif badge.stat_cible == "ENTRAÎNEMENTS":
             valeur_stat = stats.entrainements_completes
         else:
             continue
